@@ -1,4 +1,6 @@
 package com.example.send;
+//test commit
+
 
 import android.Manifest;
 import android.content.Intent;
@@ -67,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         Button b = findViewById(R.id.button);
         Button b2 = findViewById(R.id.button2);
         imageView = findViewById(R.id.imageView);
-
 
 
 
