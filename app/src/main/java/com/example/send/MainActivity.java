@@ -1,6 +1,7 @@
 package com.example.send;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -76,9 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
                 if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
+                    Log.w("test", "pick photo request send:"+ PICK_PHOTO);
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , PICK_PHOTO);
                 } else {
+                    Log.w("test", "request permssion");
                     EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                             101, galleryPermissions);
                 }
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.w("test", "pick photo request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case TAKE_PHOTO:
@@ -146,9 +150,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 serverSocket = new ServerSocket(9700);
                 handler.post(new Runnable() {
+                    @SuppressLint("ShowToast")
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "waiting for client", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "waiting for client", Toast.LENGTH_SHORT).show();
                     }
                 });
                 while (lookingForData){
@@ -161,9 +166,10 @@ public class MainActivity extends AppCompatActivity {
                         dis.readFully(byteData);
 
                     handler.post(new Runnable() {
+                        @SuppressLint("ShowToast")
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "received data: "+len+" Bytes", Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "received data: "+len+" Bytes", Toast.LENGTH_LONG).show();
                         }
                     });
 
