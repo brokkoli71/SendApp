@@ -1,9 +1,12 @@
 package com.example.send;
 
+import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -27,13 +30,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final int PICK_PHOTO = 1;
+    private static final int TAKE_PHOTO = 0;
 
     EditText e1, e2;
     ImageView imageView;
@@ -65,8 +74,16 @@ public class MainActivity extends AppCompatActivity {
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , 1);
+                String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+                if (EasyPermissions.hasPermissions(this, galleryPermissions)) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto , PICK_PHOTO);
+                } else {
+                    EasyPermissions.requestPermissions(this, "Access for storage",
+                            101, galleryPermissions);
+                }
+
             }
         });
 
@@ -80,20 +97,23 @@ public class MainActivity extends AppCompatActivity {
         myThread.start();
     }
 
-    @Override //https://medium.com/@hasangi/capture-image-or-choose-from-gallery-photos-implementation-for-android-a5ca59bc6883
+    //reference: https://medium.com/@hasangi/capture-image-or-choose-from-gallery-photos-implementation-for-android-a5ca59bc6883
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode != RESULT_CANCELED) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
-                case 0:
+                case TAKE_PHOTO:
+                    //not implemented yet
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         imageView.setImageBitmap(selectedImage);
                     }
 
                     break;
-                case 1:
+                case PICK_PHOTO:
                     if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage =  data.getData();
+                        Uri selectedImage = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
                             Cursor cursor = getContentResolver().query(selectedImage,
@@ -119,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         ServerSocket serverSocket;
         Socket mySocket;
         DataInputStream dis;
-        String message;
+        byte[] byteData;
         boolean lookingForData = true;
         Handler handler = new Handler();
         @Override
@@ -135,13 +155,20 @@ public class MainActivity extends AppCompatActivity {
                 while (lookingForData){
                     mySocket = serverSocket.accept();
                     dis = new DataInputStream(mySocket.getInputStream());
-                    message = dis.readUTF();
+
+                    final int len = dis.readInt();
+                    byteData = new byte[len];
+                    if (len>0)
+                        dis.readFully(byteData);
+
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                            Toast.makeText(getApplicationContext(), "received data: "+len+" Bytes", Toast.LENGTH_LONG);
                         }
                     });
+
+                    //Handle received Data...
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -152,33 +179,44 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void send(View v){
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Drawable drawable = imageView.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bitmapdata = stream.toByteArray();
 
         BackgroundTask backgroundTask = new BackgroundTask();
-        backgroundTask.execute(e1.getText().toString(), e2.getText().toString());
+        String message = e1.getText().toString();
+        String ip = e2.getText().toString();
+
+        backgroundTask.execute(new BackgroundTaskData("", bitmapdata, ip));
     }
 
-    class BackgroundTask extends AsyncTask<String, Void, String>{
+    class BackgroundTask extends AsyncTask<BackgroundTaskData, Void, String>{
         Socket s;
         DataOutputStream dos;
-        String ip, message;
+        String ip, header;
+        byte[] byteData;
 
         @Override
-        protected String doInBackground(String... params) {
-            ip = params[0];
-            message = params[1];
+        protected String doInBackground(BackgroundTaskData... backgroundTaskData) {
+                ip = backgroundTaskData[0].IP;
+                header = backgroundTaskData[0].header;
+                byteData = backgroundTaskData[0].byteData;
 
-            try {
-                s = new Socket(ip, 9700);
-                dos = new DataOutputStream(s.getOutputStream());
-                dos.writeUTF(message);
+                try {
+                    s = new Socket(ip, 9700);
+                    dos = new DataOutputStream(s.getOutputStream());
+                    //will be implemented later
+                    //dos.writeUTF(header);
 
-                dos.close();
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                    dos.write(byteData);
+                    dos.close();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
-            return null;
-        }
     }
 }
