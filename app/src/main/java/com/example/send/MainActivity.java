@@ -1,6 +1,4 @@
 package com.example.send;
-//test commit
-
 
 import android.Manifest;
 import android.content.Intent;
@@ -77,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-                if (EasyPermissions.hasPermissions(this, galleryPermissions)) {
+                if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , PICK_PHOTO);
                 } else {
-                    EasyPermissions.requestPermissions(this, "Access for storage",
+                    EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                             101, galleryPermissions);
                 }
 
