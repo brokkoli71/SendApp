@@ -77,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
                 if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
-                    Log.w("test", "pick photo request send:"+ PICK_PHOTO);
+                    Log.w("pick_photo", "pick photo request send:"+ PICK_PHOTO);
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , PICK_PHOTO);
                 } else {
-                    Log.w("test", "request permssion");
+                    Log.w("pick_photo", "request permission");
                     EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                             101, galleryPermissions);
                 }
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.w("test", "pick photo request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
+        Log.w("pick_photo", "pick photo request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case TAKE_PHOTO:
@@ -153,11 +153,13 @@ public class MainActivity extends AppCompatActivity {
                     @SuppressLint("ShowToast")
                     @Override
                     public void run() {
+                        Log.w("receiver", "waiting for client");
                         Toast.makeText(getApplicationContext(), "waiting for client", Toast.LENGTH_SHORT).show();
                     }
                 });
                 while (lookingForData){
                     mySocket = serverSocket.accept();
+                    Log.w("receiver", "new socket");
                     dis = new DataInputStream(mySocket.getInputStream());
 
                     final int len = dis.readInt();
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                         @SuppressLint("ShowToast")
                         @Override
                         public void run() {
+                            Log.w("receiver", "received data: "+len+" Bytes");
                             Toast.makeText(getApplicationContext(), "received data: "+len+" Bytes", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -188,13 +191,15 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bitmapdata = stream.toByteArray();
+        byte[] bitmapData = stream.toByteArray();
 
         BackgroundTask backgroundTask = new BackgroundTask();
         String message = e1.getText().toString();
         String ip = e2.getText().toString();
 
-        backgroundTask.execute(new BackgroundTaskData("", bitmapdata, ip));
+        Log.w("send", "sending "+bitmapData+ " Bytes");
+
+        backgroundTask.execute(new BackgroundTaskData("", bitmapData, ip));
     }
 
     class BackgroundTask extends AsyncTask<BackgroundTaskData, Void, String>{
