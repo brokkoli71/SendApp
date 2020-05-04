@@ -41,6 +41,7 @@ public class ReceiverServer implements  Runnable {
                             //Handle received Data...
 
                         } else Log.e("receiver", "img size is 0");
+                        break;
                     default:
                         Log.e("receiver", "unknown data type");
                 }

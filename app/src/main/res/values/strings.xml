@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Send</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="showIPTextView">\"Meine IP ist \"</string>
 </resources>

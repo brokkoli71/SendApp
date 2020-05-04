@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        textView.setText("Meine IP ist "+ip);
+        textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
 
         Thread myThread = new Thread(new ReceiverServer());
         myThread.start();
