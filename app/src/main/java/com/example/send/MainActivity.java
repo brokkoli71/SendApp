@@ -65,13 +65,30 @@ public class MainActivity extends AppCompatActivity {
 
         e1 = findViewById(R.id.editText);
         e2 = findViewById(R.id.editText2);
-        Button b = findViewById(R.id.button);
-        Button b2 = findViewById(R.id.button2);
+        Button buttonSend = findViewById(R.id.button);
+        Button buttonPickPhoto = findViewById(R.id.button2);
         imageView = findViewById(R.id.imageView);
 
+        buttonSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable drawable = imageView.getDrawable();
+                Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] bitmapData = stream.toByteArray();
 
+                ClientTask clientTask = new ClientTask();
+                String message = e1.getText().toString();
+                String ip = e2.getText().toString();
 
-        b2.setOnClickListener(new View.OnClickListener() {
+                Log.w("send", "sending "+bitmapData+ " Bytes");
+
+                clientTask.execute(new ClientTaskData(ClientTaskData.TYPE_IMG, bitmapData, ip));
+            }
+        });
+
+        buttonPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -130,103 +147,9 @@ public class MainActivity extends AppCompatActivity {
                                 cursor.close();
                             }
                         }
-
                     }
                     break;
             }
         }
-
-    }
-
-    class MyServer implements  Runnable{
-        ServerSocket serverSocket;
-        Socket mySocket;
-        DataInputStream dis;
-        byte[] byteData;
-        boolean lookingForData = true;
-        Handler handler = new Handler();
-        @Override
-        public void run() {
-            try {
-                serverSocket = new ServerSocket(9700);
-                handler.post(new Runnable() {
-                    @SuppressLint("ShowToast")
-                    @Override
-                    public void run() {
-                        Log.w("receiver", "waiting for client");
-                        Toast.makeText(getApplicationContext(), "waiting for client", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                while (lookingForData){
-                    mySocket = serverSocket.accept();
-                    Log.w("receiver", "new socket");
-                    dis = new DataInputStream(mySocket.getInputStream());
-
-                    final int len = dis.readInt();
-                    byteData = new byte[len];
-                    if (len>0)
-                        dis.readFully(byteData);
-
-                    handler.post(new Runnable() {
-                        @SuppressLint("ShowToast")
-                        @Override
-                        public void run() {
-                            Log.w("receiver", "received data: "+len+" Bytes");
-                            Toast.makeText(getApplicationContext(), "received data: "+len+" Bytes", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                    //Handle received Data...
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
-    public void send(View v){
-        Drawable drawable = imageView.getDrawable();
-        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bitmapData = stream.toByteArray();
-
-        BackgroundTask backgroundTask = new BackgroundTask();
-        String message = e1.getText().toString();
-        String ip = e2.getText().toString();
-
-        Log.w("send", "sending "+bitmapData+ " Bytes");
-
-        backgroundTask.execute(new BackgroundTaskData("", bitmapData, ip));
-    }
-
-    class BackgroundTask extends AsyncTask<BackgroundTaskData, Void, String>{
-        Socket s;
-        DataOutputStream dos;
-        String ip, header;
-        byte[] byteData;
-
-        @Override
-        protected String doInBackground(BackgroundTaskData... backgroundTaskData) {
-                ip = backgroundTaskData[0].IP;
-                header = backgroundTaskData[0].header;
-                byteData = backgroundTaskData[0].byteData;
-
-                try {
-                    s = new Socket(ip, 9700);
-                    dos = new DataOutputStream(s.getOutputStream());
-                    //will be implemented later
-                    //dos.writeUTF(header);
-
-                    dos.write(byteData);
-                    dos.close();
-                    s.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
     }
 }
