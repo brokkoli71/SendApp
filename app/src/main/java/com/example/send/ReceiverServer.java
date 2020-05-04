@@ -38,7 +38,8 @@ public class ReceiverServer implements  Runnable {
                             dis.readFully(byteData);
                             Log.w("receiver", "received data: " + len + " Bytes");
 
-                            //Handle received Data...
+                            //Handle received Data
+
 
                         } else Log.e("receiver", "img size is 0");
                         break;

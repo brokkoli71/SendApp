@@ -34,7 +34,10 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -44,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PICK_PHOTO = 1;
     private static final int TAKE_PHOTO = 0;
+
+    private Uri selectedImageUri = null;
 
     EditText e1, e2;
     ImageView imageView;
@@ -72,19 +77,31 @@ public class MainActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                try {
+                    InputStream is = getContentResolver().openInputStream(selectedImageUri);
+                    byte[] bytesArray = new byte[is.available()];
+                    is.read(bytesArray);
+
+                    SendingTask sendingTask = new SendingTask();
+                    String message = e1.getText().toString();
+                    String ip = e2.getText().toString();
+
+                    Log.w("send", "sending "+bytesArray.length+ " Bytes");
+
+                    sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip));
+
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+
+                /* old way
                 Drawable drawable = imageView.getDrawable();
                 Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] bitmapData = stream.toByteArray();
+                byte[] bitmapData = stream.toByteArray();*/
 
-                SendingTask sendingTask = new SendingTask();
-                String message = e1.getText().toString();
-                String ip = e2.getText().toString();
-
-                Log.w("send", "sending "+bitmapData.length+ " Bytes");
-
-                sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bitmapData, ip));
             }
         });
 
@@ -94,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
                 String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
                 if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
-                    Log.w("pick_photo", "pick photo request send:"+ PICK_PHOTO);
+                    Log.w("pick_photo", "request send:"+ PICK_PHOTO);
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , PICK_PHOTO);
                 } else {
-                    Log.w("pick_photo", "request permission");
+                    Log.w("pick_photo", "requesting permission");
                     EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                             101, galleryPermissions);
                 }
@@ -120,28 +137,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.w("pick_photo", "pick photo request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
+        Log.w("pick_photo", "request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case TAKE_PHOTO:
                     //not implemented yet
                     if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
-                        imageView.setImageBitmap(selectedImage);
+                        Bitmap selectedImageBitmap = (Bitmap) data.getExtras().get("data");
+                        imageView.setImageBitmap(selectedImageBitmap);
                     }
                     break;
                 case PICK_PHOTO:
                     if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage = data.getData();
+                        this.selectedImageUri = data.getData();
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        if (selectedImage != null) {
-                            Cursor cursor = getContentResolver().query(selectedImage,
+                        if (selectedImageUri != null) {
+                            Cursor cursor = getContentResolver().query(selectedImageUri,
                                     filePathColumn, null, null, null);
                             if (cursor != null) {
                                 cursor.moveToFirst();
 
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
+                                Log.w("pick_photo", "picked "+picturePath);
                                 imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 cursor.close();
                             }
