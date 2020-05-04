@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class MyServer implements  Runnable {
+public class ReceiverServer implements  Runnable {
     ServerSocket serverSocket;
     Socket mySocket;
     DataInputStream dis;
@@ -31,7 +31,7 @@ class MyServer implements  Runnable {
                 int dataType = dis.readInt();
 
                 switch (dataType) {
-                    case ClientTaskData.TYPE_IMG:
+                    case SendingTaskData.TYPE_IMG:
                         final int len = dis.readInt();
                         byteData = new byte[len];
                         if (len > 0) {

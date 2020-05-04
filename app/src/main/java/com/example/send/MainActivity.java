@@ -78,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                 byte[] bitmapData = stream.toByteArray();
 
-                ClientTask clientTask = new ClientTask();
+                SendingTask sendingTask = new SendingTask();
                 String message = e1.getText().toString();
                 String ip = e2.getText().toString();
 
-                Log.w("send", "sending "+bitmapData+ " Bytes");
+                Log.w("send", "sending "+bitmapData.length+ " Bytes");
 
-                clientTask.execute(new ClientTaskData(ClientTaskData.TYPE_IMG, bitmapData, ip));
+                sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bitmapData, ip));
             }
         });
 
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         textView.setText("Meine IP ist "+ip);
 
-        Thread myThread = new Thread(new MyServer());
+        Thread myThread = new Thread(new ReceiverServer());
         myThread.start();
     }
 
@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         imageView.setImageBitmap(selectedImage);
                     }
-
                     break;
                 case PICK_PHOTO:
                     if (resultCode == RESULT_OK && data != null) {

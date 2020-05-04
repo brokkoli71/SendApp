@@ -6,7 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientTask extends AsyncTask<ClientTaskData, Void, String> {
+public class SendingTask extends AsyncTask<SendingTaskData, Void, String> {
     Socket s;
     DataOutputStream dos;
     String ip;
@@ -14,10 +14,10 @@ public class ClientTask extends AsyncTask<ClientTaskData, Void, String> {
     byte[] byteData;
 
     @Override
-    protected String doInBackground(ClientTaskData... clientTaskData) {
-        ip = clientTaskData[0].IP;
-        dataType = clientTaskData[0].dataType;
-        byteData = clientTaskData[0].byteData;
+    protected String doInBackground(SendingTaskData... sendingTaskData) {
+        ip = sendingTaskData[0].IP;
+        dataType = sendingTaskData[0].dataType;
+        byteData = sendingTaskData[0].byteData;
 
         try {
             s = new Socket(ip, 9700);
