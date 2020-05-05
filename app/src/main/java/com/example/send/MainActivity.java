@@ -1,16 +1,12 @@
 package com.example.send;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -31,15 +26,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -49,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int TAKE_PHOTO = 0;
 
     private Uri selectedImageUri = null;
+    private ReceiverServer receiverServer;
 
     EditText e1, e2;
     ImageView imageView;
@@ -78,21 +67,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                try {
-                    InputStream is = getContentResolver().openInputStream(selectedImageUri);
-                    byte[] bytesArray = new byte[is.available()];
-                    is.read(bytesArray);
+                if (selectedImageUri!=null) {
+                    try {
+                        InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                        byte[] bytesArray = new byte[inputStream.available()];
+                        inputStream.read(bytesArray);
 
-                    SendingTask sendingTask = new SendingTask();
-                    String message = e1.getText().toString();
-                    String ip = e2.getText().toString();
+                        SendingTask sendingTask = new SendingTask();
+                        String message = e1.getText().toString();
+                        String ip = e2.getText().toString();
 
-                    Log.w("send", "sending "+bytesArray.length+ " Bytes");
+                        Log.w("send", "sending " + bytesArray.length + " Bytes");
 
-                    sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip));
+                        sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip));
 
-                } catch (IOException e){
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 /* old way
@@ -129,8 +120,48 @@ public class MainActivity extends AppCompatActivity {
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
 
-        Thread myThread = new Thread(new ReceiverServer());
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        // send multiple Data might get implemented later
+
+        if(Intent.ACTION_SEND.equals(action)){
+            Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (uri!=null){
+                selectedImageUri = uri;
+                if (type.startsWith("image/"))
+                    setPictureInImageView();
+            }else{
+                Log.e("receive_from_app", "uri not readable");
+            }
+        }
+
+        receiverServer = new ReceiverServer();
+        Thread myThread = new Thread(receiverServer);
         myThread.start();
+    }
+
+    private void setPictureInImageView(){
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        if (selectedImageUri != null) {
+            Cursor cursor = getContentResolver().query(selectedImageUri,
+                    filePathColumn, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                Log.w("pick_photo", "picked "+picturePath);
+                Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+                if (true)//zu groß über 10MB
+                    imageView.setImageBitmap(bitmap);
+                else{
+                    Toast.makeText(this, "to large to display", Toast.LENGTH_LONG).show();
+                    //handle...
+                }
+                cursor.close();
+            }
+        }
     }
 
     //reference: https://medium.com/@hasangi/capture-image-or-choose-from-gallery-photos-implementation-for-android-a5ca59bc6883
@@ -150,20 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 case PICK_PHOTO:
                     if (resultCode == RESULT_OK && data != null) {
                         this.selectedImageUri = data.getData();
-                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                        if (selectedImageUri != null) {
-                            Cursor cursor = getContentResolver().query(selectedImageUri,
-                                    filePathColumn, null, null, null);
-                            if (cursor != null) {
-                                cursor.moveToFirst();
-
-                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                                String picturePath = cursor.getString(columnIndex);
-                                Log.w("pick_photo", "picked "+picturePath);
-                                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-                                cursor.close();
-                            }
-                        }
+                        setPictureInImageView();
                     }
                     break;
             }

@@ -11,11 +11,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ReceiverServer implements  Runnable {
-    ServerSocket serverSocket;
-    Socket mySocket;
-    DataInputStream dis;
-    byte[] byteData;
-    boolean lookingForData = true;
+    private ServerSocket serverSocket;
+    private Socket mySocket;
+    private DataInputStream dis;
+    private byte[] byteData;
+    private boolean lookingForData = true;
+
 
     @Override
     public void run() {
