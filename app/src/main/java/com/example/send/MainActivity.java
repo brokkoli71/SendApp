@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
         // Use 1/8th of the available memory for this memory cache.
         cacheSize = maxMemory / 8;
-        Log.w("onCreate", "cashSize = "+cacheSize+" kB");
+        Log.w("onCreate", "cashSize = "+cacheSize+" Bytes");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -159,10 +159,12 @@ public class MainActivity extends AppCompatActivity {
                 String picturePath = cursor.getString(columnIndex);
                 Log.w("pick_photo", "picked "+picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+
+                //before drawing image in imageView the bitmap size will be checked
                 if (bitmap.getByteCount()<cacheSize)//evtl frueher checken
                     imageView.setImageBitmap(bitmap);
                 else{
-                    Toast.makeText(this, "to large to display", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "to large to display but can be send", Toast.LENGTH_LONG).show();
                     //handle...
                 }
                 cursor.close();
