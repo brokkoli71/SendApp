@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Uri selectedImageUri = null;
     private ReceiverServer receiverServer;
+    int cacheSize;
 
     EditText e1, e2;
     ImageView imageView;
@@ -47,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        // Use 1/8th of the available memory for this memory cache.
+        cacheSize = maxMemory / 8;
+        Log.w("onCreate", "cashSize = "+cacheSize+" kB");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 String picturePath = cursor.getString(columnIndex);
                 Log.w("pick_photo", "picked "+picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-                if (true)//zu groß über 10MB
+                if (bitmap.getByteCount()<cacheSize)//evtl frueher checken
                     imageView.setImageBitmap(bitmap);
                 else{
                     Toast.makeText(this, "to large to display", Toast.LENGTH_LONG).show();
