@@ -58,14 +58,26 @@ public class ReceiverServer implements  Runnable {
                             //Handle received image data
                             File photo = new File(Environment.getExternalStorageDirectory(), fileName);
                             int i = 0;
+                            Log.w("receiver", "filename: "+ fileName);
                             while (photo.exists()){
                                 photo = new File(Environment.getExternalStorageDirectory(), fileName+"_"+i);
+                                Log.w("receiver", "filename: "+ fileName);
                             }
                             try {
                                 FileOutputStream fos=new FileOutputStream(photo.getPath());
 
                                 fos.write(byteData);
                                 fos.close();
+
+                                Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
+
+                                final String toastMessage = "saved file: "+ photo.getAbsolutePath();
+                                mainActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(mainActivity.getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }catch (IOException e) {
                                 Log.e("receiver", "could not save file", e);
                             }

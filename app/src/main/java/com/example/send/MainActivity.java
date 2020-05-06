@@ -85,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.w("send", "sending " + bytesArray.length + " Bytes");
 
-                        sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip));
+                        String[] temp = selectedImageUri.getPath().split("/");
+                        String fileName = temp[temp.length-1];
+                        Log.w("wewd",  selectedImageUri.getPath());
+                        sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip, fileName));
 
                     } catch (IOException e) {
                         e.printStackTrace();
