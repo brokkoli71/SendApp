@@ -1,0 +1,7 @@
+
+
+communication through router with public IP
+
+handling received data:
+    save
+    interaction

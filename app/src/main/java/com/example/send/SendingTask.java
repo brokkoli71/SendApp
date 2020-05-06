@@ -9,7 +9,7 @@ import java.net.Socket;
 public class SendingTask extends AsyncTask<SendingTaskData, Void, String> {
     Socket s;
     DataOutputStream dos;
-    String ip;
+    String ip, fileName;
     int dataType;
     byte[] byteData;
 
@@ -18,12 +18,14 @@ public class SendingTask extends AsyncTask<SendingTaskData, Void, String> {
         ip = sendingTaskData[0].IP;
         dataType = sendingTaskData[0].dataType;
         byteData = sendingTaskData[0].byteData;
+        fileName = sendingTaskData[0].fileName;
 
         try {
             s = new Socket(ip, 9700);
             dos = new DataOutputStream(s.getOutputStream());
 
             dos.writeInt(dataType);
+            dos.writeUTF(fileName);
             dos.writeInt(byteData.length);
 
             dos.write(byteData);

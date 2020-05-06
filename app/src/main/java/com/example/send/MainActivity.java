@@ -105,18 +105,12 @@ public class MainActivity extends AppCompatActivity {
         buttonPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                getPermissions();
 
-                if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
-                    Log.w("pick_photo", "request send:"+ PICK_PHOTO);
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , PICK_PHOTO);
-                } else {
-                    Log.w("pick_photo", "requesting permission");
-                    EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
-                            101, galleryPermissions);
-                }
-
+                Log.w("pick_photo", "request send:"+ PICK_PHOTO);
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto , PICK_PHOTO);
             }
         });
 
@@ -135,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
             if (uri!=null){
                 selectedImageUri = uri;
+                Log.w("receive_from_app", "received \""+uri+"\"");
                 if (type.startsWith("image/"))
                     setPictureInImageView();
             }else{
@@ -142,11 +137,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        receiverServer = new ReceiverServer();
+        receiverServer = new ReceiverServer(this);
         Thread myThread = new Thread(receiverServer);
         myThread.start();
     }
 
+    private void getPermissions(){
+        String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
+            return;
+        }
+        Log.w("pick_photo", "requesting permission");
+        EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
+                101, galleryPermissions);
+
+    }
     private void setPictureInImageView(){
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         if (selectedImageUri != null) {
@@ -157,14 +164,15 @@ public class MainActivity extends AppCompatActivity {
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
-                Log.w("pick_photo", "picked "+picturePath);
+                Log.w("display_photo", "displaying "+picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
                 //before drawing image in imageView the bitmap size will be checked
                 if (bitmap.getByteCount()<cacheSize)//evtl frueher checken
                     imageView.setImageBitmap(bitmap);
                 else{
-                    Toast.makeText(this, "to large to display but can be send", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "to large to display but can be send",
+                            Toast.LENGTH_LONG).show();
                     //handle...
                 }
                 cursor.close();
@@ -176,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.w("pick_photo", "request handling:"+", "+(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
+        Log.w("pick_photo", "request handling:"+", "
+                +(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case TAKE_PHOTO:
