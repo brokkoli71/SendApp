@@ -56,11 +56,25 @@ public class ReceiverServer implements  Runnable {
                             });
 
                             //Handle received image data
-                            File photo = new File(Environment.getExternalStorageDirectory(), fileName);
+                            //create folder if not exists
+                            String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
+                            File myFolder =new File(stringFolder);
+                            if (!myFolder.exists()){
+                                if(!myFolder.mkdir()){
+                                    mainActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(mainActivity.getApplicationContext(), "Fehler beim erstellen des Ordners", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });                                }
+                            }
+
+                            //save photo to storage
+                            File photo = new File(myFolder, fileName);
                             int i = 0;
                             Log.w("receiver", "filename: "+ fileName);
                             while (photo.exists()){
-                                photo = new File(Environment.getExternalStorageDirectory(), fileName+"_"+i);
+                                photo = new File(myFolder, fileName+"_"+i);
                                 Log.w("receiver", "filename: "+ fileName);
                             }
                             try {
