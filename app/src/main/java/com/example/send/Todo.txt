@@ -2,11 +2,9 @@
 
 communication through router with public IP
 
-handling received data:
-    done
-
 first UI:
     two buttons
+    scale bitmap
 
 handling addresses and way of handshake
 
@@ -15,5 +13,5 @@ encryption
 multi language support
 
 outward appearance:
-name
-logo
+    name
+    logo
