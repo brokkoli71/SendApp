@@ -47,26 +47,27 @@ public class ReceiverServer implements  Runnable {
                     Log.e("receiver", "data size is 0");
                 }
                 //handle received data depending on data type in future
+                String path;
                 switch (dataType) {
                     case SendingTaskData.TYPE_JPEG:
                     case SendingTaskData.TYPE_JPG:
                     case SendingTaskData.TYPE_PNG:
-                        saveData(fileName, byteData);
-                        makeToast("Image saved");
+                        path = saveData(fileName, byteData);
+                        if (path!=null)makeToast("Image saved: "+path);
                         break;
                     case SendingTaskData.TYPE_MP3:
-                        saveData(fileName, byteData);
-                        makeToast("Audio saved");
+                        path = saveData(fileName, byteData);
+                        if (path!=null)makeToast("Audio saved: "+path);
                         break;
                     case SendingTaskData.TYPE_MP4:
-                        saveData(fileName, byteData);
-                        makeToast("Video saved");
+                        path = saveData(fileName, byteData);
+                        if (path!=null)makeToast("Video saved: "+path);
                         break;
                     default:
                         Log.e("receiver", "unknown data type");
                         makeToast("unknown data type");
-                        saveData(fileName, byteData);
-                        makeToast("saved");
+                        path = saveData(fileName, byteData);
+                        if (path!=null)makeToast("saved: "+path);
                 }
 
 
@@ -75,7 +76,7 @@ public class ReceiverServer implements  Runnable {
             e.printStackTrace();
         }
     }
-    private void saveData(String fileName, byte[] byteData){
+    private String saveData(String fileName, byte[] byteData){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
@@ -84,14 +85,20 @@ public class ReceiverServer implements  Runnable {
                 makeToast("Fehler beim erstellen des Ordners");             }
         }
 
-        //save photo to storage
+        //save data to storage
         File photo = new File(myFolder, fileName);
         int i = 0;
         Log.w("receiver", "filename: "+ fileName);
-        while (photo.exists()){
-            photo = new File(myFolder, fileName+"_"+i);
-            Log.w("receiver", "filename: "+ fileName);
+        if (photo.exists()){
+            String[] splitFileName = fileName.split("(\\.)(?!.*\\1)");
+            while (photo.exists()){
+                String newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
+                photo = new File(myFolder, newFileName);
+                Log.w("receiver", "filename: "+ newFileName);
+                i++;
+            }
         }
+
         try {
             FileOutputStream fos=new FileOutputStream(photo.getPath());
 
@@ -99,13 +106,12 @@ public class ReceiverServer implements  Runnable {
             fos.close();
 
             Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
-
-            makeToast("saved file: "+ photo.getAbsolutePath());
-
+            return photo.getAbsolutePath();
         }catch (IOException e) {
             makeToast("could not save file");
             Log.e("receiver", "could not save file", e);
         }
+        return null;
     }
     private void makeToast(final String msg){
         mainActivity.runOnUiThread(new Runnable() {

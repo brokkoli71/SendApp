@@ -84,22 +84,31 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.w("send", "sending " + bytesArray.length + " Bytes");
 
-                        String[] temp = selectedImageUri.getPath().split("/");//need to get absolute path
-                        String fileName = temp[temp.length-1];
+                        Log.w("send", "path: "+selectedImageUri.getPath());
 
-                        temp = fileName.split(".");
-                        String dataTypeStr = temp[temp.length-1].toLowerCase();
-
-                        //if format not "file://" but i.e. "content://" then might not be with data format
-                        if (dataTypeStr.equals("")){
-                            String newPath = getRealPathFromUri(selectedImageUri);
-                            temp = newPath.split("/");//need to get absolute path
-                            fileName = temp[temp.length-1];
-
-                            temp = fileName.split(".");
-                            dataTypeStr = temp[temp.length-1].toLowerCase();
-                            Log.w("newPath", newPath);
+                        String fileName;
+                        try{
+                            //get part of path after last "/"
+                            fileName = selectedImageUri.getPath().split("(/)(?!.*\\1)")[1];
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            fileName = selectedImageUri.getPath();
                         }
+
+                        String dataTypeStr;
+                        try {
+                            dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            //if format not "file://" but i.e. "content://" then might not be with data format
+                            String newPath = getRealPathFromUri(selectedImageUri);
+                            Log.w("newPath", newPath);
+                            fileName = newPath.split("(/)(?!.*\\1)")[1];
+                                try {
+                                    dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
+                                }catch (ArrayIndexOutOfBoundsException e2){
+                                    dataTypeStr = "";
+                            }
+                        }
+
                         Log.w("send", "fileName: " +fileName);
                         Log.w("send", "dataType: "+dataTypeStr);
                         int dataType;
