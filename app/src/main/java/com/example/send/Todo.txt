@@ -8,6 +8,10 @@ first UI:
 
 handling addresses and way of handshake
 
+what data to send
+    sending multiple data
+    accessing data not just images from within the app
+
 encryption
 
 multi language support
