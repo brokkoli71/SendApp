@@ -80,15 +80,39 @@ public class MainActivity extends AppCompatActivity {
                         inputStream.read(bytesArray);
 
                         SendingTask sendingTask = new SendingTask();
-                        String message = e1.getText().toString();
                         String ip = e2.getText().toString();
 
                         Log.w("send", "sending " + bytesArray.length + " Bytes");
 
-                        String[] temp = selectedImageUri.getPath().split("/");
+                        String[] temp = selectedImageUri.getPath().split("/");//need to get absolute path
                         String fileName = temp[temp.length-1];
-                        Log.w("wewd",  selectedImageUri.getPath());
-                        sendingTask.execute(new SendingTaskData(SendingTaskData.TYPE_IMG, bytesArray, ip, fileName));
+
+                        temp = fileName.split(".");
+                        String dataTypeStr = temp[temp.length-1].toLowerCase();
+
+                        //if format not "file://" but i.e. "content://" then might not be with data format
+                        if (dataTypeStr.equals("")){
+                            String newPath = getRealPathFromUri(selectedImageUri);
+                            temp = newPath.split("/");//need to get absolute path
+                            fileName = temp[temp.length-1];
+
+                            temp = fileName.split(".");
+                            dataTypeStr = temp[temp.length-1].toLowerCase();
+                            Log.w("newPath", newPath);
+                        }
+                        Log.w("send", "fileName: " +fileName);
+                        Log.w("send", "dataType: "+dataTypeStr);
+                        int dataType;
+                        switch (dataTypeStr){
+                            case ("jpg"): dataType = SendingTaskData.TYPE_JPG; break;
+                            case ("png"): dataType = SendingTaskData.TYPE_PNG; break;
+                            case ("mp3"): dataType = SendingTaskData.TYPE_MP3; break;
+                            case ("mp4"): dataType = SendingTaskData.TYPE_MP4; break;
+                            case ("jpeg"): dataType = SendingTaskData.TYPE_JPEG; break;
+                            default: dataType = SendingTaskData.TYPE_UNKNOWN; break;
+                        }
+
+                        sendingTask.execute(new SendingTaskData(dataType, bytesArray, ip, fileName));
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -207,4 +231,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    public String getRealPathFromUri(Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+
 }

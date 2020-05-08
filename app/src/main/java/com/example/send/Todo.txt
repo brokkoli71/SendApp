@@ -3,5 +3,4 @@
 communication through router with public IP
 
 handling received data:
-    save better path
     interaction

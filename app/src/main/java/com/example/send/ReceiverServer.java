@@ -16,12 +16,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ReceiverServer implements  Runnable {
-    private ServerSocket serverSocket;
-    private Socket mySocket;
-    private DataInputStream dis;
-    private byte[] byteData;
     private boolean lookingForData = true;
-    MainActivity mainActivity; //for making Toasts
+    private MainActivity mainActivity; //for making Toasts
 
     public ReceiverServer(MainActivity mainActivity){
         this.mainActivity = mainActivity;
@@ -29,78 +25,48 @@ public class ReceiverServer implements  Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(9700);
+            ServerSocket serverSocket = new ServerSocket(9700);
             Log.w("receiver", "waiting for client");
 
             while (lookingForData) {
-                mySocket = serverSocket.accept();
+                Socket mySocket = serverSocket.accept();
                 Log.w("receiver", "new socket");
-                dis = new DataInputStream(mySocket.getInputStream());
+                DataInputStream dis = new DataInputStream(mySocket.getInputStream());
 
                 int dataType = dis.readInt();
                 String fileName = dis.readUTF();
 
+                int len = dis.readInt();
+                byte[] byteData = new byte[len];
+                if (len > 0) {
+                    dis.readFully(byteData);
+                    Log.w("receiver", "received data: " + len + " Bytes");
+                    makeToast("received data: " + len + " Bytes");
+                } else{
+                    makeToast("data size is 0");
+                    Log.e("receiver", "data size is 0");
+                }
+                //handle received data depending on data type in future
                 switch (dataType) {
-                    case SendingTaskData.TYPE_IMG:
-                        final int len = dis.readInt();
-                        byteData = new byte[len];
-                        if (len > 0) {
-                            dis.readFully(byteData);
-                            Log.w("receiver", "received data: " + len + " Bytes");
-
-                            mainActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(mainActivity.getApplicationContext(), "received data: " + len + " Bytes", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
-                            //Handle received image data
-                            //create folder if not exists
-                            String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
-                            File myFolder =new File(stringFolder);
-                            if (!myFolder.exists()){
-                                if(!myFolder.mkdir()){
-                                    mainActivity.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(mainActivity.getApplicationContext(), "Fehler beim erstellen des Ordners", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });                                }
-                            }
-
-                            //save photo to storage
-                            File photo = new File(myFolder, fileName);
-                            int i = 0;
-                            Log.w("receiver", "filename: "+ fileName);
-                            while (photo.exists()){
-                                photo = new File(myFolder, fileName+"_"+i);
-                                Log.w("receiver", "filename: "+ fileName);
-                            }
-                            try {
-                                FileOutputStream fos=new FileOutputStream(photo.getPath());
-
-                                fos.write(byteData);
-                                fos.close();
-
-                                Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
-
-                                final String toastMessage = "saved file: "+ photo.getAbsolutePath();
-                                mainActivity.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(mainActivity.getApplicationContext(), toastMessage, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }catch (IOException e) {
-                                Log.e("receiver", "could not save file", e);
-                            }
-
-
-                        } else Log.e("receiver", "img size is 0");
+                    case SendingTaskData.TYPE_JPEG:
+                    case SendingTaskData.TYPE_JPG:
+                    case SendingTaskData.TYPE_PNG:
+                        saveData(fileName, byteData);
+                        makeToast("Image saved");
+                        break;
+                    case SendingTaskData.TYPE_MP3:
+                        saveData(fileName, byteData);
+                        makeToast("Audio saved");
+                        break;
+                    case SendingTaskData.TYPE_MP4:
+                        saveData(fileName, byteData);
+                        makeToast("Video saved");
                         break;
                     default:
                         Log.e("receiver", "unknown data type");
+                        makeToast("unknown data type");
+                        saveData(fileName, byteData);
+                        makeToast("saved");
                 }
 
 
@@ -108,5 +74,45 @@ public class ReceiverServer implements  Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void saveData(String fileName, byte[] byteData){
+        //create folder if not exists
+        String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
+        File myFolder =new File(stringFolder);
+        if (!myFolder.exists()){
+            if(!myFolder.mkdir()){
+                makeToast("Fehler beim erstellen des Ordners");             }
+        }
+
+        //save photo to storage
+        File photo = new File(myFolder, fileName);
+        int i = 0;
+        Log.w("receiver", "filename: "+ fileName);
+        while (photo.exists()){
+            photo = new File(myFolder, fileName+"_"+i);
+            Log.w("receiver", "filename: "+ fileName);
+        }
+        try {
+            FileOutputStream fos=new FileOutputStream(photo.getPath());
+
+            fos.write(byteData);
+            fos.close();
+
+            Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
+
+            makeToast("saved file: "+ photo.getAbsolutePath());
+
+        }catch (IOException e) {
+            makeToast("could not save file");
+            Log.e("receiver", "could not save file", e);
+        }
+    }
+    private void makeToast(final String msg){
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mainActivity.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
