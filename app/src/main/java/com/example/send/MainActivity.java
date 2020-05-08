@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        e1 = findViewById(R.id.editText);
         e2 = findViewById(R.id.editText2);
         Button buttonSend = findViewById(R.id.button);
         Button buttonPickPhoto = findViewById(R.id.button2);
@@ -81,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
                         SendingTask sendingTask = new SendingTask();
                         String ip = e2.getText().toString();
+                        //for easier dev-testing
+                        if (!ip.contains("."))
+                            ip = "192.168.0."+ip;
 
                         Log.w("send", "sending " + bytesArray.length + " Bytes");
 

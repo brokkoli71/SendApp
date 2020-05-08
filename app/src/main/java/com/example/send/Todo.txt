@@ -3,4 +3,17 @@
 communication through router with public IP
 
 handling received data:
-    interaction
+    done
+
+first UI:
+    two buttons
+
+handling addresses and way of handshake
+
+encryption
+
+multi language support
+
+outward appearance:
+name
+logo
