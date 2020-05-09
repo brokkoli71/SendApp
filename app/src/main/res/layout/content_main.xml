@@ -31,7 +31,9 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        android:paddingStart="30dip"
+        android:paddingEnd="26dip"/>
 
     <TextView
         android:id="@+id/textView"
@@ -53,7 +55,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editText2"
-        android:drawableStart="@drawable/ic_folder_open"/>
+        android:drawableStart="@drawable/ic_folder_open"
+        android:paddingStart="30dip"
+        android:paddingEnd="26dip"/>
 
     <ImageView
         android:id="@+id/imageView"

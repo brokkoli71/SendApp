@@ -46,22 +46,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
         // Use 1/8th of the available memory for this memory cache.
         cacheSize = maxMemory / 8;
         Log.w("onCreate", "cashSize = "+cacheSize+" Bytes");
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Bald...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         e2 = findViewById(R.id.editText2);
         Button buttonSend = findViewById(R.id.button);
