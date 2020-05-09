@@ -7,14 +7,15 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main"
-    android:background="@color/colorBackground">
+    android:background="@drawable/content_shape">
 
     <EditText
         android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:ems="10"
-        android:hint="IP"
+        android:hint="@string/ip"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +28,7 @@
         android:layout_marginTop="32dp"
         android:background="@drawable/button"
         android:drawableStart="@drawable/ic_send"
-        android:text="SEND"
+        android:text="@string/send"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,21 +51,23 @@
         android:layout_width="200dp"
         android:layout_height="100dp"
         android:background="@drawable/button"
-        android:text="choose image"
+        android:drawableStart="@drawable/ic_folder_open"
+        android:paddingStart="30dip"
+        android:paddingEnd="26dip"
+        android:text="@string/select"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editText2"
-        android:drawableStart="@drawable/ic_folder_open"
-        android:paddingStart="30dip"
-        android:paddingEnd="26dip"/>
+        app:layout_constraintVertical_bias="0.63" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@android:mipmap/sym_def_app_icon" />
+        android:background="@drawable/image_view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

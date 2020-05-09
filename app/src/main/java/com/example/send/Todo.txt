@@ -4,7 +4,8 @@ communication through router with public IP
 
 first UI:
     two buttons
-    scale bitmap
+    fit height of imageview to ratio of content
+    make images for non visual data
 
 handling addresses and way of handshake
 

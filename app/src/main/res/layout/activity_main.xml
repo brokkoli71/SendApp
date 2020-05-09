@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="@color/indigoBackground"
-    android:paddingTop="@dimen/fab_margin"
-    android:paddingBottom="@dimen/fab_margin"
+    android:paddingTop="32dp"
+    android:paddingBottom="32dp"
     android:paddingLeft="@dimen/fab_margin"
     android:paddingRight="@dimen/fab_margin"
     >
@@ -22,8 +22,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
+    <include
+        layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

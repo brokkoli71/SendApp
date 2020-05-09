@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
+        //for testing
+        textView.setVisibility(View.INVISIBLE);
         e2.setText(ip);
 
         Intent intent = getIntent();

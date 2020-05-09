@@ -2,4 +2,7 @@
     <string name="app_name">Send</string>
     <string name="title_activity_main">Appname</string>
     <string name="showIPTextView">\"Meine IP ist \"</string>
+    <string name="send">send</string>
+    <string name="select">select</string>
+    <string name="ip">IP</string>
 </resources>
