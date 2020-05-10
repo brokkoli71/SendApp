@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="20dp" />
+            <corners android:radius="@dimen/round_corners" />
             <stroke android:color="@android:color/black" android:width="5px" />
         </shape>
     </item>
-</selector>
+    <item android:drawable="@drawable/ic_launcher_background" />
+</layer-list>

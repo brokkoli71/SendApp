@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ShapeDrawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -200,9 +201,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("display_photo", "displaying "+picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
+                int bw = bitmap.getWidth();
+                int bh = bitmap.getHeight();
+                int iw = imageView.getWidth();
+                int ih = bh*iw/bw;
+                imageView.getLayoutParams().height = ih;
+                Log.w("setImage", "bw"+bw+ " bh"+bh+" iw"+iw+" ih"+ih);
+
                 //before drawing image in imageView the bitmap size will be checked
-                if (bitmap.getByteCount()<cacheSize)//evtl frueher checken
-                    imageView.setImageBitmap(bitmap);
+                if (bitmap.getByteCount()<cacheSize){
+                    //evtl frueher checken
+                    imageView.setImageBitmap(HelperClass.getRoundedCornerBitmap(bitmap, (int) getResources().getDimension(R.dimen.round_corners)));
+                }
+
                 else{
                     Toast.makeText(this, "to large to display but can be send",
                             Toast.LENGTH_LONG).show();
