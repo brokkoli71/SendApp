@@ -1,6 +1,5 @@
 package com.example.send;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,9 +7,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.DisplayMetrics;
 
-public class HelperClass {
+public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap
                 .getHeight(), Bitmap.Config.ARGB_8888);
@@ -31,5 +29,18 @@ public class HelperClass {
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return output;
+    }
+    public static Bitmap fitWidthBitmap(Bitmap bitmap, int newWidth){
+        int oldWidth = bitmap.getWidth();
+        int oldHeight = bitmap.getHeight();
+        int newHeight = oldHeight*newWidth/oldWidth;
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+    }
+
+    public static Bitmap fitHeightBitmap(Bitmap bitmap, int newHeight){
+        int oldWidth = bitmap.getWidth();
+        int oldHeight = bitmap.getHeight();
+        int newWidth = oldWidth*newHeight/oldHeight;
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
     }
 }

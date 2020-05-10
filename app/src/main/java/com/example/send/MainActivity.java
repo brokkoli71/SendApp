@@ -5,18 +5,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -25,7 +19,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText e1, e2;
     ImageView imageView;
+    Button buttonSend, buttonSelect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         e2 = findViewById(R.id.editText2);
-        Button buttonSend = findViewById(R.id.button);
-        Button buttonPickPhoto = findViewById(R.id.button2);
+        buttonSend = findViewById(R.id.button);
+        buttonSelect = findViewById(R.id.button2);
         imageView = findViewById(R.id.imageView);
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonPickPhoto.setOnClickListener(new View.OnClickListener() {
+        buttonSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getPermissions();
@@ -165,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedImageUri = uri;
                 Log.w("receive_from_app", "received \""+uri+"\"");
                 if (type.startsWith("image/"))
-                    setPictureInImageView();
+                    setPictureInImageView(readPictureFromSelectedImageUri());
+                //if other type..
             }else{
                 Log.e("receive_from_app", "uri not readable");
             }
@@ -188,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 101, galleryPermissions);
 
     }
-    private void setPictureInImageView(){
+    private Bitmap readPictureFromSelectedImageUri(){
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
         if (selectedImageUri != null) {
             Cursor cursor = getContentResolver().query(selectedImageUri,
@@ -198,31 +196,49 @@ public class MainActivity extends AppCompatActivity {
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
-                Log.w("display_photo", "displaying "+picturePath);
+                Log.w("display_photo", "displaying " + picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-
-                int bw = bitmap.getWidth();
-                int bh = bitmap.getHeight();
-                int iw = imageView.getWidth();
-                int ih = bh*iw/bw;
-                imageView.getLayoutParams().height = ih;
-                Log.w("setImage", "bw"+bw+ " bh"+bh+" iw"+iw+" ih"+ih);
-
-                //before drawing image in imageView the bitmap size will be checked
-                if (bitmap.getByteCount()<cacheSize){
-                    //evtl frueher checken
-                    imageView.setImageBitmap(HelperClass.getRoundedCornerBitmap(bitmap, (int) getResources().getDimension(R.dimen.round_corners)));
-                }
-
-                else{
-                    Toast.makeText(this, "to large to display but can be send",
-                            Toast.LENGTH_LONG).show();
-                    //handle...
-                }
                 cursor.close();
+                return bitmap;
             }
         }
+        return null;
     }
+    private void setPictureInImageView(Bitmap bitmap) {
+        //bitmap gets resized to not take to much RAM
+        bitmap = ImageHelper.fitWidthBitmap(bitmap, imageView.getWidth());
+
+        //checking if enough space on Screen available
+        int[] selectButtonLocation = new int[2];
+        int[] imageViewLocation = new int[2];
+        buttonSelect.getLocationOnScreen(selectButtonLocation);
+        imageView.getLocationOnScreen(imageViewLocation);
+
+        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+        int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
+        Log.w("set_img", "availableSpace:" + availableSpace);
+        Log.w("set_img", "sendButtonLocation:" + selectButtonLocation[1] + ", imageViewLocation:" + imageViewLocation[1] + ", minWhitespace:" + minWhitespace);
+
+        if (availableSpace >= bitmap.getHeight()) {
+            imageView.getLayoutParams().height = bitmap.getHeight();
+        } else {
+            imageView.getLayoutParams().height = availableSpace;
+            bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
+        }
+        //remove background otherwise there would be two frames for image
+        imageView.setBackground(null);
+
+        //round corners to fit UI style
+        bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, getResources().getDimensionPixelSize(R.dimen.round_corners));
+
+        LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.image_view);/*drawable*/
+        Drawable newDrawable = new BitmapDrawable(getResources(), bitmap);
+        layerDrawable.setDrawableByLayerId(R.id.image_view_drawable, newDrawable);
+        imageView.setImageDrawable(layerDrawable);
+        Log.w("set_img", "height:" + bitmap.getHeight() + ", width:" + bitmap.getWidth() + ", bytes:" + bitmap.getByteCount());
+    }
+
+
 
     //reference: https://medium.com/@hasangi/capture-image-or-choose-from-gallery-photos-implementation-for-android-a5ca59bc6883
     @Override
@@ -242,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 case PICK_PHOTO:
                     if (resultCode == RESULT_OK && data != null) {
                         this.selectedImageUri = data.getData();
-                        setPictureInImageView();
+                        setPictureInImageView(readPictureFromSelectedImageUri());
                     }
                     break;
             }

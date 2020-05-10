@@ -1,4 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="round_corners">20dp</dimen>
+    <dimen name="min_whitespace">32dp</dimen>
 </resources>

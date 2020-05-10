@@ -25,16 +25,16 @@
         android:id="@+id/button"
         android:layout_width="200dp"
         android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/min_whitespace"
         android:background="@drawable/button"
         android:drawableStart="@drawable/ic_send"
+        android:paddingStart="30dip"
+        android:paddingEnd="26dip"
         android:text="@string/send"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        android:paddingStart="30dip"
-        android:paddingEnd="26dip"/>
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <TextView
         android:id="@+id/textView"
