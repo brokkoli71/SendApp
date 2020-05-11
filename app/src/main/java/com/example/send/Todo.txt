@@ -6,6 +6,10 @@ first UI:
     make images for non visual data and empty frame
     preview of non images
 
+outward appearance:
+    name
+    logo
+
 handling addresses and way of handshake
 
 what data to send
@@ -16,9 +20,8 @@ encryption
 
 multi language support
 
-outward appearance:
-    name
-    logo
+
+
 
 
 
