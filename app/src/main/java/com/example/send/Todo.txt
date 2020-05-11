@@ -3,8 +3,6 @@
 communication through router with public IP
 
 first UI:
-    two buttons
-    fit height of imageview to ratio of content and make image rounded
     make images for non visual data and empty frame
     preview of non images
 
