@@ -22,9 +22,6 @@ multi language support
 
 
 
-
-
-
 notes:
     colors: https://www.materialpalette.com/colors
 before upgrading to new release version: update "versionCode" and "versionName"
