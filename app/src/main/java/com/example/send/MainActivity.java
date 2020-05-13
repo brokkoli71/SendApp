@@ -45,13 +45,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
         // Use 1/8th of the available memory for this memory cache.
         cacheSize = maxMemory / 8;
         Log.w("onCreate", "cashSize = "+cacheSize+" Bytes");
-
-
 
         e2 = findViewById(R.id.editText2);
         buttonSend = findViewById(R.id.button);

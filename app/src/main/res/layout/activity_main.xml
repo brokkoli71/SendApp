@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/indigoBackground"
+    android:background="@drawable/background_main"
     android:paddingTop="32dp"
     android:paddingBottom="32dp"
     android:paddingLeft="@dimen/fab_margin"
-    android:paddingRight="@dimen/fab_margin"
-    >
+    android:paddingRight="@dimen/fab_margin">
 
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
+        android:theme="@style/AppTheme.NoActionBar">
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -26,6 +23,7 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/indigoBackground"/>
+            <size
+                android:height="240dp"
+                android:width="240dp" />
+            <padding
+                android:top="-100dp"
+                android:bottom="100dp"
+                android:right="-100dp"
+                />
+        </shape>
+    </item>
+    <item  android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="@color/colorAccent"/>
+            <size
+                android:height="200dp"
+                android:width="200dp" />
+
+        </shape>
+        </item>
+
+
+</layer-list>
