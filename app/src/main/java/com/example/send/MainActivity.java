@@ -24,17 +24,15 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PICK_PHOTO = 1;
-    private static final int TAKE_PHOTO = 0;
+    private static final int PICKFILE_REQUEST_CODE = 0;
 
-    private Uri selectedImageUri = null;
+
+    private Uri selectedFileUri = null;
+    private SendingTaskData sendingTaskData;
     private ReceiverServer receiverServer;
     int cacheSize;
 
@@ -60,62 +58,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (selectedImageUri!=null) {
-                    try {
-                        InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-                        byte[] bytesArray = new byte[inputStream.available()];
-                        inputStream.read(bytesArray);
+                if (selectedFileUri!=null) {
+
+//                        InputStream inputStream = getContentResolver().openInputStream(selectedFileUri);
+//                        byte[] bytesArray = new byte[inputStream.available()];
+//                        inputStream.read(bytesArray);
 
                         SendingTask sendingTask = new SendingTask();
-                        String ip = e2.getText().toString();
+                        String IP = e2.getText().toString();
                         //for easier dev-testing
-                        if (!ip.contains("."))
-                            ip = "192.168.0."+ip;
+                        if (!IP.contains("."))
+                            IP = "192.168.0."+IP;
 
-                        Log.w("send", "sending " + bytesArray.length + " Bytes");
+                    sendingTaskData = new SendingTaskData(selectedFileUri, getContentResolver());
 
-                        Log.w("send", "path: "+selectedImageUri.getPath());
+                    sendingTaskData.IP = IP;
+                    if (sendingTaskData.isSendable())
+                        sendingTask.execute(sendingTaskData);
+                    else Log.e("send", "sendingTaskData not sendable");
 
-                        String fileName;
-                        try{
-                            //get part of path after last "/"
-                            fileName = selectedImageUri.getPath().split("(/)(?!.*\\1)")[1];
-                        }catch (ArrayIndexOutOfBoundsException e){
-                            fileName = selectedImageUri.getPath();
-                        }
 
-                        String dataTypeStr;
-                        try {
-                            dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
-                        }catch (ArrayIndexOutOfBoundsException e){
-                            //if format not "file://" but i.e. "content://" then might not be with data format
-                            String newPath = getRealPathFromUri(selectedImageUri);
-                            Log.w("newPath", newPath);
-                            fileName = newPath.split("(/)(?!.*\\1)")[1];
-                                try {
-                                    dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
-                                }catch (ArrayIndexOutOfBoundsException e2){
-                                    dataTypeStr = "";
-                            }
-                        }
-
-                        Log.w("send", "fileName: " +fileName);
-                        Log.w("send", "dataType: "+dataTypeStr);
-                        int dataType;
-                        switch (dataTypeStr){
-                            case ("jpg"): dataType = SendingTaskData.TYPE_JPG; break;
-                            case ("png"): dataType = SendingTaskData.TYPE_PNG; break;
-                            case ("mp3"): dataType = SendingTaskData.TYPE_MP3; break;
-                            case ("mp4"): dataType = SendingTaskData.TYPE_MP4; break;
-                            case ("jpeg"): dataType = SendingTaskData.TYPE_JPEG; break;
-                            default: dataType = SendingTaskData.TYPE_UNKNOWN; break;
-                        }
-
-                        sendingTask.execute(new SendingTaskData(dataType, bytesArray, ip, fileName));
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
 
                 /* old way
@@ -133,10 +95,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getPermissions();
 
-                Log.w("pick_photo", "request send:"+ PICK_PHOTO);
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , PICK_PHOTO);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("file/*");
+                startActivityForResult(intent, PICKFILE_REQUEST_CODE);
+
+                Log.w("pick_file", "request send:"+ PICKFILE_REQUEST_CODE);
+//                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(pickPhoto, PICK_PHOTO);
             }
         });
 
@@ -157,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         if(Intent.ACTION_SEND.equals(action)){
             Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
             if (uri!=null){
-                selectedImageUri = uri;
+                selectedFileUri = uri;
                 Log.w("receive_from_app", "received \""+uri+"\"");
                 if (type.startsWith("image/")){
                     final View content = findViewById(android.R.id.content);
@@ -165,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onGlobalLayout() {
                             content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                            setPictureInImageView(readPictureFromSelectedImageUri());
+                            setPictureInImageView(readPictureFromSelectedFileUri());
                         }
                     });
                 }
@@ -200,12 +166,11 @@ public class MainActivity extends AppCompatActivity {
         Log.w("pick_photo", "requesting permission");
         EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                 101, galleryPermissions);
-
     }
-    private Bitmap readPictureFromSelectedImageUri(){
+    private Bitmap readPictureFromSelectedFileUri(){
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        if (selectedImageUri != null) {
-            Cursor cursor = getContentResolver().query(selectedImageUri,
+        if (selectedFileUri != null) {
+            Cursor cursor = getContentResolver().query(selectedFileUri,
                     filePathColumn, null, null, null);
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -265,39 +230,19 @@ public class MainActivity extends AppCompatActivity {
         Log.w("pick_photo", "request handling:"+", "
                 +(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
-            switch (requestCode) {
-                case TAKE_PHOTO:
-                    //not implemented yet
-                    if (resultCode == RESULT_OK && data != null) {
-                        Bitmap selectedImageBitmap = (Bitmap) data.getExtras().get("data");
-                        imageView.setImageBitmap(selectedImageBitmap);
-                    }
-                    break;
-                case PICK_PHOTO:
-                    if (resultCode == RESULT_OK && data != null) {
-                        this.selectedImageUri = data.getData();
-                        setPictureInImageView(readPictureFromSelectedImageUri());
-                    }
-                    break;
+            if (requestCode == PICKFILE_REQUEST_CODE) {
+                if (resultCode == RESULT_OK && data != null) {
+                    this.selectedFileUri = data.getData();
+                    //asdasd
+                    setPictureInImageView(readPictureFromSelectedFileUri());
+                }
+
             }
         }
     }
 
 
-    public String getRealPathFromUri(Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
+
 
 
 }
