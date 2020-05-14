@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class SendingTaskData {
     public String IP;
     public int dataType;
     public String fileName;
+    public Uri selectedFileUri;
 
 
     public final static int TYPE_UNKNOWN = 0;
@@ -37,37 +39,41 @@ public class SendingTaskData {
 
 
 
-    void setFile(Uri selectedFileUri, ContentResolver contentResolver){
+    void setFile(Uri fileUri, ContentResolver contentResolver){
 
-
-        InputStream inputStream = null;
+        this.selectedFileUri = fileUri;
         try {
-            inputStream = contentResolver.openInputStream(selectedFileUri);
+            InputStream inputStream = contentResolver.openInputStream(selectedFileUri);
 
             byte[] bytesArray = new byte[inputStream.available()];
             inputStream.read(bytesArray);
 
-            String fileName;
-            try{
-                //get part of path after last "/"
-                fileName = selectedFileUri.getPath().split("(/)(?!.*\\1)")[1];
-            }catch (ArrayIndexOutOfBoundsException e){
-                fileName = selectedFileUri.getPath();
-            }
+            String fileName = getFileName(selectedFileUri, contentResolver);
+
+//            try{
+//                //get part of path after last "/"
+//                fileName = selectedFileUri.getPath().split("(/)(?!.*\\1)")[1];
+//            }catch (ArrayIndexOutOfBoundsException e){
+//                fileName = selectedFileUri.getPath();
+//            }
 
             String dataTypeStr;
             try {
                 dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
             }catch (ArrayIndexOutOfBoundsException e){
-                //if format not "file://" but i.e. "content://" then might not be with data format
-                String newPath = getRealPathFromUri(selectedFileUri, contentResolver);
-                Log.w("newPath", newPath);
-                fileName = newPath.split("(/)(?!.*\\1)")[1];
-                try {
-                    dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
-                }catch (ArrayIndexOutOfBoundsException e2){
-                    dataTypeStr = "";
-                }
+                dataTypeStr = "";
+                //old:
+//                //if format not "file://" but i.e. "content://" then might not be with data format
+//                Log.w("newPath","not working: " + selectedFileUri.getPath());
+//                getFileName(selectedFileUri, contentResolver);
+//                String newPath = getRealPathFromUri(selectedFileUri, contentResolver);
+//                Log.w("newPath", newPath);
+//                fileName = newPath.split("(/)(?!.*\\1)")[1];
+//                try {
+//                    dataTypeStr = fileName.split("(\\.)(?!.*\\1)")[1];
+//                }catch (ArrayIndexOutOfBoundsException e2){
+//                    dataTypeStr = "";
+//                }
             }
 
             Log.w("send", "fileName: " +fileName);
@@ -100,15 +106,35 @@ public class SendingTaskData {
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
+        }catch (NullPointerException e){
+
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return null;
+    }
+    public boolean isSendable(){
+        return IP != null && IP.contains(".") && this.byteData != null && fileName != null;
+    }
+    public String getFileName(Uri uri, ContentResolver contentResolver) {
+        String displayName = "";
+        Cursor cursor = contentResolver.query(uri, null, null, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                displayName = cursor.getString(
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
-    }
-    public boolean isSendable(){
-        return IP != null && IP.contains(".") && this.byteData != null && fileName != null;
-
+        Log.w("filename", displayName);
+        return displayName;
     }
 
 }

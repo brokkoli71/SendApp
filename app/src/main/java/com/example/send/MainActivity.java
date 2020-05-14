@@ -2,7 +2,6 @@ package com.example.send;
 
 import android.Manifest;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,7 +10,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +22,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICKFILE_REQUEST_CODE = 0;
 
 
-    private Uri selectedFileUri = null;
     private SendingTaskData sendingTaskData;
     private ReceiverServer receiverServer;
     int cacheSize;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (selectedFileUri!=null) {
+                if (sendingTaskData!=null) {
 
 //                        InputStream inputStream = getContentResolver().openInputStream(selectedFileUri);
 //                        byte[] bytesArray = new byte[inputStream.available()];
@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
                         //for easier dev-testing
                         if (!IP.contains("."))
                             IP = "192.168.0."+IP;
-
-                    sendingTaskData = new SendingTaskData(selectedFileUri, getContentResolver());
 
                     sendingTaskData.IP = IP;
                     if (sendingTaskData.isSendable())
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 getPermissions();
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
+                intent.setType("*/*");
                 startActivityForResult(intent, PICKFILE_REQUEST_CODE);
 
                 Log.w("pick_file", "request send:"+ PICKFILE_REQUEST_CODE);
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         if(Intent.ACTION_SEND.equals(action)){
             Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
             if (uri!=null){
-                selectedFileUri = uri;
+                sendingTaskData = new SendingTaskData(uri, getContentResolver());
                 Log.w("receive_from_app", "received \""+uri+"\"");
                 if (type.startsWith("image/")){
                     final View content = findViewById(android.R.id.content);
@@ -168,22 +166,32 @@ public class MainActivity extends AppCompatActivity {
                 101, galleryPermissions);
     }
     private Bitmap readPictureFromSelectedFileUri(){
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        if (selectedFileUri != null) {
-            Cursor cursor = getContentResolver().query(selectedFileUri,
-                    filePathColumn, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                Log.w("display_photo", "displaying " + picturePath);
-                Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-                Log.w("display_photo", "size: " + bitmap.getHeight()+"x"+bitmap.getWidth());
-                cursor.close();
-                return bitmap;
-            }
+        //open inputstream instead  hier weiterarbeitena
+        InputStream inputStream = null;
+        try {
+            inputStream = getContentResolver().openInputStream(sendingTaskData.selectedFileUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+            return bitmap;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+//        Cursor cursor = getContentResolver().query(sendingTaskData.selectedFileUri, null, null, null, null, null);
+//
+//        if (cursor != null) {
+//                cursor.moveToFirst();
+//                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
+//                String picturePath = cursor.getString(columnIndex);
+//                Log.w("display_photo", "displaying " + picturePath);
+//                Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+//                Log.w("display_photo", "size: " + bitmap.getHeight()+"x"+bitmap.getWidth());
+//                cursor.close();
+//                return bitmap;
+//            }
+
         return null;
     }
     private void setPictureInImageView(Bitmap bitmap) {
@@ -232,7 +240,8 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode != RESULT_CANCELED) {
             if (requestCode == PICKFILE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK && data != null) {
-                    this.selectedFileUri = data.getData();
+                    Uri uri = data.getData();
+                    sendingTaskData = new SendingTaskData(uri, getContentResolver());
                     //asdasd
                     setPictureInImageView(readPictureFromSelectedFileUri());
                 }
