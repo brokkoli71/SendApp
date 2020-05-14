@@ -1,20 +1,18 @@
 
-
-communication through router with public IP
-
 first UI:
-    make images for non visual data and empty frame
-    preview of non images
+    done
 
 outward appearance:
     name
-    logo
-
-handling addresses and way of handshake
+    done: logo
 
 what data to send
     sending multiple data
     accessing data not just images from within the app
+
+communication through router with public IP
+
+handling addresses and way of handshake
 
 encryption
 

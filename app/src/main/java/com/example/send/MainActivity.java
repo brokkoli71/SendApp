@@ -171,7 +171,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 else if (type.startsWith("audio/"))
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music));
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_note));
+                else if (type.startsWith("video/"))
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_videocam));
+                else if (type.startsWith("text/"))
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_text));
+                else
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_file));
+
                 //if other type..
             }else{
                 Log.e("receive_from_app", "uri not readable");
