@@ -23,7 +23,7 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/inner_content_width"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/min_whitespace"
         android:background="@drawable/button"
@@ -48,7 +48,7 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/inner_content_width"
         android:layout_height="100dp"
         android:background="@drawable/button"
         android:drawableStart="@drawable/ic_folder_open"
@@ -64,7 +64,7 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/inner_content_width"
         android:layout_height="wrap_content"
         android:minHeight="150dp"
         app:layout_constraintEnd_toEndOf="parent"

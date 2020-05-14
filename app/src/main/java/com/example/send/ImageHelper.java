@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -34,6 +35,7 @@ public class ImageHelper {
         int oldWidth = bitmap.getWidth();
         int oldHeight = bitmap.getHeight();
         int newHeight = oldHeight*newWidth/oldWidth;
+        Log.w("image_helper", "newWidth:"+newWidth+" newHeight:"+newHeight);
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
     }
 

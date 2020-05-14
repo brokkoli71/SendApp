@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -158,8 +159,19 @@ public class MainActivity extends AppCompatActivity {
             if (uri!=null){
                 selectedImageUri = uri;
                 Log.w("receive_from_app", "received \""+uri+"\"");
-                if (type.startsWith("image/"))
-                    setPictureInImageView(readPictureFromSelectedImageUri());
+                if (type.startsWith("image/")){
+                    final View content = findViewById(android.R.id.content);
+                    content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            setPictureInImageView(readPictureFromSelectedImageUri());
+                        }
+                    });
+                }
+
+                else if (type.startsWith("audio/"))
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music));
                 //if other type..
             }else{
                 Log.e("receive_from_app", "uri not readable");
@@ -195,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 String picturePath = cursor.getString(columnIndex);
                 Log.w("display_photo", "displaying " + picturePath);
                 Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+                Log.w("display_photo", "size: " + bitmap.getHeight()+"x"+bitmap.getWidth());
                 cursor.close();
                 return bitmap;
             }
@@ -203,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
     }
     private void setPictureInImageView(Bitmap bitmap) {
         //bitmap gets resized to not take to much RAM
-        bitmap = ImageHelper.fitWidthBitmap(bitmap, imageView.getWidth());
+        int newWidth =  getResources().getDimensionPixelSize(R.dimen.inner_content_width);
+        bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
 
         //checking if enough space on Screen available
         int[] selectButtonLocation = new int[2];

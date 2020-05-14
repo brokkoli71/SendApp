@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="@drawable/background_main"
-    android:paddingTop="32dp"
+    android:paddingTop="@dimen/fab_margin"
     android:paddingBottom="32dp"
     android:paddingLeft="@dimen/fab_margin"
     android:paddingRight="@dimen/fab_margin"
@@ -24,7 +24,7 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:visibility="visible"/>
 
 
 

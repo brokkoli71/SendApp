@@ -4,6 +4,7 @@
     <color name="colorAccent">#D81B60</color>
     <!-- material colors    -->
     <color name="indigoBackground">#303f9f</color>
+    <color name="colorCircle">#c5cae9</color>
     <color name="colorButton">#c5cae9</color>
     <color name="colorPrimaryDark">#1a237e</color>
     <color name="colorBackground">#FFFFFF</color>
