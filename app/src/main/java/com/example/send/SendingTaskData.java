@@ -80,7 +80,7 @@ public class SendingTaskData {
 
             Log.w("send", "fileName: " +fileName);
             Log.w("send", "dataType: "+dataTypeStr);
-            switch (dataTypeStr){
+            switch (dataTypeStr.toLowerCase()){
                 case ("jpg"): dataType = SendingTaskData.TYPE_JPG; break;
                 case ("png"): dataType = SendingTaskData.TYPE_PNG; break;
                 case ("mp3"): dataType = SendingTaskData.TYPE_MP3; break;

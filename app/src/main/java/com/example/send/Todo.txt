@@ -8,7 +8,7 @@ outward appearance:
 
 what data to send
     sending multiple data
-    accessing data not just images from within the app
+    done: accessing data not just images from within the app
 
 communication through router with public IP
 
@@ -16,10 +16,15 @@ handling addresses and way of handshake
 
 encryption
 
+beta testing
+
+play store availability
+
 multi language support
 
 
 
 notes:
     colors: https://www.materialpalette.com/colors
+
 before upgrading to new release version: update "versionCode" and "versionName"
