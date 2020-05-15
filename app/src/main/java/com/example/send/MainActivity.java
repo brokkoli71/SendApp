@@ -216,10 +216,9 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == PICKFILE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK && intent != null) {
                     Uri uri = intent.getData();
-                    String type = intent.getType();
 
                     sendingTaskData = new SendingTaskData(uri, getContentResolver());
-                    setIconInImageView(type);
+                    setIconInImageView(sendingTaskData.mime);
                 }
             }
         }
@@ -227,18 +226,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void setIconInImageView (String type){
         try {
+            Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/"))
                 setPictureInImageView(readPictureFromSelectedFileUri());
-            else if (type.startsWith("audio/"))
-                imageView.setImageDrawable(getResources().getDrawable(Values.AUDIO_IMAGE));
-            else if (type.startsWith("video/"))
-                imageView.setImageDrawable(getResources().getDrawable(Values.VIDEO_IMAGE));
-            else if (type.startsWith("text/"))
-                imageView.setImageDrawable(getResources().getDrawable(Values.TEXT_IMAGE));
-            else
-                imageView.setImageDrawable(getResources().getDrawable(Values.DEFAULT_IMAGE));
+            else{
+                imageView.setBackground(getResources().getDrawable(R.drawable.image_view));
+                if (type.startsWith("audio/"))
+                    imageView.setImageDrawable(getResources().getDrawable(Values.AUDIO_IMAGE));
+                else if (type.startsWith("video/"))
+                    imageView.setImageDrawable(getResources().getDrawable(Values.VIDEO_IMAGE));
+                else if (type.startsWith("text/"))
+                    imageView.setImageDrawable(getResources().getDrawable(Values.TEXT_IMAGE));
+                else
+                    imageView.setImageDrawable(getResources().getDrawable(Values.DEFAULT_IMAGE));
+            }
             //if other type..
         }catch (NullPointerException e){
+            e.printStackTrace();
             imageView.setImageDrawable(getResources().getDrawable(Values.DEFAULT_IMAGE));
         }
 

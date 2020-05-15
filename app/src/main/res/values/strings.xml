@@ -5,4 +5,5 @@
     <string name="send">send</string>
     <string name="select">select</string>
     <string name="ip">IP</string>
+    <string name="image_view_content_description">thumbnail of data</string>
 </resources>

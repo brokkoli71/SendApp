@@ -71,5 +71,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         android:background="@drawable/image_view"
-        />
+        android:contentDescription="@string/image_view_content_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>

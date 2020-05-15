@@ -16,6 +16,7 @@ public class SendingTaskData {
     int dataType;
     String fileName;
     Uri selectedFileUri;
+    String mime;
 
 
     final static int TYPE_UNKNOWN = 0;
@@ -40,7 +41,7 @@ public class SendingTaskData {
 
 
     private void setFile(Uri fileUri, ContentResolver contentResolver){
-
+        this.mime = contentResolver.getType(fileUri);
         this.selectedFileUri = fileUri;
         try {
             InputStream inputStream = contentResolver.openInputStream(selectedFileUri);
