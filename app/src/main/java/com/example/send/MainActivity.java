@@ -22,7 +22,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import pub.devrel.easypermissions.EasyPermissions;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     int cacheSize;
 
     EditText e1, e2;
-    ImageView imageView;
+    public ImageView imageView;
     Button buttonSend, buttonSelect;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String action = intent.getAction();
-        String type = intent.getType();
+        final String type = intent.getType();
         // send multiple Data might get implemented later
 
         if(Intent.ACTION_SEND.equals(action)){
@@ -123,33 +122,21 @@ public class MainActivity extends AppCompatActivity {
             if (uri!=null){
                 sendingTaskData = new SendingTaskData(uri, getContentResolver());
                 Log.w("receive_from_app", "received \""+uri+"\"");
-                if (type.startsWith("image/")){
-                    final View content = findViewById(android.R.id.content);
-                    content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                            setPictureInImageView(readPictureFromSelectedFileUri());
-                        }
-                    });
-                }
-
-                else if (type.startsWith("audio/"))
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_music_note));
-                else if (type.startsWith("video/"))
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_videocam));
-                else if (type.startsWith("text/"))
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_text));
-                else
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_file));
-
-                //if other type..
+                final View content = findViewById(android.R.id.content);
+                content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        setIconInImageView(type);
+                    }
+                });
             }else{
                 Log.e("receive_from_app", "uri not readable");
             }
         }
 
         receiverServer = new ReceiverServer(this);
+
         Thread myThread = new Thread(receiverServer);
         myThread.start();
     }
@@ -161,40 +148,28 @@ public class MainActivity extends AppCompatActivity {
         if (EasyPermissions.hasPermissions(MainActivity.this, galleryPermissions)) {
             return;
         }
-        Log.w("pick_photo", "requesting permission");
+        Log.w("pick_file", "requesting permission");
         EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                 101, galleryPermissions);
     }
     private Bitmap readPictureFromSelectedFileUri(){
-
-        //open inputstream instead  hier weiterarbeitena
         InputStream inputStream = null;
+        Bitmap bitmap = null;
         try {
             inputStream = getContentResolver().openInputStream(sendingTaskData.selectedFileUri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            inputStream.close();
-            return bitmap;
+            bitmap = BitmapFactory.decodeStream(inputStream);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        }catch (Exception e){
+            Log.e("set_img", "could not decode uri");
         }
+        try {
+            assert inputStream != null;
+            inputStream.close();
+        }catch (Exception ignored){}
 
-//        Cursor cursor = getContentResolver().query(sendingTaskData.selectedFileUri, null, null, null, null, null);
-//
-//        if (cursor != null) {
-//                cursor.moveToFirst();
-//                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-//                String picturePath = cursor.getString(columnIndex);
-//                Log.w("display_photo", "displaying " + picturePath);
-//                Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
-//                Log.w("display_photo", "size: " + bitmap.getHeight()+"x"+bitmap.getWidth());
-//                cursor.close();
-//                return bitmap;
-//            }
-
-        return null;
+        return bitmap;
     }
-    private void setPictureInImageView(Bitmap bitmap) {
+    public void setPictureInImageView(Bitmap bitmap) {
         //bitmap gets resized to not take to much RAM
         int newWidth =  getResources().getDimensionPixelSize(R.dimen.inner_content_width);
         bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
@@ -233,23 +208,41 @@ public class MainActivity extends AppCompatActivity {
 
     //reference: https://medium.com/@hasangi/capture-image-or-choose-from-gallery-photos-implementation-for-android-a5ca59bc6883
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.w("pick_photo", "request handling:"+", "
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        Log.w("pick_file", "request handling:"+", "
                 +(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
             if (requestCode == PICKFILE_REQUEST_CODE) {
-                if (resultCode == RESULT_OK && data != null) {
-                    Uri uri = data.getData();
-                    sendingTaskData = new SendingTaskData(uri, getContentResolver());
-                    //asdasd
-                    setPictureInImageView(readPictureFromSelectedFileUri());
-                }
+                if (resultCode == RESULT_OK && intent != null) {
+                    Uri uri = intent.getData();
+                    String type = intent.getType();
 
+                    sendingTaskData = new SendingTaskData(uri, getContentResolver());
+                    setIconInImageView(type);
+                }
             }
         }
     }
 
+    public void setIconInImageView (String type){
+        try {
+            if (type.startsWith("image/"))
+                setPictureInImageView(readPictureFromSelectedFileUri());
+            else if (type.startsWith("audio/"))
+                imageView.setImageDrawable(getResources().getDrawable(Values.AUDIO_IMAGE));
+            else if (type.startsWith("video/"))
+                imageView.setImageDrawable(getResources().getDrawable(Values.VIDEO_IMAGE));
+            else if (type.startsWith("text/"))
+                imageView.setImageDrawable(getResources().getDrawable(Values.TEXT_IMAGE));
+            else
+                imageView.setImageDrawable(getResources().getDrawable(Values.DEFAULT_IMAGE));
+            //if other type..
+        }catch (NullPointerException e){
+            imageView.setImageDrawable(getResources().getDrawable(Values.DEFAULT_IMAGE));
+        }
+
+    }
 
 
 

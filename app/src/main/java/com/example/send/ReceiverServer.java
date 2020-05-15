@@ -1,10 +1,6 @@
 package com.example.send;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,12 +12,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ReceiverServer implements  Runnable {
-    private boolean lookingForData = true;
-    private MainActivity mainActivity; //for making Toasts
+    private boolean lookingForData = true; //might get activated and deactivated in later versions
+    private MainActivity mainActivity; //for making Toasts and setting imageView
 
-    public ReceiverServer(MainActivity mainActivity){
+    ReceiverServer(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
+
     @Override
     public void run() {
         try {
@@ -53,21 +50,32 @@ public class ReceiverServer implements  Runnable {
                     case SendingTaskData.TYPE_JPG:
                     case SendingTaskData.TYPE_PNG:
                         path = saveData(fileName, byteData);
-                        if (path!=null)makeToast("Image saved: "+path);
+                        if (path!=null){
+                            makeToast("Image saved: "+path);
+                        }
                         break;
                     case SendingTaskData.TYPE_MP3:
                         path = saveData(fileName, byteData);
-                        if (path!=null)makeToast("Audio saved: "+path);
+                        if (path!=null){
+                            makeToast("Audio saved: "+path);
+                            setImageDrawable(Values.AUDIO_IMAGE);
+                        }
                         break;
                     case SendingTaskData.TYPE_MP4:
                         path = saveData(fileName, byteData);
-                        if (path!=null)makeToast("Video saved: "+path);
+                        if (path!=null){
+                            makeToast("Video saved: "+path);
+                            setImageDrawable(Values.VIDEO_IMAGE);
+                        }
                         break;
                     default:
                         Log.e("receiver", "unknown data type");
                         makeToast("unknown data type");
                         path = saveData(fileName, byteData);
-                        if (path!=null)makeToast("saved: "+path);
+                        if (path!=null){
+                            makeToast("saved: "+path);
+                            setImageDrawable(Values.DEFAULT_IMAGE);
+                        }
                 }
 
 
@@ -82,7 +90,8 @@ public class ReceiverServer implements  Runnable {
         File myFolder =new File(stringFolder);
         if (!myFolder.exists()){
             if(!myFolder.mkdir()){
-                makeToast("Fehler beim erstellen des Ordners");             }
+                makeToast("Fehler beim erstellen des Ordners");
+            }
         }
 
         //save data to storage
@@ -113,6 +122,17 @@ public class ReceiverServer implements  Runnable {
         }
         return null;
     }
+
+    private void setImageDrawable(final int path){
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mainActivity.imageView.setImageDrawable(mainActivity.getResources().getDrawable(path));
+            }
+        });
+    }
+
+
     private void makeToast(final String msg){
         mainActivity.runOnUiThread(new Runnable() {
             @Override

@@ -11,19 +11,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SendingTaskData {
-    public byte[] byteData;
-    public String IP;
-    public int dataType;
-    public String fileName;
-    public Uri selectedFileUri;
+    byte[] byteData;
+    String IP;
+    int dataType;
+    String fileName;
+    Uri selectedFileUri;
 
 
-    public final static int TYPE_UNKNOWN = 0;
-    public final static int TYPE_JPG = 1;
-    public final static int TYPE_PNG = 2;
-    public final static int TYPE_MP3 = 3;
-    public final static int TYPE_MP4 = 4;
-    public final static int TYPE_JPEG = 5;
+    final static int TYPE_UNKNOWN = 0;
+    final static int TYPE_JPG = 1;
+    final static int TYPE_PNG = 2;
+    final static int TYPE_MP3 = 3;
+    final static int TYPE_MP4 = 4;
+    final static int TYPE_JPEG = 5;
 
     SendingTaskData(Uri selectedFileUri, ContentResolver contentResolver){
         this.IP = IP;
@@ -39,12 +39,13 @@ public class SendingTaskData {
 
 
 
-    void setFile(Uri fileUri, ContentResolver contentResolver){
+    private void setFile(Uri fileUri, ContentResolver contentResolver){
 
         this.selectedFileUri = fileUri;
         try {
             InputStream inputStream = contentResolver.openInputStream(selectedFileUri);
 
+            assert inputStream != null;
             byte[] bytesArray = new byte[inputStream.available()];
             inputStream.read(bytesArray);
 
@@ -95,14 +96,15 @@ public class SendingTaskData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
+    //can be removed?
     String getRealPathFromUri(Uri contentUri, ContentResolver contentResolver) {
         Cursor cursor = null;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = contentResolver.query(contentUri, proj, null, null, null);
+            assert cursor != null;
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
@@ -114,13 +116,12 @@ public class SendingTaskData {
         }
         return null;
     }
-    public boolean isSendable(){
+    boolean isSendable(){
         return IP != null && IP.contains(".") && this.byteData != null && fileName != null;
     }
-    public String getFileName(Uri uri, ContentResolver contentResolver) {
+    private String getFileName(Uri uri, ContentResolver contentResolver) {
         String displayName = "";
-        Cursor cursor = contentResolver.query(uri, null, null, null, null, null);
-        try {
+        try (Cursor cursor = contentResolver.query(uri, null, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 displayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
@@ -128,10 +129,6 @@ public class SendingTaskData {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
         Log.w("filename", displayName);
         return displayName;
