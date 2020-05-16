@@ -6,6 +6,7 @@
     <color name="indigoBackground">#303f9f</color>
     <color name="colorCircle">#c5cae9</color>
     <color name="colorButton">#c5cae9</color>
+    <color name="colorButtonPressed">#5c6bc0</color>
     <color name="colorPrimaryDark">#1a237e</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorLogoBackground">#303f9f</color>

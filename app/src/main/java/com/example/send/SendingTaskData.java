@@ -135,4 +135,7 @@ public class SendingTaskData {
         return displayName;
     }
 
+    int getBytes(){
+        return byteData.length;
+    }
 }

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (sendingTaskData!=null) {
 
 //                        InputStream inputStream = getContentResolver().openInputStream(selectedFileUri);
@@ -70,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
                             IP = "192.168.0."+IP;
 
                     sendingTaskData.IP = IP;
-                    if (sendingTaskData.isSendable())
+                    if (sendingTaskData.isSendable()){
                         sendingTask.execute(sendingTaskData);
+                        Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes", Toast.LENGTH_SHORT).show();
+                    }
                     else Log.e("send", "sendingTaskData not sendable");
 
 

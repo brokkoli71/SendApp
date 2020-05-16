@@ -1,6 +1,7 @@
 
 first UI:
     done
+    done: feedback when sending data
 
 outward appearance:
     name
@@ -15,6 +16,9 @@ communication through router with public IP
 handling addresses and way of handshake
 
 encryption
+
+advanced ui:
+    animations i.e. send -> paper-plane icon flies away
 
 beta testing
 
