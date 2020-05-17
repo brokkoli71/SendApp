@@ -24,6 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.InputStream;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -65,9 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
                         SendingTask sendingTask = new SendingTask();
                         String IP = e2.getText().toString();
-                        //for easier dev-testing
-                        if (!IP.contains("."))
-                            IP = "192.168.0."+IP;
 
                     sendingTaskData.IP = IP;
                     if (sendingTaskData.isSendable()){
@@ -109,9 +109,23 @@ public class MainActivity extends AppCompatActivity {
 
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
+            InetAddress localHost6 = Inet6Address.getLocalHost();
+            InetAddress loopbackAddress6 = Inet6Address.getLoopbackAddress();
+
+            Log.w("ip", localHost.getHostAddress());
+            Log.w("ip", loopbackAddress.getHostAddress());
+            Log.w("ip", localHost6.getHostAddress());
+            Log.w("ip", loopbackAddress6.getHostAddress());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
         //for testing
-        textView.setVisibility(View.INVISIBLE);
+        //textView.setVisibility(View.INVISIBLE);
+
         e2.setText(ip);
 
         Intent intent = getIntent();
