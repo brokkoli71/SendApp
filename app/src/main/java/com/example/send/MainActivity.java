@@ -109,19 +109,25 @@ public class MainActivity extends AppCompatActivity {
 
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        try {
-            InetAddress localHost = InetAddress.getLocalHost();
-            InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
-            InetAddress localHost6 = Inet6Address.getLocalHost();
-            InetAddress loopbackAddress6 = Inet6Address.getLoopbackAddress();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InetAddress localHost = InetAddress.getLocalHost();
+                    InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
+                    InetAddress localHost6 = Inet6Address.getLocalHost();
+                    InetAddress loopbackAddress6 = Inet6Address.getLoopbackAddress();
 
-            Log.w("ip", localHost.getHostAddress());
-            Log.w("ip", loopbackAddress.getHostAddress());
-            Log.w("ip", localHost6.getHostAddress());
-            Log.w("ip", loopbackAddress6.getHostAddress());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+                    Log.w("ip", localHost.getHostAddress());
+                    Log.w("ip", loopbackAddress.getHostAddress());
+                    Log.w("ip", localHost6.getHostAddress());
+                    Log.w("ip", loopbackAddress6.getHostAddress());
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
         textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
         //for testing
         //textView.setVisibility(View.INVISIBLE);

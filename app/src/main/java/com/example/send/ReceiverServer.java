@@ -1,5 +1,7 @@
 package com.example.send;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -121,6 +123,19 @@ public class ReceiverServer implements  Runnable {
             Log.e("receiver", "could not save file", e);
         }
         return null;
+    }
+
+    private void setImageFromStrorage(Uri path){
+        //todo here:
+        //get uri when calling fun
+        //uri to bitmap
+        final Bitmap bitmap;
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mainActivity.setPictureInImageView(bitmap);
+            }
+        });
     }
 
     private void setImageDrawable(final int path){

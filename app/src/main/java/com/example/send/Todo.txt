@@ -2,10 +2,14 @@
 first UI:
     done
     done: feedback when sending data
+    setting image when receiving bugfix
 
 outward appearance:
     name
     done: logo
+
+tidy up code:
+    restructure colors.xml
 
 what data to send
     sending multiple data
