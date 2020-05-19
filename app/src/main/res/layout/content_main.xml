@@ -10,6 +10,8 @@
     android:background="@drawable/content_shape_neumorph">
 
     <EditText
+        android:background="@drawable/image_view_neumorph"
+
         android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,6 +78,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:background="@drawable/image_view"
+
+        android:background="@drawable/image_view_neumorph"
+
         android:contentDescription="@string/image_view_content_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>
