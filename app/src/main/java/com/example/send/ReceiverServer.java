@@ -1,7 +1,5 @@
 package com.example.send;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -125,7 +123,7 @@ public class ReceiverServer implements  Runnable {
         return null;
     }
 
-    private void setImageFromStrorage(Uri path){
+    /*private void setImageFromStrorage(Uri path){
         //todo here:
         //get uri when calling fun
         //uri to bitmap
@@ -136,7 +134,7 @@ public class ReceiverServer implements  Runnable {
                 mainActivity.setPictureInImageView(bitmap);
             }
         });
-    }
+    }*/
 
     private void setImageDrawable(final int path){
         mainActivity.runOnUiThread(new Runnable() {
