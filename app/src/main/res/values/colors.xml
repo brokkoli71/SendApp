@@ -12,10 +12,10 @@
     <color name="colorLogoBackground">#303f9f</color>
 
     <!-- neumorph colors -->
-    <color name="backgroundNeumorph">#979797</color>
-    <color name="contentNeumorph">#D8D8D8</color>
-    <color name="shadowNeumorph">#757575</color>
-    <color name="lightedNeumorph">#FFFFFF</color>
+    <color name="backgroundNeumorph">#D3D3D3</color>
+    <color name="contentNeumorph">#EFEFEF</color>
+    <color name="shadowNeumorph">#80979797</color>
+    <color name="lightedNeumorph">#80FFFFFF</color>
 
 
 </resources>

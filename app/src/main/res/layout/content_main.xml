@@ -31,6 +31,7 @@
 
         android:background="@drawable/button_neumorph"
         style="?android:attr/borderlessButtonStyle"
+        android:textColor="@drawable/color_gradient_neumorph"
 
         android:drawableStart="@drawable/ic_send"
         android:paddingStart="30dip"
@@ -58,6 +59,7 @@
 
         android:background="@drawable/button_neumorph"
         style="?android:attr/borderlessButtonStyle"
+        android:textColor="@drawable/color_gradient_neumorph"
 
         android:drawableStart="@drawable/ic_folder_open"
         android:paddingStart="30dip"
