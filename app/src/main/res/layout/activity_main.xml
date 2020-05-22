@@ -9,9 +9,9 @@
     android:paddingLeft="@dimen/fab_margin"
     android:paddingRight="@dimen/fab_margin"
     android:fitsSystemWindows="true"
-    android:background="@color/backgroundNeumorph"
+    android:background="@drawable/background_main"
     >
-    <!--android:background="@drawable/background_main"-->
+    <!--    android:background="@color/backgroundNeumorph"-->
 
 
     <com.google.android.material.appbar.AppBarLayout
