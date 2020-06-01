@@ -25,11 +25,13 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
     String ip, fileName;
     int dataType;
     byte[] byteData;
+    String password;
 
     //Todo: add user ID to identify receiver
-    ServerSender(String url, MainActivity context){
+    ServerSender(String url, MainActivity context, String password){
             this.url = url;
             this.mainActivity = context;
+            this.password = password;
         }
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
@@ -43,6 +45,8 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            entityBuilder.addTextBody("password", password);
 
             entityBuilder.addTextBody("data_type", Integer.toString(dataType));
             entityBuilder.addTextBody("file_name", fileName);

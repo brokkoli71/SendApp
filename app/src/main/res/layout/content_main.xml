@@ -78,6 +78,21 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         android:contentDescription="@string/image_view_content_description"
         android:background="@drawable/image_view"/>
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:checked="true"
+        android:drawableStart="@drawable/ic_wifi"
+        android:paddingStart="30dip"
+        android:paddingEnd="26dip"
+        android:rotation="270"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
     <!--android:background="@drawable/image_view_neumorph"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     EditText e1, e2;
     public ImageView imageView;
     Button buttonSend, buttonSelect;
+    Switch switch1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSend = findViewById(R.id.button);
         buttonSelect = findViewById(R.id.button2);
         imageView = findViewById(R.id.imageView);
+        switch1 = findViewById(R.id.switch1);
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,11 +68,18 @@ public class MainActivity extends AppCompatActivity {
 //                        InputStream inputStream = getContentResolver().openInputStream(selectedFileUri);
 //                        byte[] bytesArray = new byte[inputStream.available()];
 //                        inputStream.read(bytesArray);
+                    if (switch1.isChecked()){
+                        String IP = e2.getText().toString();
+                        TCPSender tcpSender = new TCPSender(IP);
+                        tcpSender.execute(sendingTaskData);
+                        Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
+                    }else{
+                        ServerSender serverSender = new ServerSender(getString(R.string.server_url), MainActivity.this, getString(R.string.pwd));
+                        serverSender.execute(sendingTaskData);
+                        Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
+                    }
 
-                    String IP = e2.getText().toString();
-                    TCPSender tcpSender = new TCPSender(IP);
-                    tcpSender.execute(sendingTaskData);
-                    Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes", Toast.LENGTH_SHORT).show();
+
                 }
 
                 /* old way
