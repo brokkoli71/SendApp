@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ReceiverServer implements  Runnable {
+public class TCPReceiver implements  Runnable {
     private boolean lookingForData = true; //might get activated and deactivated in later versions
     private MainActivity mainActivity; //for making Toasts and setting imageView
 
-    ReceiverServer(MainActivity mainActivity){
+    TCPReceiver(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
 

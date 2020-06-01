@@ -6,7 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class SendingTask extends AsyncTask<SendingTaskData, Void, String> {
+public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
     Socket s;
     DataOutputStream dos;
     String ip, fileName;

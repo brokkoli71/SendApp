@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private SendingTaskData sendingTaskData;
-    private ReceiverServer receiverServer;
+    private TCPReceiver tcpReceiver;
     int cacheSize;
 
     EditText e1, e2;
@@ -66,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
 //                        byte[] bytesArray = new byte[inputStream.available()];
 //                        inputStream.read(bytesArray);
 
-                        SendingTask sendingTask = new SendingTask();
+                        TCPSender tcpSender = new TCPSender();
                         String IP = e2.getText().toString();
 
                     sendingTaskData.IP = IP;
                     if (sendingTaskData.isSendable()){
-                        sendingTask.execute(sendingTaskData);
+                        tcpSender.execute(sendingTaskData);
                         Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes", Toast.LENGTH_SHORT).show();
                     }
                     else Log.e("send", "sendingTaskData not sendable");
@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        receiverServer = new ReceiverServer(this);
+        tcpReceiver = new TCPReceiver(this);
 
-        Thread myThread = new Thread(receiverServer);
+        Thread myThread = new Thread(tcpReceiver);
         myThread.start();
     }
 
