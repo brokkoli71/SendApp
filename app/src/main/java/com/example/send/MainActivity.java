@@ -66,17 +66,10 @@ public class MainActivity extends AppCompatActivity {
 //                        byte[] bytesArray = new byte[inputStream.available()];
 //                        inputStream.read(bytesArray);
 
-                        TCPSender tcpSender = new TCPSender();
-                        String IP = e2.getText().toString();
-
-                    sendingTaskData.IP = IP;
-                    if (sendingTaskData.isSendable()){
-                        tcpSender.execute(sendingTaskData);
-                        Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes", Toast.LENGTH_SHORT).show();
-                    }
-                    else Log.e("send", "sendingTaskData not sendable");
-
-
+                    String IP = e2.getText().toString();
+                    TCPSender tcpSender = new TCPSender(IP);
+                    tcpSender.execute(sendingTaskData);
+                    Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes", Toast.LENGTH_SHORT).show();
                 }
 
                 /* old way

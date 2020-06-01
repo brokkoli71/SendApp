@@ -17,21 +17,25 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 
-public class ServerSender extends AsyncTask<byte[], Void, String> {
+public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
 
-    private static final String USER_ID = "user";
-    private static final String DATA = "data";
     private final String url;
-    private final String userId;
     private MainActivity mainActivity;
 
-    ServerSender(String url, String userId, MainActivity context){
+    String ip, fileName;
+    int dataType;
+    byte[] byteData;
+
+    //Todo: add user ID to identify receiver
+    ServerSender(String url, MainActivity context){
             this.url = url;
-            this.userId = userId;
             this.mainActivity = context;
         }
     @Override
-    protected String doInBackground(byte[]... data) {
+    protected String doInBackground(SendingTaskData... sendingTaskData) {
+        dataType = sendingTaskData[0].dataType;
+        byteData = sendingTaskData[0].byteData;
+        fileName = sendingTaskData[0].fileName;
         try
         {
             HttpClient client = new DefaultHttpClient();
@@ -40,12 +44,14 @@ public class ServerSender extends AsyncTask<byte[], Void, String> {
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-            entityBuilder.addTextBody(USER_ID, userId);
+            entityBuilder.addTextBody("data_type", Integer.toString(dataType));
+            entityBuilder.addTextBody("file_name", fileName);
+            entityBuilder.addTextBody("byte_size", Integer.toString(byteData.length));
 
 
-            if(data != null)
+            if(byteData != null)
             {
-                entityBuilder.addBinaryBody(DATA,  data[0], ContentType.create("text/plain"), "tmp");
+                entityBuilder.addBinaryBody("data", byteData, ContentType.create("text/plain"), "filename");
             }
 
             //todo gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file
@@ -56,12 +62,6 @@ public class ServerSender extends AsyncTask<byte[], Void, String> {
             final String result = EntityUtils.toString(httpEntity);
             Log.v("result", result);
 
-            mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainActivity.textView.setText(result);
-                }
-            });
             return result;
         }
         catch(Exception e)

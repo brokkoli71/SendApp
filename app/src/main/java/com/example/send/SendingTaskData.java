@@ -12,7 +12,6 @@ import java.io.InputStream;
 
 public class SendingTaskData {
     byte[] byteData;
-    String IP;
     int dataType;
     String fileName;
     Uri selectedFileUri;
@@ -27,13 +26,11 @@ public class SendingTaskData {
     final static int TYPE_JPEG = 5;
 
     SendingTaskData(Uri selectedFileUri, ContentResolver contentResolver){
-        this.IP = IP;
         setFile(selectedFileUri, contentResolver);
     }
 
-    public SendingTaskData(int dataType, byte[] byteData, String IP, String fileName) {
+    public SendingTaskData(int dataType, byte[] byteData, String fileName) {
         this.byteData = byteData;
-        this.IP = IP;
         this.dataType = dataType;
         this.fileName = fileName;
     }
@@ -117,9 +114,7 @@ public class SendingTaskData {
         }
         return null;
     }
-    boolean isSendable(){
-        return IP != null && IP.contains(".") && this.byteData != null && fileName != null;
-    }
+
     private String getFileName(Uri uri, ContentResolver contentResolver) {
         String displayName = "";
         try (Cursor cursor = contentResolver.query(uri, null, null, null, null, null)) {

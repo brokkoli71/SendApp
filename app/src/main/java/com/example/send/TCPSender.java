@@ -7,15 +7,17 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
-    Socket s;
-    DataOutputStream dos;
-    String ip, fileName;
-    int dataType;
-    byte[] byteData;
+    private Socket s;
+    private DataOutputStream dos;
+    private String ip, fileName;
+    private int dataType;
+    private byte[] byteData;
 
+    TCPSender(String ip){
+        this.ip = ip;
+    }
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
-        ip = sendingTaskData[0].IP;
         dataType = sendingTaskData[0].dataType;
         byteData = sendingTaskData[0].byteData;
         fileName = sendingTaskData[0].fileName;
@@ -36,4 +38,5 @@ public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
         }
         return null;
     }
+
 }
