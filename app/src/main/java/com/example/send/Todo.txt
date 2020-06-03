@@ -9,7 +9,8 @@ outward appearance:
     name
     done: logo
 
-todo now: log file on server
+ui:
+    make waiting for receiving data from server not checked for long time
 
 tidy up code:
     restructure colors.xml

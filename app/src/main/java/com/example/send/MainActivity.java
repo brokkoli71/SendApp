@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
                     }else{
                         String receiver = e2.getText().toString();
-                        ServerSender serverSender = new ServerSender(getString(R.string.server_url), MainActivity.this, getString(R.string.pwd), receiver);
+                        ServerSender serverSender = new ServerSender(getString(R.string.server_url_in), MainActivity.this, getString(R.string.pwd), receiver);
                         serverSender.execute(sendingTaskData);
                         Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
                     }

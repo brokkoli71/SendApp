@@ -62,7 +62,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
                 entityBuilder.addBinaryBody("data", byteData, ContentType.create("text/plain"), "filename");
             }
 
-            //fixed? "gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file"
+            //(fixed?) gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
             HttpResponse response = client.execute(post);
