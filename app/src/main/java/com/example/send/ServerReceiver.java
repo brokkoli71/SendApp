@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ServerReceiver extends AsyncTask<String, Void, String> {
@@ -27,11 +26,11 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-
+        HttpURLConnection conn;
         try {
             URL url = new URL(mainActivity.getString(R.string.server_url_out));
 
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn = (HttpURLConnection)url.openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
             conn.setRequestMethod("POST");
@@ -57,12 +56,11 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
         } catch (IOException e1) {
             e1.printStackTrace();
             Log.e("receive_server", "connectivity error");
-            Toaster.makeToast("konnte keine Verbindung aufbauen", mainActivity);
+            Toaster.makeToast("konnte keine Verbindung aufbauen");
             return "connectivity error";
         }
 
         try {
-
             int response_code = conn.getResponseCode();
 
             // Check if successful connection made
@@ -78,9 +76,9 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                     result.append(line);
                 }
 
-                // Pass data to onPostExecute method
-                return(result.toString());
 
+                //todo: handle result.toString());
+                return "success";
             }else{
 
                 return("unsuccessful");
@@ -92,7 +90,5 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
         } finally {
             conn.disconnect();
         }
-
-        return null;
     }
 }

@@ -1,16 +1,21 @@
+done:
+    feedback when sending data
+    first UI
+    logo
 
-first UI:
-    done
-    done: feedback when sending data
-    setting image when receiving bugfix
-    ProgressDialog when sending data
+
+:
+
 
 outward appearance:
     name
-    done: logo
 
 ui:
     make waiting for receiving data from server not checked for long time
+    setting image when receiving bugfix
+    ProgressDialog when sending data
+
+response to sender when received
 
 tidy up code:
     restructure colors.xml
