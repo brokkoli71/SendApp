@@ -57,6 +57,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
         } catch (IOException e1) {
             e1.printStackTrace();
             Log.e("receive_server", "connectivity error");
+            Toaster.makeToast("konnte keine Verbindung aufbauen", mainActivity);
             return "connectivity error";
         }
 

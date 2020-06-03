@@ -37,9 +37,9 @@ public class TCPReceiver implements  Runnable {
                 if (len > 0) {
                     dis.readFully(byteData);
                     Log.w("receiver", "received data: " + len + " Bytes");
-                    makeToast("received data: " + len + " Bytes");
+                    Toaster.makeToast("received data: " + len + " Bytes");
                 } else{
-                    makeToast("data size is 0");
+                    Toaster.makeToast("data size is 0");
                     Log.e("receiver", "data size is 0");
                 }
 
@@ -53,7 +53,7 @@ public class TCPReceiver implements  Runnable {
 
                     Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
                 }catch (IOException e) {
-                    makeToast("could not save file");
+                    Toaster.makeToast("could not save file");
                     Log.e("receiver", "could not save file", e);
                 }
 
@@ -62,14 +62,5 @@ public class TCPReceiver implements  Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void makeToast(final String msg){
-        mainActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mainActivity.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

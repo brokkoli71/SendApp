@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //init Toaster to make all toasts on MainActivity
+        Toaster.init(this);
+
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
         // Use 1/8th of the available memory for this memory cache.
         cacheSize = maxMemory / 8;

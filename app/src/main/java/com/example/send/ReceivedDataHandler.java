@@ -19,22 +19,13 @@ public class ReceivedDataHandler {
         });
     }
 
-    private static void makeToast(final String msg, final MainActivity mainActivity){
-        mainActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(mainActivity.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     static File getAvailableFile(String fileName, MainActivity mainActivity){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
         if (!myFolder.exists()){
             if(!myFolder.mkdir()){
-                makeToast("Fehler beim erstellen des Ordners", mainActivity);
+                Toaster.makeToast("Fehler beim erstellen des Ordners");
             }
         }
 
@@ -103,24 +94,24 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_JPEG:
             case SendingTaskData.TYPE_JPG:
             case SendingTaskData.TYPE_PNG:
-                makeToast("Image saved: "+path, mainActivity);
+                Toaster.makeToast("Image saved: "+path);
                 break;
 
             case SendingTaskData.TYPE_MP3:
-                makeToast("Audio saved: "+path, mainActivity);
+                Toaster.makeToast("Audio saved: "+path);
                 setImageDrawable(Values.AUDIO_IMAGE, mainActivity);
                 break;
 
             case SendingTaskData.TYPE_MP4:
-                makeToast("Video saved: "+path, mainActivity);
+                Toaster.makeToast("Video saved: "+path);
                 setImageDrawable(Values.VIDEO_IMAGE, mainActivity);
                 break;
 
             default:
                 Log.e("receiver", "unknown data type");
-                makeToast("unknown data type", mainActivity);
+                Toaster.makeToast("unknown data type");
 
-                makeToast("saved: "+path, mainActivity);
+                Toaster.makeToast("saved: "+path);
                 setImageDrawable(Values.DEFAULT_IMAGE, mainActivity);
         }
     }
