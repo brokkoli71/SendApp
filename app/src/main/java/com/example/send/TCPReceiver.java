@@ -42,54 +42,27 @@ public class TCPReceiver implements  Runnable {
                     makeToast("data size is 0");
                     Log.e("receiver", "data size is 0");
                 }
-                //handle received data depending on data type in future
-                String path;
-                switch (dataType) {
-                    case SendingTaskData.TYPE_JPEG:
-                    case SendingTaskData.TYPE_JPG:
-                    case SendingTaskData.TYPE_PNG:
-                        path = saveData(fileName, byteData);
-                        if (path!=null){
-                            makeToast("Image saved: "+path);
-                        }
-                        break;
-                    case SendingTaskData.TYPE_MP3:
-                        path = saveData(fileName, byteData);
-                        if (path!=null){
-                            makeToast("Audio saved: "+path);
-                            setImageDrawable(Values.AUDIO_IMAGE);
-                        }
-                        break;
-                    case SendingTaskData.TYPE_MP4:
-                        path = saveData(fileName, byteData);
-                        if (path!=null){
-                            makeToast("Video saved: "+path);
-                            setImageDrawable(Values.VIDEO_IMAGE);
-                        }
-                        break;
-                    default:
-                        Log.e("receiver", "unknown data type");
-                        makeToast("unknown data type");
-                        path = saveData(fileName, byteData);
-                        if (path!=null){
-                            makeToast("saved: "+path);
-                            setImageDrawable(Values.DEFAULT_IMAGE);
-                        }
+
+                File saveToFile = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+
+                try {
+                    FileOutputStream fos=new FileOutputStream(saveToFile.getPath());
+
+                    fos.write(byteData);
+                    fos.close();
+
+                    Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
+                }catch (IOException e) {
+                    makeToast("could not save file");
+                    Log.e("receiver", "could not save file", e);
                 }
 
-
+                ReceivedDataHandler.handleType(dataType,saveToFile, mainActivity);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
 
     private void makeToast(final String msg){
         mainActivity.runOnUiThread(new Runnable() {

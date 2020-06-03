@@ -18,6 +18,7 @@ public class SendingTaskData {
     String mime;
 
 
+    //todo: add more in future
     final static int TYPE_UNKNOWN = 0;
     final static int TYPE_JPG = 1;
     final static int TYPE_PNG = 2;

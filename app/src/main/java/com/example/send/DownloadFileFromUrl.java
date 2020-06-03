@@ -6,13 +6,15 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Path;
 
-class DownloadFileFromURL extends AsyncTask<String, String, String> {
+class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
 
     private MainActivity mainActivity;
     private ProgressDialog pDialog;
@@ -34,30 +36,45 @@ class DownloadFileFromURL extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected String doInBackground(String... urlString) {
+    protected String doInBackground(ReceivedServerData... receivedServerData) {
         int count;
         try {
-            URL url = new URL(urlString[0]);
+            String fileName = receivedServerData[0].fileName;
+
+            URL url = receivedServerData[0].url;
             URLConnection connection = url.openConnection();
             connection.connect();
 
             int lengthOfFile = connection.getContentLength();
 
-            // download the file
             InputStream input = new BufferedInputStream(url.openStream(),
                     8192);
 
+            ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+            // Output stream
+            File path = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+            OutputStream output = new FileOutputStream(path);
 
-            byte data[] = new byte[1024];
+            byte[] data = new byte[1024];
 
             long total = 0;
 
             while ((count = input.read(data)) != -1) {
                 total += count;
+                // publishing the progress....
+                // After this onProgressUpdate will be called
                 publishProgress("" + (int) ((total * 100) / lengthOfFile));
-            }
-            input.close();
 
+                // writing data to file
+                output.write(data, 0, count);
+            }
+
+            // flushing output
+            output.flush();
+
+            // closing streams
+            output.close();
+            input.close();
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
         }

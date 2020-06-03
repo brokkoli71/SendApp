@@ -19,7 +19,7 @@ public class ReceivedDataHandler {
         });
     }
 
-    private void makeToast(final String msg, final MainActivity mainActivity){
+    private static void makeToast(final String msg, final MainActivity mainActivity){
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -28,7 +28,7 @@ public class ReceivedDataHandler {
         });
     }
 
-    private String saveData(String fileName, byte[] byteData, MainActivity mainActivity){
+    static File getAvailableFile(String fileName, MainActivity mainActivity){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
@@ -39,31 +39,89 @@ public class ReceivedDataHandler {
         }
 
         //save data to storage
-        File photo = new File(myFolder, fileName);
+        File file = new File(myFolder, fileName);
         int i = 0;
         Log.w("receiver", "filename: "+ fileName);
-        if (photo.exists()){
+        if (file.exists()){
             String[] splitFileName = fileName.split("(\\.)(?!.*\\1)");
-            while (photo.exists()){
+            while (file.exists()){
                 String newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
-                photo = new File(myFolder, newFileName);
+                file = new File(myFolder, newFileName);
                 Log.w("receiver", "filename: "+ newFileName);
                 i++;
             }
         }
+        return file;
+    }
 
-        try {
-            FileOutputStream fos=new FileOutputStream(photo.getPath());
 
-            fos.write(byteData);
-            fos.close();
+//    old fun
+//    private static String saveData(String fileName, byte[] byteData, MainActivity mainActivity){
+//        //create folder if not exists
+//        String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
+//        File myFolder =new File(stringFolder);
+//        if (!myFolder.exists()){
+//            if(!myFolder.mkdir()){
+//                makeToast("Fehler beim erstellen des Ordners", mainActivity);
+//            }
+//        }
+//
+//        //save data to storage
+//        File file = new File(myFolder, fileName);
+//        int i = 0;
+//        Log.w("receiver", "filename: "+ fileName);
+//        if (file.exists()){
+//            String[] splitFileName = fileName.split("(\\.)(?!.*\\1)");
+//            while (file.exists()){
+//                String newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
+//                file = new File(myFolder, newFileName);
+//                Log.w("receiver", "filename: "+ newFileName);
+//                i++;
+//            }
+//        }
+//
+//        try {
+//            FileOutputStream fos=new FileOutputStream(file.getPath());
+//
+//            fos.write(byteData);
+//            fos.close();
+//
+//            Log.w("receiver", "saved file: "+ file.getAbsolutePath());
+//            return file.getAbsolutePath();
+//        }catch (IOException e) {
+//            makeToast("could not save file", mainActivity);
+//            Log.e("receiver", "could not save file", e);
+//        }
+//        return null;
+//    }
 
-            Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
-            return photo.getAbsolutePath();
-        }catch (IOException e) {
-            makeToast("could not save file", mainActivity);
-            Log.e("receiver", "could not save file", e);
+    static void handleType(int dataType, File saveToFile, MainActivity mainActivity){
+        //handle received data depending on data type in future
+        String path = saveToFile.getAbsolutePath();
+        switch (dataType) {
+
+            case SendingTaskData.TYPE_JPEG:
+            case SendingTaskData.TYPE_JPG:
+            case SendingTaskData.TYPE_PNG:
+                makeToast("Image saved: "+path, mainActivity);
+                break;
+
+            case SendingTaskData.TYPE_MP3:
+                makeToast("Audio saved: "+path, mainActivity);
+                setImageDrawable(Values.AUDIO_IMAGE, mainActivity);
+                break;
+
+            case SendingTaskData.TYPE_MP4:
+                makeToast("Video saved: "+path, mainActivity);
+                setImageDrawable(Values.VIDEO_IMAGE, mainActivity);
+                break;
+
+            default:
+                Log.e("receiver", "unknown data type");
+                makeToast("unknown data type", mainActivity);
+
+                makeToast("saved: "+path, mainActivity);
+                setImageDrawable(Values.DEFAULT_IMAGE, mainActivity);
         }
-        return null;
     }
 }
