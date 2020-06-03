@@ -9,6 +9,7 @@ outward appearance:
     name
     done: logo
 
+todo now: log file on server
 
 tidy up code:
     restructure colors.xml

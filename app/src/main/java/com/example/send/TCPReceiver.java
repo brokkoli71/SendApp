@@ -12,7 +12,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class TCPReceiver implements  Runnable {
-    private boolean lookingForData = true; //might get activated and deactivated in later versions
     private MainActivity mainActivity; //for making Toasts and setting imageView
 
     TCPReceiver(MainActivity mainActivity){
@@ -25,7 +24,7 @@ public class TCPReceiver implements  Runnable {
             ServerSocket serverSocket = new ServerSocket(9700);
             Log.w("receiver", "waiting for client");
 
-            while (lookingForData) {
+            while (true) {
                 Socket mySocket = serverSocket.accept();
                 Log.w("receiver", "new socket");
                 DataInputStream dis = new DataInputStream(mySocket.getInputStream());
@@ -84,6 +83,9 @@ public class TCPReceiver implements  Runnable {
             e.printStackTrace();
         }
     }
+
+
+    
     private String saveData(String fileName, byte[] byteData){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";

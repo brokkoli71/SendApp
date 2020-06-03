@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -43,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
     EditText e1, e2;
     public ImageView imageView;
     Button buttonSend, buttonSelect;
-    Switch switch1;
+    Switch switch1, switch2;
+    Thread TCPReceiverThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSelect = findViewById(R.id.button2);
         imageView = findViewById(R.id.imageView);
         switch1 = findViewById(R.id.switch1);
+        switch2 = findViewById(R.id.switch2);
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                         tcpSender.execute(sendingTaskData);
                         Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
                     }else{
-                        ServerSender serverSender = new ServerSender(getString(R.string.server_url), MainActivity.this, getString(R.string.pwd));
+                        String receiver = e2.getText().toString();
+                        ServerSender serverSender = new ServerSender(getString(R.string.server_url), MainActivity.this, getString(R.string.pwd), receiver);
                         serverSender.execute(sendingTaskData);
                         Toast.makeText(getApplicationContext(), "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
                     }
@@ -161,9 +166,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         tcpReceiver = new TCPReceiver(this);
+        TCPReceiverThread = new Thread(tcpReceiver);
+        TCPReceiverThread.start();
 
-        Thread myThread = new Thread(tcpReceiver);
-        myThread.start();
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+            }
+        });
     }
 
     private void getPermissions(){
