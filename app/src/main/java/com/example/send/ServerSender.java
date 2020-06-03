@@ -35,6 +35,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
             this.password = password;
             this.receiver = receiver;
         }
+
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
         dataType = sendingTaskData[0].dataType;
@@ -61,7 +62,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
                 entityBuilder.addBinaryBody("data", byteData, ContentType.create("text/plain"), "filename");
             }
 
-            //todo gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file
+            //fixed? "gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file"
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
             HttpResponse response = client.execute(post);

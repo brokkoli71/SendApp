@@ -85,67 +85,10 @@ public class TCPReceiver implements  Runnable {
     }
 
 
-    
-    private String saveData(String fileName, byte[] byteData){
-        //create folder if not exists
-        String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
-        File myFolder =new File(stringFolder);
-        if (!myFolder.exists()){
-            if(!myFolder.mkdir()){
-                makeToast("Fehler beim erstellen des Ordners");
-            }
-        }
 
-        //save data to storage
-        File photo = new File(myFolder, fileName);
-        int i = 0;
-        Log.w("receiver", "filename: "+ fileName);
-        if (photo.exists()){
-            String[] splitFileName = fileName.split("(\\.)(?!.*\\1)");
-            while (photo.exists()){
-                String newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
-                photo = new File(myFolder, newFileName);
-                Log.w("receiver", "filename: "+ newFileName);
-                i++;
-            }
-        }
 
-        try {
-            FileOutputStream fos=new FileOutputStream(photo.getPath());
 
-            fos.write(byteData);
-            fos.close();
 
-            Log.w("receiver", "saved file: "+ photo.getAbsolutePath());
-            return photo.getAbsolutePath();
-        }catch (IOException e) {
-            makeToast("could not save file");
-            Log.e("receiver", "could not save file", e);
-        }
-        return null;
-    }
-
-    /*private void setImageFromStrorage(Uri path){
-        //todo here:
-        //get uri when calling fun
-        //uri to bitmap
-        final Bitmap bitmap;
-        mainActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mainActivity.setPictureInImageView(bitmap);
-            }
-        });
-    }*/
-
-    private void setImageDrawable(final int path){
-        mainActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mainActivity.imageView.setImageDrawable(mainActivity.getResources().getDrawable(path));
-            }
-        });
-    }
 
 
     private void makeToast(final String msg){
