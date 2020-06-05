@@ -26,21 +26,26 @@ public class ReceivedDataHandler {
         if (!myFolder.exists()){
             if(!myFolder.mkdir()){
                 Toaster.makeToast("Fehler beim erstellen des Ordners");
+                Log.e("file_saver", "could not add new folder \"SendApp\"");
+            }else {
+                Log.w("file_saver", "added new folder \"SendApp\"");
             }
         }
 
-        //save data to storage
         File file = new File(myFolder, fileName);
         int i = 0;
-        Log.w("receiver", "filename: "+ fileName);
         if (file.exists()){
             String[] splitFileName = fileName.split("(\\.)(?!.*\\1)");
+            String newFileName = "";
             while (file.exists()){
-                String newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
+                newFileName = splitFileName[0]+"_"+i+"."+splitFileName[1];
                 file = new File(myFolder, newFileName);
-                Log.w("receiver", "filename: "+ newFileName);
                 i++;
             }
+            Log.w("file_saver", "filename taken: "+ fileName);
+            Log.w("file_saver", "new filename: "+ newFileName);
+        }else{
+            Log.w("file_saver", "filename: "+ fileName);
         }
         return file;
     }
@@ -108,7 +113,7 @@ public class ReceivedDataHandler {
                 break;
 
             default:
-                Log.e("receiver", "unknown data type");
+                Log.e("file_saver", "unknown data type");
                 Toaster.makeToast("unknown data type");
 
                 Toaster.makeToast("saved: "+path);

@@ -176,11 +176,9 @@ public class MainActivity extends AppCompatActivity {
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Toaster.makeToast("hdslfk");
-
                 if (b){
                     String myReceiverName = e2.getText().toString();
-                    serverReceiver = new ServerReceiver(getString(R.string.server_url_out), getString(R.string.pwd));
+                    serverReceiver = new ServerReceiver(MainActivity.this);
                     serverReceiver.execute(myReceiverName);
                 }else{
                     //dispend

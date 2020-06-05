@@ -24,10 +24,10 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     private final String server_pwd;
     private final MainActivity mainActivity;
 
-    ServerReceiver(String url, String password, MainActivity mainActivity){
-        this.server_url = url;
-        this.server_pwd = password;
+    ServerReceiver(MainActivity mainActivity){
         this.mainActivity = mainActivity;
+        this.server_url = mainActivity.getString(R.string.server_url_out);
+        this.server_pwd = mainActivity.getString(R.string.pwd);
     }
 
 
