@@ -58,6 +58,7 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
             byte[] data = new byte[1024];
 
             long total = 0;
+            Log.w("file_saver", "start downloading");
 
             while ((count = input.read(data)) != -1) {
                 total += count;
@@ -68,7 +69,8 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
                 // writing data to file
                 output.write(data, 0, count);
             }
-
+            Log.w("file_saver", "downloaded "+total+" bytes");
+            Toaster.makeToast(fileName+" wurde gespeichert ("+total+" Bytes)");
             // flushing output
             output.flush();
 
