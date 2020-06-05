@@ -19,16 +19,26 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     private static final int READ_TIMEOUT=15000;
     final int WAITING_TIME = 500;
 
-    MainActivity mainActivity;
-    ServerReceiver(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
+    private final String server_url;
+    private final String server_pwd;
+
+    ServerReceiver(String url, String password){
+        this.server_url = url;
+        this.server_pwd = password;
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        Log.w("server_receiver", s);
     }
 
     @Override
     protected String doInBackground(String... strings) {
         HttpURLConnection conn;
+        Log.w("server_receiver", "start");
         try {
-            URL url = new URL(mainActivity.getString(R.string.server_url_out));
+            URL url = new URL(server_url);
 
             conn = (HttpURLConnection)url.openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
@@ -37,11 +47,12 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
             conn.setDoInput(true);
             conn.setDoOutput(true);
-
+            Log.w("server_receiver", "setup ready");
             Uri.Builder builder = new Uri.Builder()
-                    .appendQueryParameter("password", mainActivity.getString(R.string.pwd))
+                    .appendQueryParameter("password", server_pwd)
                     .appendQueryParameter("receiver", strings[0]);
             String query = builder.build().getEncodedQuery();
+            Log.w("server_receiver", "query ready");
 
             // Open connection for sending data
             OutputStream os = conn.getOutputStream();
@@ -52,17 +63,18 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             writer.close();
             os.close();
             conn.connect();
+            Log.w("server_receiver", "request send");
 
         } catch (IOException e1) {
             e1.printStackTrace();
-            Log.e("receive_server", "connectivity error");
+            Log.e("server_receiver", "connectivity error");
             Toaster.makeToast("konnte keine Verbindung aufbauen");
             return "connectivity error";
         }
 
         try {
             int response_code = conn.getResponseCode();
-
+            Log.w("server_receiver", "got response:"+response_code);
             // Check if successful connection made
             if (response_code == HttpURLConnection.HTTP_OK) {
 
@@ -76,7 +88,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                     result.append(line);
                 }
 
-
+                Toaster.makeToast(result.toString(), true);
                 //todo: handle result.toString());
                 return "success";
             }else{

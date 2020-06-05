@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SendingTaskData sendingTaskData;
     private TCPReceiver tcpReceiver;
+    private ServerReceiver serverReceiver;
     int cacheSize;
 
     EditText e1, e2;
@@ -175,7 +176,15 @@ public class MainActivity extends AppCompatActivity {
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Toaster.makeToast("hdslfk");
 
+                if (b){
+                    String myReceiverName = e2.getText().toString();
+                    serverReceiver = new ServerReceiver(getString(R.string.server_url_out), getString(R.string.pwd));
+                    serverReceiver.execute(myReceiverName);
+                }else{
+                    //dispend
+                }
             }
         });
     }

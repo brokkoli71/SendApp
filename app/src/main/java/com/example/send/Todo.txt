@@ -4,9 +4,6 @@ done:
     logo
 
 
-:
-
-
 outward appearance:
     name
 
