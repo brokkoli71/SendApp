@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ServerReceiver extends AsyncTask<String, Void, String> {
@@ -21,17 +22,15 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
     private final String server_url;
     private final String server_pwd;
+    private final MainActivity mainActivity;
 
-    ServerReceiver(String url, String password){
+    ServerReceiver(String url, String password, MainActivity mainActivity){
         this.server_url = url;
         this.server_pwd = password;
+        this.mainActivity = mainActivity;
     }
 
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        Log.w("server_receiver", s);
-    }
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -47,12 +46,11 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
             conn.setDoInput(true);
             conn.setDoOutput(true);
-            Log.w("server_receiver", "setup ready");
+
             Uri.Builder builder = new Uri.Builder()
                     .appendQueryParameter("password", server_pwd)
                     .appendQueryParameter("receiver", strings[0]);
             String query = builder.build().getEncodedQuery();
-            Log.w("server_receiver", "query ready");
 
             // Open connection for sending data
             OutputStream os = conn.getOutputStream();
@@ -88,9 +86,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                     result.append(line);
                 }
 
-                Toaster.makeToast(result.toString(), true);
-                //todo: handle result.toString());
-                return "success";
+                return result.toString();
             }else{
 
                 return("unsuccessful");
@@ -101,6 +97,27 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             return "exception";
         } finally {
             conn.disconnect();
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String message) {
+        super.onPostExecute(message);
+        Log.w("server_receiver", message);
+
+        if (message.equals("exception")||
+                message.equals("unsuccessful")||
+                message.equals("connectivity error")){
+            Log.e("server_receiver", "got "+message);
+        }else {
+            try {
+                URL url = new URL(mainActivity.getString(R.string.server_url_files)+message);
+                DownloadFileFromURL downloader = new DownloadFileFromURL(mainActivity);
+                downloader.execute(new ReceivedServerData(message, url));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 }

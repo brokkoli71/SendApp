@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    <string name="server_url_in">www.example.com/receiver</string>-->
-    <!--    <string name="server_url_out">www.example.com/sender</string>-->
+    <!--    <string name="server_url_in">www.example.com/receiver.php</string>-->
+    <!--    <string name="server_url_out">www.example.com/sender.php</string>-->
+    <!--    <string name="server_url_files">www.example.com/files/</string>-->
     <!--    <string name="pwd">password</string>-->
 </resources>

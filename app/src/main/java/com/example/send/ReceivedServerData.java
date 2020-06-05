@@ -7,11 +7,10 @@ import java.net.URL;
 public class ReceivedServerData {
     URL url;
     String fileName;
-    int dataType;
+    //int dataType; todo: add later
 
-    public ReceivedServerData(String fileName, int dataType, URL url) {
+    public ReceivedServerData(String fileName, URL url) {
         this.fileName = fileName;
-        this.dataType = dataType;
         this.url = url;
     }
 }
