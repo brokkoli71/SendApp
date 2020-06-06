@@ -40,8 +40,9 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
         int count;
         try {
             String fileName = receivedServerData[0].fileName;
-
+            int dataType = receivedServerData[0].dataType;
             URL url = receivedServerData[0].url;
+
             URLConnection connection = url.openConnection();
             connection.connect();
 
@@ -52,8 +53,8 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
 
             ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
             // Output stream
-            File path = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
-            OutputStream output = new FileOutputStream(path);
+            File saveToFile = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+            OutputStream output = new FileOutputStream(saveToFile);
 
             byte[] data = new byte[1024];
 
@@ -70,17 +71,19 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
                 output.write(data, 0, count);
             }
             Log.w("file_saver", "downloaded "+total+" bytes");
-            Toaster.makeToast(fileName+" wurde gespeichert ("+total+" Bytes)");
+            Toaster.makeToast(fileName+" wurde gespeichert ("+total+" Bytes)", true);
             // flushing output
             output.flush();
 
             // closing streams
             output.close();
             input.close();
+
+            ReceivedDataHandler.handleType(dataType, saveToFile, mainActivity);
+
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
         }
-
         return null;
     }
 
@@ -99,7 +102,6 @@ class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> 
     protected void onPostExecute(String file_url) {
         // dismiss the dialog after the file was downloaded
         pDialog.dismiss();
-
     }
 
 }

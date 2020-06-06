@@ -103,17 +103,21 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String message) {
         super.onPostExecute(message);
-        Log.w("server_receiver", message);
+        Log.w("server_receiver", "message: "+message);
 
         if (message.equals("exception")||
                 message.equals("unsuccessful")||
                 message.equals("connectivity error")){
             Log.e("server_receiver", "got "+message);
-        }else {
+        }else if (message.equals("no result")){
+            Log.w("server_receiver", "no file sent");
+        }else{
             try {
-                URL url = new URL(mainActivity.getString(R.string.server_url_files)+message);
+                String filename = message.split("\\?")[0];
+                int dataType = Integer.parseInt(message.split("\\?")[1]);
+                URL url = new URL(mainActivity.getString(R.string.server_url_files)+filename);
                 DownloadFileFromURL downloader = new DownloadFileFromURL(mainActivity);
-                downloader.execute(new ReceivedServerData(message, url));
+                downloader.execute(new ReceivedServerData(filename, dataType, url));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
