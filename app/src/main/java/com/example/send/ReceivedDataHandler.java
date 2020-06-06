@@ -100,6 +100,7 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_JPG:
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
+                //TODO weiter arbeiten: bild in imageview setzen
                 break;
 
             case SendingTaskData.TYPE_MP3:
