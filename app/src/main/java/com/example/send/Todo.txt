@@ -5,7 +5,7 @@ done:
 
 
 outward appearance:
-    name: quicksend?
+    name: quicksend? other ideas: "blue", "BlueSend", "blau", "schwupps", "schwuppdiwupp", "zack", "ClearSend"
 
 ui:
     make waiting for receiving data from server not checked for long time
