@@ -5,7 +5,7 @@ done:
 
 
 outward appearance:
-    name
+    name: quicksend?
 
 ui:
     make waiting for receiving data from server not checked for long time
