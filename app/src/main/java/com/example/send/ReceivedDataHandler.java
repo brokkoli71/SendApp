@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,12 +25,20 @@ public class ReceivedDataHandler {
         });
     }
     private static void setPictureInImageView(final Uri uri, final MainActivity mainActivity){
+        //wait for file get properly saved
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
+                    }
+                }, 100);
             }
         });
+
+
     }
 
     static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
@@ -40,12 +49,15 @@ public class ReceivedDataHandler {
             bitmap = BitmapFactory.decodeStream(inputStream);
 
         }catch (Exception e){
-            Log.e("set_img", "could not decode uri");
+            Log.e("set_img", "could not decode uri", e);
+        }finally {
+            try {
+                assert inputStream != null;
+                inputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        try {
-            assert inputStream != null;
-            inputStream.close();
-        }catch (Exception ignored){}
 
         return bitmap;
     }

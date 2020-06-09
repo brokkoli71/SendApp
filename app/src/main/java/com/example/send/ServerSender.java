@@ -14,6 +14,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 
@@ -43,7 +44,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
         fileName = sendingTaskData[0].fileName;
         try
         {
-            HttpClient client = new DefaultHttpClient();
+            HttpClient client = HttpClientBuilder.create().build();
             HttpPost post = new HttpPost(url);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
@@ -57,12 +58,10 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
             entityBuilder.addTextBody("receiver", receiver);
 
 
-            if(byteData != null)
-            {
+            if(byteData != null){
                 entityBuilder.addBinaryBody("data", byteData, ContentType.create("text/plain"), "filename");
             }
 
-            //(fixed?) gives always same output on server, maybe "temp_name" needs to be changed, doesn't drop first request file
             HttpEntity entity = entityBuilder.build();
             post.setEntity(entity);
             HttpResponse response = client.execute(post);

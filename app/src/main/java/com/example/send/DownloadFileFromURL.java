@@ -70,7 +70,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
                 // writing data to file
                 output.write(data, 0, count);
             }
-            Log.w("file_saver", "downloaded "+total+" bytes");
+            Log.w("file_saver", "downloaded and saved"+total+" bytes");
             Toaster.makeToast(fileName+" wurde gespeichert ("+total+" Bytes)", true);
             // flushing output
             output.flush();
