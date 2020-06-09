@@ -113,10 +113,13 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             Log.w("server_receiver", "no file sent");
         }else{
             try {
-                String filename = message.split("\\?")[0];
-                int dataType = Integer.parseInt(message.split("\\?")[1]);
+                String[] messageSplit = message.split("\\?");
+                String filename = messageSplit[0];
+                int dataType = Integer.parseInt(messageSplit[1]);
+                int taskID = Integer.parseInt(messageSplit[2]);
+
                 URL url = new URL(mainActivity.getString(R.string.server_url_files)+filename);
-                DownloadFileFromURL downloader = new DownloadFileFromURL(mainActivity);
+                DownloadFileFromURL downloader = new DownloadFileFromURL(mainActivity, taskID);
                 downloader.execute(new ReceivedServerData(filename, dataType, url));
             } catch (MalformedURLException e) {
                 e.printStackTrace();

@@ -18,9 +18,11 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
 
     private MainActivity mainActivity;
     private ProgressDialog pDialog;
+    private int taskID;
 
-    public DownloadFileFromURL(MainActivity mainActivity) {
+    public DownloadFileFromURL(MainActivity mainActivity, int taskID) {
         this.mainActivity = mainActivity;
+        this.taskID = taskID;
     }
 
     @Override
@@ -81,10 +83,11 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
 
             ReceivedDataHandler.handleType(dataType, saveToFile, mainActivity);
 
+            return "success";
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
         }
-        return null;
+        return "error";
     }
 
     /**
@@ -99,9 +102,13 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
      * After completing background task Dismiss the progress dialog
      * **/
     @Override
-    protected void onPostExecute(String file_url) {
+    protected void onPostExecute(String message) {
         // dismiss the dialog after the file was downloaded
         pDialog.dismiss();
+        if (message.equals("success")){
+            ServerSuccess serverSuccess = new ServerSuccess(mainActivity);
+
+        }
     }
 
 }
