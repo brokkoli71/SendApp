@@ -51,9 +51,8 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
             InputStream input = new BufferedInputStream(url.openStream(),
                     8192);
 
-            ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
             // Output stream
-            File saveToFile = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+            File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
             OutputStream output = new FileOutputStream(saveToFile);
 
             byte[] data = new byte[1024];
@@ -70,7 +69,8 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
                 // writing data to file
                 output.write(data, 0, count);
             }
-            Log.w("file_saver", "downloaded and saved"+total+" bytes");
+            Log.w("file_saver", "downloaded and saved "+total+" bytes");
+            Log.w("file_saver", "filepath: "+saveToFile.toString());
             Toaster.makeToast(fileName+" wurde gespeichert ("+total+" Bytes)", true);
             // flushing output
             output.flush();

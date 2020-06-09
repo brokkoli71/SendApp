@@ -44,7 +44,7 @@ public class TCPReceiver implements  Runnable {
                     Log.e("receiver", "data size is 0");
                 }
 
-                File saveToFile = ReceivedDataHandler.getAvailableFile(fileName, mainActivity);
+                File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
 
                 try {
                     FileOutputStream fos=new FileOutputStream(saveToFile.getPath());

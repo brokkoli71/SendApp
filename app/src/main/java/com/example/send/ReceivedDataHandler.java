@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,10 +36,9 @@ public class ReceivedDataHandler {
                     public void run() {
                         mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
                     }
-                }, 100);
+                }, 3000);
             }
         });
-
 
     }
 
@@ -62,7 +63,7 @@ public class ReceivedDataHandler {
         return bitmap;
     }
 
-    static File getAvailableFile(String fileName, MainActivity mainActivity){
+    static File getAvailableFile(String fileName){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
@@ -143,7 +144,7 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_JPG:
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
-                Uri uri = Uri.parse(saveToFile.toString());
+                Uri uri = FileProvider.getUriForFile(mainActivity, mainActivity.getApplicationContext().getPackageName() + ".provider", saveToFile);
                 setPictureInImageView(uri, mainActivity);
                 //TODO weiter arbeiten: bild in imageview setzen
                 break;
