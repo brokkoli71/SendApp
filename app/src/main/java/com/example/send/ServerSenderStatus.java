@@ -42,21 +42,21 @@ public class ServerSenderStatus {
                     .appendQueryParameter("password", password)
                     .appendQueryParameter("task_id", taskID);
             query = builder.build().getEncodedQuery();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    boolean isReceived(){
-        // Open connection for sending data
-        OutputStream os = null;
-        try {
-            os = conn.getOutputStream();
+
+            OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
             writer.write(query);
             writer.flush();
             writer.close();
             os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    boolean isReceived(){
+        // Open connection for sending data
+        try {
             conn.connect();
 
             // Check if successful connection made
@@ -70,6 +70,7 @@ public class ServerSenderStatus {
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
+                Log.w("server_sender_status", result.toString());
                 if (result.toString().equals("true")){
                     return true;
                 }

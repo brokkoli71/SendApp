@@ -28,6 +28,8 @@ import java.net.URL;
 
 public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
 
+    final int CHECK_STATUS_TIMEOUT = 1000;
+
     private final String url_send;
     private final String url_response;
     private MainActivity mainActivity;
@@ -57,7 +59,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
         pDialog.setIndeterminate(false);
         pDialog.setMax(1);
         pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pDialog.setCancelable(false);
+        pDialog.setCancelable(false); //todo: add functionality on canceling -> cancel sending
         pDialog.show();
     }
     @Override
@@ -102,9 +104,12 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
 
             ServerSenderStatus serverSenderStatus = new ServerSenderStatus(url_response, taskID, password);
 
-            //while (!serverSenderStatus.isReceived()){
-                Thread.sleep(3000);
-            //}
+            while (!serverSenderStatus.isReceived()){
+                Thread.sleep(CHECK_STATUS_TIMEOUT);
+            }
+
+            Toaster.makeToast("datei wurde empfangen");
+            Log.w("server_sender", "success");
 
             return taskID;
         }

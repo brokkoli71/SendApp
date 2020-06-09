@@ -18,7 +18,7 @@ import java.net.URL;
 public class ServerReceiver extends AsyncTask<String, Void, String> {
     private static final int CONNECTION_TIMEOUT=10000;
     private static final int READ_TIMEOUT=15000;
-    final int WAITING_TIME = 500;
+    final int CHECK_RESULT_TIMEOUT = 500;
 
     private final String server_url;
     private final String server_pwd;
