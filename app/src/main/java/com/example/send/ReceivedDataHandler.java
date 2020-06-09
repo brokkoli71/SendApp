@@ -31,15 +31,9 @@ public class ReceivedDataHandler {
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
-                    }
-                }, 3000);
+                mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
             }
         });
-
     }
 
     static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
