@@ -72,10 +72,9 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
             post.setEntity(entity);
             HttpResponse response = client.execute(post);
             HttpEntity httpEntity = response.getEntity();
-            final String result = EntityUtils.toString(httpEntity);
-            Log.v("result", result);
-
-            return result;
+            String taskID = EntityUtils.toString(httpEntity);
+            Log.w("server_sender", "taskID = "+taskID);
+            return taskID;
         }
         catch(Exception e)
         {
