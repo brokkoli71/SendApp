@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView);
 
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -182,6 +182,17 @@ public class MainActivity extends AppCompatActivity {
                     serverReceiver.execute(myReceiverName);
                 }else{
                     //dispend
+                }
+            }
+        });
+
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    e2.setText(ip);
+                }else{
+                    e2.setText("key");
                 }
             }
         });
