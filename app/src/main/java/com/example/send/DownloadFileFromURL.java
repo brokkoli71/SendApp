@@ -14,7 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 
-class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
+public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
 
     private MainActivity mainActivity;
     private ProgressDialog pDialog;

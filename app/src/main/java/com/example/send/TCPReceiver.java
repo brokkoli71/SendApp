@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -52,12 +53,13 @@ public class TCPReceiver implements  Runnable {
                     fos.close();
 
                     Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
+
+                    ReceivedDataHandler.handleType(dataType,saveToFile, mainActivity);
                 }catch (IOException e) {
-                    Toaster.makeToast("could not save file");
+                    Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
                     Log.e("receiver", "could not save file", e);
                 }
 
-                ReceivedDataHandler.handleType(dataType,saveToFile, mainActivity);
             }
         } catch (IOException e) {
             e.printStackTrace();
