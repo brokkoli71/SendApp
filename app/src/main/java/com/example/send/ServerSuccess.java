@@ -4,8 +4,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -38,7 +41,7 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
             conn.setRequestMethod("POST");
 
             conn.setDoInput(true);
-            conn.setDoOutput(false);
+            conn.setDoOutput(true);
 
             Uri.Builder builder = new Uri.Builder()
                     .appendQueryParameter("password", server_pwd)
@@ -58,9 +61,28 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
 
         } catch (IOException e1) {
             e1.printStackTrace();
-            Log.e("server_receiver", "connectivity error");
+            Log.e("server_success", "connectivity error");
             Toaster.makeToast("konnte keine Verbindung aufbauen");
             return "connectivity error";
+        }
+
+        try {
+            // Check if successful connection made
+            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                InputStream input = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                StringBuilder result = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                Log.w("server_success", result.toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

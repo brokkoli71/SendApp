@@ -107,6 +107,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
         pDialog.dismiss();
         if (message.equals("success")){
             ServerSuccess serverSuccess = new ServerSuccess(mainActivity);
+            serverSuccess.execute(taskID);
 
         }
     }

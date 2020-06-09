@@ -42,9 +42,15 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
         dataType = sendingTaskData[0].dataType;
         byteData = sendingTaskData[0].byteData;
         fileName = sendingTaskData[0].fileName;
-        try
-        {
-            HttpClient client = HttpClientBuilder.create().build();
+        HttpClient client;
+
+        //depending on Android Version
+        try {
+            client = HttpClientBuilder.create().build();
+        }catch (NoSuchFieldError e){
+            client = new DefaultHttpClient();
+        }
+        try {
             HttpPost post = new HttpPost(url);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
