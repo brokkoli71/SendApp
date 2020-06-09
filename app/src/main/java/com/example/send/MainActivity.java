@@ -198,23 +198,7 @@ public class MainActivity extends AppCompatActivity {
         EasyPermissions.requestPermissions(MainActivity.this, "Access for storage",
                 101, galleryPermissions);
     }
-    private Bitmap readPictureFromSelectedFileUri(){
-        InputStream inputStream = null;
-        Bitmap bitmap = null;
-        try {
-            inputStream = getContentResolver().openInputStream(sendingTaskData.selectedFileUri);
-            bitmap = BitmapFactory.decodeStream(inputStream);
 
-        }catch (Exception e){
-            Log.e("set_img", "could not decode uri");
-        }
-        try {
-            assert inputStream != null;
-            inputStream.close();
-        }catch (Exception ignored){}
-
-        return bitmap;
-    }
     public void setPictureInImageView(Bitmap bitmap) {
         //bitmap gets resized to not take to much RAM
         int newWidth =  getResources().getDimensionPixelSize(R.dimen.inner_content_width);
@@ -274,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/"))
-                setPictureInImageView(readPictureFromSelectedFileUri());
+                setPictureInImageView(ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.selectedFileUri,getContentResolver()));
             else{
                 imageView.setBackground(getResources().getDrawable(R.drawable.image_view));
                 if (type.startsWith("audio/"))

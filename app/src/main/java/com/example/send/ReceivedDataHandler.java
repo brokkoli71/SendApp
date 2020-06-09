@@ -1,5 +1,9 @@
 package com.example.send;
 
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -7,6 +11,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ReceivedDataHandler {
 
@@ -17,6 +22,32 @@ public class ReceivedDataHandler {
                 mainActivity.imageView.setImageDrawable(mainActivity.getResources().getDrawable(path));
             }
         });
+    }
+    private static void setPictureInImageView(final Uri uri, final MainActivity mainActivity){
+        mainActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
+            }
+        });
+    }
+
+    static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
+        InputStream inputStream = null;
+        Bitmap bitmap = null;
+        try {
+            inputStream = contentResolver.openInputStream(uri);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+
+        }catch (Exception e){
+            Log.e("set_img", "could not decode uri");
+        }
+        try {
+            assert inputStream != null;
+            inputStream.close();
+        }catch (Exception ignored){}
+
+        return bitmap;
     }
 
     static File getAvailableFile(String fileName, MainActivity mainActivity){
@@ -100,6 +131,8 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_JPG:
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
+                Uri uri = Uri.parse(saveToFile.toString());
+                setPictureInImageView(uri, mainActivity);
                 //TODO weiter arbeiten: bild in imageview setzen
                 break;
 
