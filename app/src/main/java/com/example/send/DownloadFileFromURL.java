@@ -33,7 +33,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
         pDialog.setIndeterminate(false);
         pDialog.setMax(100);
         pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pDialog.setCancelable(true);
+        pDialog.setCancelable(false);
         pDialog.show();
     }
 
@@ -57,7 +57,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
             File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
             OutputStream output = new FileOutputStream(saveToFile);
 
-            byte[] data = new byte[1024];
+            byte[] data = new byte[10240];
 
             long total = 0;
             Log.w("file_saver", "start downloading");

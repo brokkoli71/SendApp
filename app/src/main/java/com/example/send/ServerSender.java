@@ -1,5 +1,7 @@
 package com.example.send;
 
+import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,11 +19,20 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
 
-    private final String url;
+public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
+
+    private final String url_send;
+    private final String url_response;
     private MainActivity mainActivity;
+    private ProgressDialog pDialog, pDialog2;
+
 
     String ip, fileName;
     int dataType;
@@ -30,13 +41,25 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
     String receiver;
 
     //Todo: add user ID to identify receiver
-    ServerSender(String url, MainActivity context, String password, String receiver){
-            this.url = url;
+    ServerSender(MainActivity context, String receiver){
+            this.url_send = context.getString(R.string.server_url_in);
+            this.url_response = context.getString(R.string.server_url_response);
             this.mainActivity = context;
-            this.password = password;
+            this.password = context.getString(R.string.pwd);
             this.receiver = receiver;
         }
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        pDialog = new ProgressDialog(mainActivity);
+        pDialog.setMessage("Hochladen...");
+        pDialog.setIndeterminate(false);
+        pDialog.setMax(1);
+        pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pDialog.setCancelable(false);
+        pDialog.show();
+    }
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
         dataType = sendingTaskData[0].dataType;
@@ -51,7 +74,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
             client = new DefaultHttpClient();
         }
         try {
-            HttpPost post = new HttpPost(url);
+            HttpPost post = new HttpPost(url_send);
 
             MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
             entityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -73,7 +96,16 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
             HttpResponse response = client.execute(post);
             HttpEntity httpEntity = response.getEntity();
             String taskID = EntityUtils.toString(httpEntity);
+
+            publishProgress( 1);
             Log.w("server_sender", "taskID = "+taskID);
+
+            ServerSenderStatus serverSenderStatus = new ServerSenderStatus(url_response, taskID, password);
+
+            //while (!serverSenderStatus.isReceived()){
+                Thread.sleep(3000);
+            //}
+
             return taskID;
         }
         catch(Exception e)
@@ -82,7 +114,27 @@ public class ServerSender extends AsyncTask<SendingTaskData, Void, String> {
         }
         return null;
     }
-
+    protected void onProgressUpdate(Integer... progress) {
+        pDialog.setProgress(progress[0]);
+        if (progress[0] == pDialog.getMax()){
+            pDialog.dismiss();
+            pDialog2 = new ProgressDialog(mainActivity);
+            pDialog2.setMessage("warte auf empfaenger...");
+            pDialog2.setIndeterminate(false);
+            pDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pDialog2.setCancelable(false);
+            pDialog2.show();
+        }
+    }
+    @Override
+    protected void onPostExecute(String message) {
+        super.onPostExecute(message);
+        try {
+            pDialog2.dismiss();
+        }catch (NullPointerException e){
+            pDialog.dismiss();
+        }
+    }
 }
 
 
