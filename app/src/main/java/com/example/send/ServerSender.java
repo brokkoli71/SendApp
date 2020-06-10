@@ -42,7 +42,6 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     String password;
     String receiver;
 
-    //Todo: add user ID to identify receiver
     ServerSender(MainActivity context, String receiver){
             this.url_send = context.getString(R.string.server_url_in);
             this.url_response = context.getString(R.string.server_url_response);
@@ -121,6 +120,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     }
     protected void onProgressUpdate(Integer... progress) {
         pDialog.setProgress(progress[0]);
+        //todo: no pdialog -> other feedback instead
         if (progress[0] == pDialog.getMax()){
             pDialog.dismiss();
             pDialog2 = new ProgressDialog(mainActivity);

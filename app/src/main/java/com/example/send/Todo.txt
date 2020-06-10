@@ -23,7 +23,6 @@ what data to send
 
 communication through router with public IP
 
-
 handling addresses and way of handshake
 
 encryption

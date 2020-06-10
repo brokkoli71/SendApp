@@ -2,6 +2,8 @@
 <resources>
     <!--    <string name="server_url_in">https://www.example.com/receiver.php</string>-->
     <!--    <string name="server_url_out">https://www.example.com/sender.php</string>-->
+    <!--    <string name="server_url_success">https://www.example.com/drop_data.php</string>-->
+    <!--    <string name="server_url_response">https://www.example.com/check_sent.php</string>-->
     <!--    <string name="server_url_files">https://www.example.com/files/</string>-->
     <!--    <string name="pwd">password</string>-->
 </resources>
