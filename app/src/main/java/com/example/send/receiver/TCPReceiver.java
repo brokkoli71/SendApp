@@ -1,16 +1,12 @@
 package com.example.send.receiver;
 
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.send.MainActivity;
-import com.example.send.ReceivedDataHandler;
-import com.example.send.Toaster;
+import com.example.send.ui.MainActivity;
+import com.example.send.utils.Toaster;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,7 +15,7 @@ import java.net.Socket;
 public class TCPReceiver implements  Runnable {
     private MainActivity mainActivity; //for making Toasts and setting imageView
 
-    TCPReceiver(MainActivity mainActivity){
+    public TCPReceiver(MainActivity mainActivity){
         this.mainActivity = mainActivity;
     }
 

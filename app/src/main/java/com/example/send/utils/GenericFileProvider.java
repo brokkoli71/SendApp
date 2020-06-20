@@ -1,4 +1,4 @@
-package com.example.send;
+package com.example.send.utils;
 
 import androidx.core.content.FileProvider;
 

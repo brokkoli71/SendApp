@@ -1,9 +1,11 @@
-package com.example.send;
+package com.example.send.receiver;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
+
+import com.example.send.ui.MainActivity;
+import com.example.send.utils.Toaster;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -12,7 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.file.Path;
 
 public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
 

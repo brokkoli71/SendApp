@@ -1,4 +1,4 @@
-package com.example.send;
+package com.example.send.receiver;
 
 import android.net.Uri;
 

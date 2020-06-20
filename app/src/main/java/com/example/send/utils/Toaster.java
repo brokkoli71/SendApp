@@ -1,6 +1,8 @@
-package com.example.send;
+package com.example.send.utils;
 
 import android.widget.Toast;
+
+import com.example.send.ui.MainActivity;
 
 public class Toaster {
     static MainActivity mainActivity;

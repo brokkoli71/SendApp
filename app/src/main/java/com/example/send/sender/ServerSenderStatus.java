@@ -1,7 +1,6 @@
-package com.example.send;
+package com.example.send.sender;
 
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -11,31 +10,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
-public class ServerSuccess extends AsyncTask<Integer, String, String> {
+public class ServerSenderStatus {
+
     private static final int CONNECTION_TIMEOUT=10000;
     private static final int READ_TIMEOUT=15000;
 
-    private MainActivity mainActivity;
+    String url_response, taskID, password, query;
+    HttpURLConnection conn;
 
-    private final String server_url;
-    private final String server_pwd;
+    public ServerSenderStatus(String url_response, String taskID, String password) {
+        this.url_response = url_response;
+        this.taskID = taskID;
+        this.password = password;
 
-    public ServerSuccess(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-        this.server_url = mainActivity.getString(R.string.server_url_success);
-        this.server_pwd = mainActivity.getString(R.string.pwd);
-    }
-
-    @Override
-    protected String doInBackground(Integer... taskID) {
-        HttpURLConnection conn;
         try {
-            URL url = new URL(server_url);
-
-            conn = (HttpURLConnection)url.openConnection();
+            conn = (HttpURLConnection) new URL(url_response).openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
             conn.setConnectTimeout(CONNECTION_TIMEOUT);
             conn.setRequestMethod("POST");
@@ -44,11 +39,10 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
             conn.setDoOutput(true);
 
             Uri.Builder builder = new Uri.Builder()
-                    .appendQueryParameter("password", server_pwd)
-                    .appendQueryParameter("task_id", Integer.toString(taskID[0]));
-            String query = builder.build().getEncodedQuery();
+                    .appendQueryParameter("password", password)
+                    .appendQueryParameter("task_id", taskID);
+            query = builder.build().getEncodedQuery();
 
-            // Open connection for sending data
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
@@ -56,17 +50,15 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
             writer.flush();
             writer.close();
             os.close();
-            conn.connect();
-            Log.w("server_success", "response send");
-
-        } catch (IOException e1) {
-            e1.printStackTrace();
-            Log.e("server_success", "connectivity error");
-            Toaster.makeToast("konnte keine Verbindung aufbauen");
-            return "connectivity error";
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
+    }
+    boolean isReceived(){
+        // Open connection for sending data
         try {
+            conn.connect();
+
             // Check if successful connection made
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
@@ -78,12 +70,14 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
-
-                Log.w("server_success", result.toString());
+                Log.w("server_sender_status", result.toString());
+                if (result.toString().equals("true")){
+                    return true;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 }

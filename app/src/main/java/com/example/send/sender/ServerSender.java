@@ -1,12 +1,12 @@
-package com.example.send;
+package com.example.send.sender;
 
 import android.app.ProgressDialog;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import com.example.send.R;
+import com.example.send.utils.Toaster;
+import com.example.send.ui.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,12 +18,6 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 
 public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
@@ -42,7 +36,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     String password;
     String receiver;
 
-    ServerSender(MainActivity context, String receiver){
+    public ServerSender(MainActivity context, String receiver){
             this.url_send = context.getString(R.string.server_url_in);
             this.url_response = context.getString(R.string.server_url_response);
             this.mainActivity = context;

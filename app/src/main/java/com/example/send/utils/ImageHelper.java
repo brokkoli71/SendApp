@@ -1,4 +1,4 @@
-package com.example.send;
+package com.example.send.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

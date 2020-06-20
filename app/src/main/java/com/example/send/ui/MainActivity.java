@@ -1,4 +1,4 @@
-package com.example.send;
+package com.example.send.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -24,6 +24,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.send.utils.ImageHelper;
+import com.example.send.R;
+import com.example.send.receiver.ReceivedDataHandler;
+import com.example.send.sender.SendingTaskData;
+import com.example.send.receiver.ServerReceiver;
+import com.example.send.sender.ServerSender;
+import com.example.send.utils.Toaster;
+import com.example.send.utils.Values;
 import com.example.send.receiver.TCPReceiver;
 import com.example.send.sender.TCPSender;
 
@@ -260,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     Uri uri = intent.getData();
 
                     sendingTaskData = new SendingTaskData(uri, getContentResolver());
-                    setIconInImageView(sendingTaskData.mime);
+                    setIconInImageView(sendingTaskData.getMime());
                 }
             }
         }
@@ -270,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/"))
-                setPictureInImageView(ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.selectedFileUri,getContentResolver()));
+                setPictureInImageView(ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(),getContentResolver()));
             else{
                 imageView.setBackground(getResources().getDrawable(R.drawable.image_view));
                 if (type.startsWith("audio/"))

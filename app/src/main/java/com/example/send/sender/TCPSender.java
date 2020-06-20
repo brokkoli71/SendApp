@@ -2,8 +2,6 @@ package com.example.send.sender;
 
 import android.os.AsyncTask;
 
-import com.example.send.SendingTaskData;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,7 +13,7 @@ public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
     private int dataType;
     private byte[] byteData;
 
-    TCPSender(String ip){
+    public TCPSender(String ip){
         this.ip = ip;
     }
     @Override

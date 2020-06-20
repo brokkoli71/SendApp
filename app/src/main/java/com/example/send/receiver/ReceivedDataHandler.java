@@ -1,19 +1,20 @@
-package com.example.send;
+package com.example.send.receiver;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.example.send.sender.SendingTaskData;
+import com.example.send.utils.Toaster;
+import com.example.send.utils.Values;
+import com.example.send.ui.MainActivity;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class ReceivedDataHandler {
@@ -36,7 +37,7 @@ public class ReceivedDataHandler {
         });
     }
 
-    static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
+    public static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
         InputStream inputStream = null;
         Bitmap bitmap = null;
         try {

@@ -1,6 +1,6 @@
 //for future Encryption
 
-package com.example.send;
+package com.example.send.encryptor;
 
 import java.security.NoSuchAlgorithmException;
 

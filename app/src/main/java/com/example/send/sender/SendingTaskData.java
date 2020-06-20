@@ -1,4 +1,4 @@
-package com.example.send;
+package com.example.send.sender;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -17,7 +17,13 @@ public class SendingTaskData {
     Uri selectedFileUri;
     String mime;
 
+    public Uri getSelectedFileUri() {
+        return selectedFileUri;
+    }
 
+    public String getMime() {
+        return mime;
+    }
     public byte[] getByteData() {
         return byteData;
     }
@@ -31,14 +37,14 @@ public class SendingTaskData {
     }
 
     //todo: add more in future
-    final static int TYPE_UNKNOWN = 0;
-    final static int TYPE_JPG = 1;
-    final static int TYPE_PNG = 2;
-    final static int TYPE_MP3 = 3;
-    final static int TYPE_MP4 = 4;
-    final static int TYPE_JPEG = 5;
+    public final static int TYPE_UNKNOWN = 0;
+    public final static int TYPE_JPG = 1;
+    public final static int TYPE_PNG = 2;
+    public final static int TYPE_MP3 = 3;
+    public final static int TYPE_MP4 = 4;
+    public final static int TYPE_JPEG = 5;
 
-    SendingTaskData(Uri selectedFileUri, ContentResolver contentResolver){
+    public SendingTaskData(Uri selectedFileUri, ContentResolver contentResolver){
         setFile(selectedFileUri, contentResolver);
     }
 
@@ -143,7 +149,7 @@ public class SendingTaskData {
         return displayName;
     }
 
-    int getBytes(){
+    public int getBytes(){
         return byteData.length;
     }
 }
