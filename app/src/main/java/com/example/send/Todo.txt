@@ -11,6 +11,7 @@ ui:
     make waiting for receiving data from server not checked for long time
     setting image when receiving bugfix
     ProgressDialog when sending data
+    when tapping on image -> maximize it
 
 response to sender when received
 
