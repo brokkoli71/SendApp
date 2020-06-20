@@ -12,7 +12,7 @@
     <EditText
 
 
-        android:id="@+id/editText2"
+        android:id="@+id/oldeditText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -25,7 +25,7 @@
     <!--android:background="@drawable/image_view_neumorph"-->
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/oldbutton"
         android:layout_width="@dimen/inner_content_width"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/min_whitespace"
@@ -37,23 +37,23 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/oldbutton2"
         android:background="@drawable/button"/>
     <!--android:background="@drawable/button_neumorph"
             style="?android:attr/borderlessButtonStyle"
             android:textColor="@color/indigoBackground"-->
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/oldtextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/oldeditText2" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/oldbutton2"
         android:layout_width="@dimen/inner_content_width"
         android:layout_height="100dp"
         android:drawableStart="@drawable/ic_folder_open"
@@ -64,23 +64,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editText2"
+        app:layout_constraintTop_toTopOf="@+id/oldeditText2"
         app:layout_constraintVertical_bias="0.63"
         android:background="@drawable/button"/>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/oldimageView"
         android:layout_width="@dimen/inner_content_width"
         android:layout_height="wrap_content"
         android:minHeight="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/oldtextView"
         android:contentDescription="@string/image_view_content_description"
         android:background="@drawable/image_view"/>
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/oldswitch1"
         android:layout_width="wrap_content"
         android:layout_height="29dp"
         android:checked="true"
@@ -88,13 +88,13 @@
         android:rotation="270"
         android:text="same"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/oldimageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.32999998" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/oldswitch2"
         android:layout_width="wrap_content"
         android:layout_height="29dp"
         android:layout_marginTop="150dp"
@@ -102,9 +102,9 @@
         android:drawableStart="@drawable/ic_save"
         android:rotation="270"
         android:text="receive"
-        app:layout_constraintEnd_toEndOf="@+id/switch1"
-        app:layout_constraintStart_toStartOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintEnd_toEndOf="@+id/oldswitch1"
+        app:layout_constraintStart_toStartOf="@+id/oldswitch1"
+        app:layout_constraintTop_toBottomOf="@+id/oldswitch1" />
     <!--android:background="@drawable/image_view_neumorph"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

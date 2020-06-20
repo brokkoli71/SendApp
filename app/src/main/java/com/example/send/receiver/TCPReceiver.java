@@ -1,5 +1,6 @@
 package com.example.send.receiver;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.send.ui.MainActivity;
@@ -13,10 +14,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class TCPReceiver implements  Runnable {
-    private MainActivity mainActivity; //for making Toasts and setting imageView
+    private Context context; //for making Toasts and setting imageView
 
-    public TCPReceiver(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
+    public TCPReceiver(Context context){
+        this.context = context;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TCPReceiver implements  Runnable {
 
                     Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
 
-                    ReceivedDataHandler.handleType(dataType,saveToFile, mainActivity);
+                    ReceivedDataHandler.handleType(dataType,saveToFile, context);
                 }catch (IOException e) {
                     Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
                     Log.e("receiver", "could not save file", e);

@@ -38,7 +38,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpcore:4.4.6'
     //for ui:
     implementation 'me.relex:circleindicator:2.1.4'
-    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
-
+    //noinspection GradleDependency
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
 }

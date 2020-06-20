@@ -1,6 +1,7 @@
 package com.example.send.receiver;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,7 +20,9 @@ import java.io.InputStream;
 
 public class ReceivedDataHandler {
 
-    private static void setImageDrawable(final int path, final MainActivity mainActivity){
+    private static void setImageDrawable(final int path, final Context context){
+
+        //TODO set image
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -27,7 +30,7 @@ public class ReceivedDataHandler {
             }
         });
     }
-    private static void setPictureInImageView(final Uri uri, final MainActivity mainActivity){
+    private static void setPictureInImageView(final Uri uri, final Context context){
         //wait for file get properly saved
         mainActivity.runOnUiThread(new Runnable() {
             @Override
@@ -130,7 +133,7 @@ public class ReceivedDataHandler {
 //        return null;
 //    }
 
-    public static void handleType(int dataType, File saveToFile, MainActivity mainActivity){
+    public static void handleType(int dataType, File saveToFile, Context context){
         //handle received data depending on data type in future
         String path = saveToFile.getAbsolutePath();
         switch (dataType) {
@@ -139,19 +142,19 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_JPG:
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
-                Uri uri = FileProvider.getUriForFile(mainActivity, mainActivity.getApplicationContext().getPackageName() + ".provider", saveToFile);
-                setPictureInImageView(uri, mainActivity);
+                Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", saveToFile);
+                setPictureInImageView(uri, context);
                 //TODO weiter arbeiten: bild in imageview setzen
                 break;
 
             case SendingTaskData.TYPE_MP3:
                 Toaster.makeToast("Audio saved: "+path);
-                setImageDrawable(Values.AUDIO_IMAGE, mainActivity);
+                setImageDrawable(Values.AUDIO_IMAGE, context);
                 break;
 
             case SendingTaskData.TYPE_MP4:
                 Toaster.makeToast("Video saved: "+path);
-                setImageDrawable(Values.VIDEO_IMAGE, mainActivity);
+                setImageDrawable(Values.VIDEO_IMAGE, context);
                 break;
 
             default:
@@ -159,7 +162,7 @@ public class ReceivedDataHandler {
                 Toaster.makeToast("unknown data type");
 
                 Toaster.makeToast("saved: "+path);
-                setImageDrawable(Values.DEFAULT_IMAGE, mainActivity);
+                setImageDrawable(Values.DEFAULT_IMAGE, context);
         }
     }
 }

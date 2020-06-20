@@ -1,6 +1,7 @@
 package com.example.send.sender;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -26,7 +27,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
 
     private final String url_send;
     private final String url_response;
-    private MainActivity mainActivity;
+    private Context context;
     private ProgressDialog pDialog, pDialog2;
 
 
@@ -36,10 +37,10 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     String password;
     String receiver;
 
-    public ServerSender(MainActivity context, String receiver){
+    public ServerSender(Context context, String receiver){
             this.url_send = context.getString(R.string.server_url_in);
             this.url_response = context.getString(R.string.server_url_response);
-            this.mainActivity = context;
+            this.context = context;
             this.password = context.getString(R.string.pwd);
             this.receiver = receiver;
         }
@@ -47,7 +48,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        pDialog = new ProgressDialog(mainActivity);
+        pDialog = new ProgressDialog(context);
         pDialog.setMessage("Hochladen...");
         pDialog.setIndeterminate(false);
         pDialog.setMax(1);
@@ -117,7 +118,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
         //todo: no pdialog -> other feedback instead
         if (progress[0] == pDialog.getMax()){
             pDialog.dismiss();
-            pDialog2 = new ProgressDialog(mainActivity);
+            pDialog2 = new ProgressDialog(context);
             pDialog2.setMessage("warte auf empfaenger...");
             pDialog2.setIndeterminate(false);
             pDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
