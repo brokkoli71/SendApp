@@ -1,5 +1,6 @@
 package com.example.send.receiver;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -26,12 +27,12 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
     private final String server_url;
     private final String server_pwd;
-    private final MainActivity mainActivity;
+    private final Context context;
 
-    public ServerReceiver(MainActivity mainActivity){
-        this.mainActivity = mainActivity;
-        this.server_url = mainActivity.getString(R.string.server_url_out);
-        this.server_pwd = mainActivity.getString(R.string.pwd);
+    public ServerReceiver(Context context){
+        this.context = context;
+        this.server_url = context.getString(R.string.server_url_out);
+        this.server_pwd = context.getString(R.string.pwd);
     }
 
 
@@ -122,8 +123,8 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                 int dataType = Integer.parseInt(messageSplit[1]);
                 int taskID = Integer.parseInt(messageSplit[2]);
 
-                URL url = new URL(mainActivity.getString(R.string.server_url_files)+filename);
-                DownloadFileFromURL downloader = new DownloadFileFromURL(mainActivity, taskID);
+                URL url = new URL(context.getString(R.string.server_url_files)+filename);
+                DownloadFileFromURL downloader = new DownloadFileFromURL(context, taskID);
                 downloader.execute(new ReceivedServerData(filename, dataType, url));
             } catch (MalformedURLException e) {
                 e.printStackTrace();

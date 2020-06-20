@@ -1,5 +1,6 @@
 package com.example.send.receiver;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -22,15 +23,15 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
     private static final int CONNECTION_TIMEOUT=10000;
     private static final int READ_TIMEOUT=15000;
 
-    private MainActivity mainActivity;
+    private Context context;
 
     private final String server_url;
     private final String server_pwd;
 
-    public ServerSuccess(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-        this.server_url = mainActivity.getString(R.string.server_url_success);
-        this.server_pwd = mainActivity.getString(R.string.pwd);
+    public ServerSuccess(Context context) {
+        this.context = context;
+        this.server_url = context.getString(R.string.server_url_success);
+        this.server_pwd = context.getString(R.string.pwd);
     }
 
     @Override

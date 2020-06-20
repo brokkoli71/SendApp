@@ -1,6 +1,7 @@
 package com.example.send.receiver;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,19 +18,19 @@ import java.net.URLConnection;
 
 public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
 
-    private MainActivity mainActivity;
+    private Context context;
     private ProgressDialog pDialog;
     private int taskID;
 
-    public DownloadFileFromURL(MainActivity mainActivity, int taskID) {
-        this.mainActivity = mainActivity;
+    public DownloadFileFromURL(Context context, int taskID) {
+        this.context = context;
         this.taskID = taskID;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        pDialog = new ProgressDialog(mainActivity);
+        pDialog = new ProgressDialog(context);
         pDialog.setMessage("Downloading file. Please wait...");
         pDialog.setIndeterminate(false);
         pDialog.setMax(100);
@@ -82,7 +83,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
             output.close();
             input.close();
 
-            ReceivedDataHandler.handleType(dataType, saveToFile, mainActivity);
+            ReceivedDataHandler.handleType(dataType, saveToFile, context);
 
             return "success";
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
         // dismiss the dialog after the file was downloaded
         pDialog.dismiss();
         if (message.equals("success")){
-            ServerSuccess serverSuccess = new ServerSuccess(mainActivity);
+            ServerSuccess serverSuccess = new ServerSuccess(context);
             serverSuccess.execute(taskID);
 
         }

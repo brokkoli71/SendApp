@@ -56,7 +56,7 @@ public class ReceiveFragment extends Fragment {
         ImageView imageView =  view.findViewById(R.id.imageView);
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_data_placeholder));
 
-        tcpReceiver = new TCPReceiver(context);
+        tcpReceiver = new TCPReceiver(context, imageView);
         TCPReceiverThread = new Thread(tcpReceiver);
         TCPReceiverThread.start();
 
@@ -115,7 +115,7 @@ public class ReceiveFragment extends Fragment {
                         Log.w("send_id", "key:" + receiveID);
                         Toast.makeText(context, receiveID, Toast.LENGTH_LONG).show();
 
-                        serverReceiver = new ServerReceiver(MainActivity.this);
+                        serverReceiver = new ServerReceiver(context);
                         serverReceiver.execute(receiveID);
                     }
                 };

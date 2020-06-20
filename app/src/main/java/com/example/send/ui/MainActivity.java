@@ -93,30 +93,6 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setCurrentItem(1,true);
             viewPagerAdapter.sendFragment.gotIntentActionSend(intent, getContentResolver());
         }
-
-
-
-        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-
-                }else{
-                    //close
-                }
-            }
-        });
-
-        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
-                    e2.setText(ip);
-                }else{
-                    e2.setText("key");
-                }
-            }
-        });
     }
 
 
@@ -131,10 +107,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode != RESULT_CANCELED) {
             if (requestCode == Values.PICKFILE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK && intent != null) {
-                    Uri uri = intent.getData();
-
-                    sendingTaskData = new SendingTaskData(uri, getContentResolver());
-                    setIconInImageView(sendingTaskData.getMime());
+                    viewPagerAdapter.sendFragment.onReceivePickfileRequest(intent, getContentResolver());
                 }
             }else  if (requestCode == Values.SCAN_QR_REQUEST_CODE) {
                 IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);

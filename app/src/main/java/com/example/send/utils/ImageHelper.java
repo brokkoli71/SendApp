@@ -1,5 +1,7 @@
 package com.example.send.utils;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,7 +9,14 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.example.send.R;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -45,4 +54,40 @@ public class ImageHelper {
         int newWidth = oldWidth*newHeight/oldHeight;
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
     }
+
+    public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, View viewUnderTarget, Resources resources) {
+        //bitmap gets resized to not take to much RAM
+        int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
+        bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
+
+        //checking if enough space on Screen available
+        int[] selectButtonLocation = new int[2];
+        int[] imageViewLocation = new int[2];
+        viewUnderTarget.getLocationOnScreen(selectButtonLocation);
+        targetView.getLocationOnScreen(imageViewLocation);
+
+        int minWhitespace = resources.getDimensionPixelSize(R.dimen.min_whitespace);
+        int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
+        Log.w("set_img", "availableSpace:" + availableSpace);
+        Log.w("set_img", "sendButtonLocation:" + selectButtonLocation[1] + ", imageViewLocation:" + imageViewLocation[1] + ", minWhitespace:" + minWhitespace);
+
+        if (availableSpace >= bitmap.getHeight()) {
+            targetView.getLayoutParams().height = bitmap.getHeight();
+        } else {
+            targetView.getLayoutParams().height = availableSpace;
+            bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
+        }
+        //remove background otherwise there would be two frames for image
+        targetView.setBackground(null);
+
+        //round corners to fit UI style
+        bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, resources.getDimensionPixelSize(R.dimen.round_corners));
+
+        LayerDrawable layerDrawable = (LayerDrawable) resources.getDrawable(R.drawable.image_view);/*drawable*/
+        Drawable newDrawable = new BitmapDrawable(resources, bitmap);
+        layerDrawable.setDrawableByLayerId(R.id.image_view_drawable, newDrawable);
+        targetView.setImageDrawable(layerDrawable);
+        Log.w("set_img", "height:" + bitmap.getHeight() + ", width:" + bitmap.getWidth() + ", bytes:" + bitmap.getByteCount());
+    }
+
 }

@@ -59,7 +59,7 @@ public class SendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         this.context = container.getContext();
-        view = inflater.inflate(R.layout.fragment_send, container, false);
+        view = inflater.inflate(R.layout.fragment_receive, container, false);
 
         imageView = view.findViewById(R.id.imageView2);
         final TextView imageViewText = view.findViewById(R.id.imageViewText);
@@ -122,6 +122,12 @@ public class SendFragment extends Fragment {
         }
 
     }
+    void onReceivePickfileRequest(Intent intent, ContentResolver contentResolver){
+        Uri uri = intent.getData();
+
+        sendingTaskData = new SendingTaskData(uri, contentResolver);
+        setIconInImageView(sendingTaskData.getMime(), contentResolver);
+    }
 
     void TCPSend(String IP){
         TCPSender tcpSender = new TCPSender(IP);
@@ -165,48 +171,16 @@ public class SendFragment extends Fragment {
         }
     }
 
-    public void setPictureInImageView(Bitmap bitmap) {
-        //bitmap gets resized to not take to much RAM
-        int newWidth =  getResources().getDimensionPixelSize(R.dimen.inner_content_width);
-        bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
-
-        //checking if enough space on Screen available
-        int[] selectButtonLocation = new int[2];
-        int[] imageViewLocation = new int[2];
-        buttonQR.getLocationOnScreen(selectButtonLocation);
-        imageView.getLocationOnScreen(imageViewLocation);
-
-        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
-        int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
-        Log.w("set_img", "availableSpace:" + availableSpace);
-        Log.w("set_img", "sendButtonLocation:" + selectButtonLocation[1] + ", imageViewLocation:" + imageViewLocation[1] + ", minWhitespace:" + minWhitespace);
-
-        if (availableSpace >= bitmap.getHeight()) {
-            imageView.getLayoutParams().height = bitmap.getHeight();
-        } else {
-            imageView.getLayoutParams().height = availableSpace;
-            bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
-        }
-        //remove background otherwise there would be two frames for image
-        imageView.setBackground(null);
-
-        //round corners to fit UI style
-        bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, getResources().getDimensionPixelSize(R.dimen.round_corners));
-
-        LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.image_view);/*drawable*/
-        Drawable newDrawable = new BitmapDrawable(getResources(), bitmap);
-        layerDrawable.setDrawableByLayerId(R.id.image_view_drawable, newDrawable);
-        imageView.setImageDrawable(layerDrawable);
-        Log.w("set_img", "height:" + bitmap.getHeight() + ", width:" + bitmap.getWidth() + ", bytes:" + bitmap.getByteCount());
-    }
 
 
 
     public void setIconInImageView (String type, ContentResolver contentResolver){
         try {
             Log.w("set_img", "img type is "+type);
-            if (type.startsWith("image/"))
-                setPictureInImageView(ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(),contentResolver));
+            if (type.startsWith("image/")){
+                Bitmap bitmap = ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(),contentResolver);
+                ImageHelper.setPictureInImageView(bitmap, imageView, buttonQR, getResources());
+            }
             else{
 
                 imageView.setBackground(getResources().getDrawable(R.drawable.image_view));

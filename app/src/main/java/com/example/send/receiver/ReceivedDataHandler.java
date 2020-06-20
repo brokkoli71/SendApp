@@ -6,11 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.core.content.FileProvider;
 
 import com.example.send.sender.SendingTaskData;
+import com.example.send.utils.ImageHelper;
 import com.example.send.utils.Toaster;
 import com.example.send.utils.Values;
 import com.example.send.ui.MainActivity;
@@ -20,22 +23,23 @@ import java.io.InputStream;
 
 public class ReceivedDataHandler {
 
-    private static void setImageDrawable(final int path, final Context context){
+    private static void setImageDrawable(final int path, final Context context, final ImageView targetView){
 
         //TODO set image
-        mainActivity.runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mainActivity.imageView.setImageDrawable(mainActivity.getResources().getDrawable(path));
+                targetView.setImageDrawable(context.getResources().getDrawable(path));
             }
         });
     }
-    private static void setPictureInImageView(final Uri uri, final Context context){
+    private static void setPictureInImageView(final Uri uri, final Context context, final ImageView targetView){
         //wait for file get properly saved
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mainActivity.setPictureInImageView(readPictureFromFileUri(uri, mainActivity.getContentResolver()));
+                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver());
+                ImageHelper.setPictureInImageView(bitmap, );
             }
         });
     }

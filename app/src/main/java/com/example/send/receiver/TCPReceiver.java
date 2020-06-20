@@ -2,6 +2,7 @@ package com.example.send.receiver;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.send.ui.MainActivity;
 import com.example.send.utils.Toaster;
@@ -14,10 +15,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class TCPReceiver implements  Runnable {
-    private Context context; //for making Toasts and setting imageView
+    private Context context;
+    ImageView target;
 
-    public TCPReceiver(Context context){
+    public TCPReceiver(Context context, ImageView target){
         this.context = context;
+        this.target = target;
     }
 
     @Override
