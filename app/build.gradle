@@ -36,4 +36,9 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpmime:4.3.6'
     //noinspection GradleDependency: has to be this version, bugs in newer version
     implementation 'org.apache.httpcomponents:httpcore:4.4.6'
+    //for ui:
+    implementation 'me.relex:circleindicator:2.1.4'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    implementation 'com.github.kenglxn.QRGen:android:2.6.0'
+
 }
