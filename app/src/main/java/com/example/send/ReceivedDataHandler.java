@@ -57,7 +57,7 @@ public class ReceivedDataHandler {
         return bitmap;
     }
 
-    static File getAvailableFile(String fileName){
+    public static File getAvailableFile(String fileName){
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
@@ -129,7 +129,7 @@ public class ReceivedDataHandler {
 //        return null;
 //    }
 
-    static void handleType(int dataType, File saveToFile, MainActivity mainActivity){
+    public static void handleType(int dataType, File saveToFile, MainActivity mainActivity){
         //handle received data depending on data type in future
         String path = saveToFile.getAbsolutePath();
         switch (dataType) {

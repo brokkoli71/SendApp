@@ -1,8 +1,12 @@
-package com.example.send;
+package com.example.send.receiver;
 
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.send.MainActivity;
+import com.example.send.ReceivedDataHandler;
+import com.example.send.Toaster;
 
 import java.io.DataInputStream;
 import java.io.File;

@@ -1,6 +1,8 @@
-package com.example.send;
+package com.example.send.sender;
 
 import android.os.AsyncTask;
+
+import com.example.send.SendingTaskData;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,9 +20,9 @@ public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
     }
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
-        dataType = sendingTaskData[0].dataType;
-        byteData = sendingTaskData[0].byteData;
-        fileName = sendingTaskData[0].fileName;
+        dataType = sendingTaskData[0].getDataType();
+        byteData = sendingTaskData[0].getByteData();
+        fileName = sendingTaskData[0].getFileName();
 
         try {
             s = new Socket(ip, 9700);

@@ -18,6 +18,18 @@ public class SendingTaskData {
     String mime;
 
 
+    public byte[] getByteData() {
+        return byteData;
+    }
+
+    public int getDataType() {
+        return dataType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
     //todo: add more in future
     final static int TYPE_UNKNOWN = 0;
     final static int TYPE_JPG = 1;

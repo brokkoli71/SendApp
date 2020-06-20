@@ -2,17 +2,17 @@ package com.example.send;
 
 import android.widget.Toast;
 
-class Toaster {
+public class Toaster {
     static MainActivity mainActivity;
 
-    static void init(MainActivity theMainActivity){
+    public static void init(MainActivity theMainActivity){
         mainActivity = theMainActivity;
     }
 
-    static void makeToast(final String msg){
+    public static void makeToast(final String msg){
         makeToast(msg, false);
     }
-    static void makeToast(final String msg, final boolean doLong){
+    public static void makeToast(final String msg, final boolean doLong){
         mainActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
