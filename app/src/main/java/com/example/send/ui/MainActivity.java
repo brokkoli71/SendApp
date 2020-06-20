@@ -100,12 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-                /* old way
-                Drawable drawable = imageView.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte[] bitmapData = stream.toByteArray();*/
 
             }
         });
@@ -150,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         textView.setText(String.format("%s%s", getString(R.string.showIPTextView), ip));
-        //for testing
-        //textView.setVisibility(View.INVISIBLE);
 
         e2.setText(ip);
 
@@ -190,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     serverReceiver = new ServerReceiver(MainActivity.this);
                     serverReceiver.execute(myReceiverName);
                 }else{
-                    //dispend
+                    //close
                 }
             }
         });
