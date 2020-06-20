@@ -110,9 +110,13 @@ public class ReceiveFragment extends Fragment {
                 new InputDialog(context) {
                     @Override
                     public void onResult(String result) {
+                        //todo: extract receiveID ("key") from QRCode result
                         receiveID = result;
                         Log.w("send_id", "key:" + receiveID);
                         Toast.makeText(context, receiveID, Toast.LENGTH_LONG).show();
+
+                        serverReceiver = new ServerReceiver(MainActivity.this);
+                        serverReceiver.execute(receiveID);
                     }
                 };
             }

@@ -100,9 +100,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
-                    String myReceiverName = e2.getText().toString();
-                    serverReceiver = new ServerReceiver(MainActivity.this);
-                    serverReceiver.execute(myReceiverName);
+
                 }else{
                     //close
                 }
