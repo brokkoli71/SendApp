@@ -179,7 +179,10 @@ public class SendFragment extends Fragment {
             Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/")){
                 Bitmap bitmap = ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(),contentResolver);
-                ImageHelper.setPictureInImageView(bitmap, imageView, buttonQR, getResources());
+
+                int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+                int availableSpace = ImageHelper.getAvailableSpace(imageView, buttonQR, minWhitespace);
+                ImageHelper.setPictureInImageView(bitmap, imageView, availableSpace, getResources());
             }
             else{
 

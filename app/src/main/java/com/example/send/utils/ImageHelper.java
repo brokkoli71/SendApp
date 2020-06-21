@@ -55,21 +55,10 @@ public class ImageHelper {
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
     }
 
-    public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, View viewUnderTarget, Resources resources) {
+    public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, int availableSpace, Resources resources) {
         //bitmap gets resized to not take to much RAM
         int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
         bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
-
-        //checking if enough space on Screen available
-        int[] selectButtonLocation = new int[2];
-        int[] imageViewLocation = new int[2];
-        viewUnderTarget.getLocationOnScreen(selectButtonLocation);
-        targetView.getLocationOnScreen(imageViewLocation);
-
-        int minWhitespace = resources.getDimensionPixelSize(R.dimen.min_whitespace);
-        int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
-        Log.w("set_img", "availableSpace:" + availableSpace);
-        Log.w("set_img", "sendButtonLocation:" + selectButtonLocation[1] + ", imageViewLocation:" + imageViewLocation[1] + ", minWhitespace:" + minWhitespace);
 
         if (availableSpace >= bitmap.getHeight()) {
             targetView.getLayoutParams().height = bitmap.getHeight();
@@ -90,4 +79,14 @@ public class ImageHelper {
         Log.w("set_img", "height:" + bitmap.getHeight() + ", width:" + bitmap.getWidth() + ", bytes:" + bitmap.getByteCount());
     }
 
+    public static int getAvailableSpace(View targetView, View viewUnderTarget, int minWhitespace){
+        //checking if enough space on Screen available
+        int[] selectButtonLocation = new int[2];
+        int[] imageViewLocation = new int[2];
+        viewUnderTarget.getLocationOnScreen(selectButtonLocation);
+        targetView.getLocationOnScreen(imageViewLocation);
+
+        int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
+        return availableSpace;
+    }
 }

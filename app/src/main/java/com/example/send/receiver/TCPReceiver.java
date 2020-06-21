@@ -14,13 +14,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class TCPReceiver implements  Runnable {
+public abstract class TCPReceiver implements  Runnable {
     private Context context;
-    ImageView target;
+    ImageView targetView;
+    int availableSpace;
 
-    public TCPReceiver(Context context, ImageView target){
+    public TCPReceiver(Context context, ImageView targetView, int availableSpace){
         this.context = context;
-        this.target = target;
+        this.targetView = targetView;
+        this.availableSpace = availableSpace;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class TCPReceiver implements  Runnable {
                 Log.w("receiver", "new socket");
                 DataInputStream dis = new DataInputStream(mySocket.getInputStream());
 
-                int dataType = dis.readInt();
+                final int dataType = dis.readInt();
                 String fileName = dis.readUTF();
 
                 int len = dis.readInt();
@@ -48,7 +50,7 @@ public class TCPReceiver implements  Runnable {
                     Log.e("receiver", "data size is 0");
                 }
 
-                File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
+                final File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
 
                 try {
                     FileOutputStream fos=new FileOutputStream(saveToFile.getPath());
@@ -58,7 +60,13 @@ public class TCPReceiver implements  Runnable {
 
                     Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
 
-                    ReceivedDataHandler.handleType(dataType,saveToFile, context);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ReceivedDataHandler.handleType(dataType, saveToFile, targetView, availableSpace, context);
+                        }
+                    });
+
                 }catch (IOException e) {
                     Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
                     Log.e("receiver", "could not save file", e);
@@ -69,4 +77,5 @@ public class TCPReceiver implements  Runnable {
             e.printStackTrace();
         }
     }
+    public abstract void runOnUiThread(Runnable runnable);
 }

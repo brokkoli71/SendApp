@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.send.R;
 import com.example.send.utils.Toaster;
@@ -28,11 +29,15 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     private final String server_url;
     private final String server_pwd;
     private final Context context;
+    private final int availableSpace;
+    private final ImageView targetView;
 
-    public ServerReceiver(Context context){
+    public ServerReceiver(Context context, ImageView targetView, int availableSpace){
         this.context = context;
         this.server_url = context.getString(R.string.server_url_out);
         this.server_pwd = context.getString(R.string.pwd);
+        this.targetView = targetView;
+        this.availableSpace = availableSpace;
     }
 
 
@@ -124,7 +129,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                 int taskID = Integer.parseInt(messageSplit[2]);
 
                 URL url = new URL(context.getString(R.string.server_url_files)+filename);
-                DownloadFileFromURL downloader = new DownloadFileFromURL(context, taskID);
+                DownloadFileFromURL downloader = new DownloadFileFromURL(context, taskID, targetView, availableSpace);
                 downloader.execute(new ReceivedServerData(filename, dataType, url));
             } catch (MalformedURLException e) {
                 e.printStackTrace();

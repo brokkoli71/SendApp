@@ -23,6 +23,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.send.R;
 import com.example.send.receiver.ServerReceiver;
 import com.example.send.receiver.TCPReceiver;
+import com.example.send.utils.ImageHelper;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -53,10 +54,20 @@ public class ReceiveFragment extends Fragment {
         final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
         final ImageView arrow1 =  view.findViewById(R.id.arrow1);
-        ImageView imageView =  view.findViewById(R.id.imageView);
+        final ImageView imageView =  view.findViewById(R.id.imageView);
+        final Button qrButton = view.findViewById(R.id.button_qr_generate);
+
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_data_placeholder));
 
-        tcpReceiver = new TCPReceiver(context, imageView);
+        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+        int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
+        tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
+            @Override
+            public void runOnUiThread(Runnable runnable) {
+                getActivity().runOnUiThread(runnable);
+            }
+        };
+
         TCPReceiverThread = new Thread(tcpReceiver);
         TCPReceiverThread.start();
 
@@ -90,7 +101,6 @@ public class ReceiveFragment extends Fragment {
         qrDialog = new Dialog(container.getContext());
 
         final String qrContent = "testetsdflkdklfsmdvclkmsvclkmsdvlkmsdlkvmsldkmvlksdmvlksmdvklmsdvlkmsdlkvcm";
-        final Button qrButton = view.findViewById(R.id.button_qr_generate);
         qrButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -115,7 +125,9 @@ public class ReceiveFragment extends Fragment {
                         Log.w("send_id", "key:" + receiveID);
                         Toast.makeText(context, receiveID, Toast.LENGTH_LONG).show();
 
-                        serverReceiver = new ServerReceiver(context);
+                        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+                        int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
+                        serverReceiver = new ServerReceiver(context, imageView, availableSpace);
                         serverReceiver.execute(receiveID);
                     }
                 };

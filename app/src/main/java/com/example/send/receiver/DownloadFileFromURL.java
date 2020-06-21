@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.example.send.ui.MainActivity;
 import com.example.send.utils.Toaster;
@@ -16,15 +17,19 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, String> {
+public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, ReceivedServerData> {
 
     private Context context;
     private ProgressDialog pDialog;
     private int taskID;
+    private ImageView targetView;
+    int availableSpace;
 
-    public DownloadFileFromURL(Context context, int taskID) {
+    public DownloadFileFromURL(Context context, int taskID, ImageView targetView, int availableSpace) {
         this.context = context;
         this.taskID = taskID;
+        this.targetView = targetView;
+        this.availableSpace = availableSpace;
     }
 
     @Override
@@ -40,11 +45,10 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
     }
 
     @Override
-    protected String doInBackground(ReceivedServerData... receivedServerData) {
+    protected ReceivedServerData doInBackground(ReceivedServerData... receivedServerData) {
         int count;
         try {
             String fileName = receivedServerData[0].fileName;
-            int dataType = receivedServerData[0].dataType;
             URL url = receivedServerData[0].url;
 
             URLConnection connection = url.openConnection();
@@ -83,13 +87,13 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
             output.close();
             input.close();
 
-            ReceivedDataHandler.handleType(dataType, saveToFile, context);
+            receivedServerData[0].setSaveToFile(saveToFile);
 
-            return "success";
+            return receivedServerData[0];
         } catch (Exception e) {
             Log.e("Error: ", e.getMessage());
         }
-        return "error";
+        return null;
     }
 
     /**
@@ -104,10 +108,11 @@ public class DownloadFileFromURL extends AsyncTask<ReceivedServerData, String, S
      * After completing background task Dismiss the progress dialog
      * **/
     @Override
-    protected void onPostExecute(String message) {
+    protected void onPostExecute(ReceivedServerData receivedServerData) {
         // dismiss the dialog after the file was downloaded
         pDialog.dismiss();
-        if (message.equals("success")){
+        if (receivedServerData!=null){
+            ReceivedDataHandler.handleType(receivedServerData.dataType, receivedServerData.saveToFile, targetView, availableSpace, context);
             ServerSuccess serverSuccess = new ServerSuccess(context);
             serverSuccess.execute(taskID);
 
