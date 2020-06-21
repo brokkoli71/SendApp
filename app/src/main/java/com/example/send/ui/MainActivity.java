@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);  //#Exception Fragment$InstantiationException: Unable to instantiate fragment com.example.send.ui.ReceiveFragment: could not find Fragment constructor
         setContentView(R.layout.activity_main);
 
         //init Toaster to make all toasts on MainActivity
@@ -85,14 +85,22 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         String action = intent.getAction();
 
         // send multiple Data might get implemented later
         if(Intent.ACTION_SEND.equals(action)){
-            //todo: NullPointerException -> add delay until ui building finished
-            viewPager.setCurrentItem(1,true);
-            viewPagerAdapter.sendFragment.gotIntentActionSend(intent, getContentResolver());
+            final View content = findViewById(android.R.id.content);
+            content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                    viewPager.setCurrentItem(1,true);
+                    viewPagerAdapter.sendFragment.gotIntentActionSend(intent, getContentResolver());
+                }
+            });
+
         }
     }
 

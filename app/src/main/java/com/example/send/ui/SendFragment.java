@@ -43,6 +43,7 @@ public class SendFragment extends Fragment {
     View view;
     ImageView imageView;
     Button buttonQR;
+    TextView imageViewText;
 
     public SendFragment(ViewPager viewPager) {
         this.viewPager = viewPager;
@@ -62,7 +63,7 @@ public class SendFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_send, container, false);
 
         imageView = view.findViewById(R.id.imageView2);
-        final TextView imageViewText = view.findViewById(R.id.imageViewText);
+        imageViewText = view.findViewById(R.id.imageViewText);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,19 +155,21 @@ public class SendFragment extends Fragment {
     }
 
     void gotIntentActionSend(Intent intent, final ContentResolver contentResolver){
+        imageViewText.setVisibility(View.GONE);
+
         Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
         final String type = intent.getType();
         if (uri!=null){
             sendingTaskData = new SendingTaskData(uri, contentResolver);
             Log.w("receive_from_app", "received \""+uri+"\"");
-            final View content = view.findViewById(android.R.id.content);
+            setIconInImageView(type, contentResolver);
+            /*final View content = view.findViewById(android.R.id.content);
             content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    setIconInImageView(type, contentResolver);
                 }
-            });
+            });*/
         }else{
             Log.e("receive_from_app", "uri not readable");
         }
