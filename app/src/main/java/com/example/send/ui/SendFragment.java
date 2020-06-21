@@ -59,7 +59,7 @@ public class SendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         this.context = container.getContext();
-        view = inflater.inflate(R.layout.fragment_receive, container, false);
+        view = inflater.inflate(R.layout.fragment_send, container, false);
 
         imageView = view.findViewById(R.id.imageView2);
         final TextView imageViewText = view.findViewById(R.id.imageViewText);
@@ -123,6 +123,7 @@ public class SendFragment extends Fragment {
 
     }
     void onReceivePickfileRequest(Intent intent, ContentResolver contentResolver){
+        //todo not working
         Uri uri = intent.getData();
 
         sendingTaskData = new SendingTaskData(uri, contentResolver);

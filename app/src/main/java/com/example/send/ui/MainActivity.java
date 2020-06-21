@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         // send multiple Data might get implemented later
         if(Intent.ACTION_SEND.equals(action)){
+            //todo: NullPointerException -> add delay until ui building finished
             viewPager.setCurrentItem(1,true);
             viewPagerAdapter.sendFragment.gotIntentActionSend(intent, getContentResolver());
         }
