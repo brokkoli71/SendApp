@@ -60,14 +60,12 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
     private ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);  //#Exception Fragment$InstantiationException: Unable to instantiate fragment com.example.send.ui.ReceiveFragment: could not find Fragment constructor
+        super.onCreate(savedInstanceState);  //todo issue #5: Fragment$InstantiationException: Unable to instantiate fragment com.example.send.ui.ReceiveFragment: could not find Fragment constructor
         setContentView(R.layout.activity_main);
 
         //init Toaster to make all toasts on MainActivity

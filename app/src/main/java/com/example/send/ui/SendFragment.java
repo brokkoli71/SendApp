@@ -129,6 +129,8 @@ public class SendFragment extends Fragment {
 
 
     void TCPSend(String IP){
+        if (sendingTaskData==null)
+            return;
         TCPSender tcpSender = new TCPSender(IP);
         tcpSender.execute(sendingTaskData);
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
