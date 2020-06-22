@@ -71,11 +71,12 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
             return "connectivity error";
         }
 
+        InputStream input = null;
         try {
             // Check if successful connection made
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
-                InputStream input = conn.getInputStream();
+                input = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 StringBuilder result = new StringBuilder();
                 String line;
@@ -88,6 +89,10 @@ public class ServerSuccess extends AsyncTask<Integer, String, String> {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                input.close();
+            } catch (Exception e) {}
         }
         return null;
     }

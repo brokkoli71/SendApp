@@ -99,7 +99,11 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
             ServerSenderStatus serverSenderStatus = new ServerSenderStatus(url_response, taskID, password);
 
             while (!serverSenderStatus.isReceived()){
-                Thread.sleep(CHECK_STATUS_TIMEOUT);//TODO: work from here, use handler instead?
+                try{
+                    Thread.sleep(CHECK_STATUS_TIMEOUT);
+                }catch (InterruptedException ie){
+                    Log.e("server_sender","Sleep interrupted");
+                }
             }
 
             Toaster.makeToast("datei wurde empfangen");

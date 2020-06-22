@@ -51,6 +51,7 @@ public class ReceivedDataHandler {
         File myFolder =new File(stringFolder);
         if (!myFolder.exists()){
             if(!myFolder.mkdir()){
+                //todo not working
                 Toaster.makeToast("Fehler beim erstellen des Ordners");
                 Log.e("file_saver", "could not add new folder \"SendApp\"");
             }else {

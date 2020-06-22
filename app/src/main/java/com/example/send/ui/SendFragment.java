@@ -105,6 +105,8 @@ public class SendFragment extends Fragment {
                         sendID = result;
                         Log.w("send_id", "key:" + sendID);
                         Toast.makeText(context, sendID, Toast.LENGTH_LONG).show();
+
+                        ServerSend(sendID);
                     }
                 };
             }
@@ -122,7 +124,6 @@ public class SendFragment extends Fragment {
             //temp todo
             TCPSend(content);
         }
-
     }
 
 
@@ -134,6 +135,7 @@ public class SendFragment extends Fragment {
     void ServerSend(String key){
         ServerSender serverSender = new ServerSender(context, key);
         serverSender.execute(sendingTaskData);
+        //todo: check if sendingtaskdata is set
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
     }
 

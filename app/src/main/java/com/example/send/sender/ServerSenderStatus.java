@@ -50,6 +50,8 @@ public class ServerSenderStatus {
             writer.flush();
             writer.close();
             os.close();
+
+            Log.w("server_sender_status", "req built");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -74,10 +76,14 @@ public class ServerSenderStatus {
                 if (result.toString().equals("true")){
                     return true;
                 }
+            }else{
+                Log.e("server_sender_status", "HTTP error: "+ conn.getResponseCode());
             }
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("server_sender_status", e.toString());
         }
+        Log.w("server_sender_status", "not received yet");
         return false;
     }
 }
