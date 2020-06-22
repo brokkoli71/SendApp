@@ -24,6 +24,7 @@ import com.example.send.R;
 import com.example.send.receiver.ServerReceiver;
 import com.example.send.receiver.TCPReceiver;
 import com.example.send.utils.ImageHelper;
+import com.example.send.utils.PermissionHandler;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -49,6 +50,9 @@ public class ReceiveFragment extends Fragment {
 
         context = container.getContext();
         View view = inflater.inflate(R.layout.fragment_receive, container, false);
+
+        //req for permission if needed
+        PermissionHandler.getPermissions(context, this);
 
         WifiManager wm = (WifiManager) context.getSystemService(WIFI_SERVICE);
         final String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());

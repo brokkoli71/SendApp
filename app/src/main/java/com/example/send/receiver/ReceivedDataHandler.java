@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider;
 import com.example.send.R;
 import com.example.send.sender.SendingTaskData;
 import com.example.send.utils.ImageHelper;
+import com.example.send.utils.PermissionHandler;
 import com.example.send.utils.Toaster;
 import com.example.send.utils.Values;
 import com.example.send.ui.MainActivity;
@@ -46,12 +47,12 @@ public class ReceivedDataHandler {
     }
 
     public static File getAvailableFile(String fileName){
+
         //create folder if not exists
         String stringFolder = Environment.getExternalStorageDirectory()+"/SendApp";
         File myFolder =new File(stringFolder);
         if (!myFolder.exists()){
             if(!myFolder.mkdir()){
-                //todo issue #1: not working
                 Toaster.makeToast("Fehler beim erstellen des Ordners");
                 Log.e("file_saver", "could not add new folder \"SendApp\"");
             }else {

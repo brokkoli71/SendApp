@@ -29,6 +29,7 @@ import com.example.send.sender.SendingTaskData;
 import com.example.send.sender.ServerSender;
 import com.example.send.sender.TCPSender;
 import com.example.send.utils.ImageHelper;
+import com.example.send.utils.PermissionHandler;
 import com.example.send.utils.Values;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -68,7 +69,7 @@ public class SendFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 imageViewText.setVisibility(View.GONE);
-                getPermissions();
+                PermissionHandler.getPermissions(context, SendFragment.this);
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
@@ -139,17 +140,7 @@ public class SendFragment extends Fragment {
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
     }
 
-    private void getPermissions(){
-        String[] galleryPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        if (EasyPermissions.hasPermissions(context, galleryPermissions)) {
-            return;
-        }
-        Log.w("pick_file", "requesting permission");
-        EasyPermissions.requestPermissions(SendFragment.this, "Access for storage",
-                101, galleryPermissions);
-    }
 
     void gotIntentActionSend(Intent intent, final ContentResolver contentResolver){
         imageViewText.setVisibility(View.GONE);
