@@ -134,9 +134,10 @@ public class SendFragment extends Fragment {
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
     }
     void ServerSend(String key){
+        if (sendingTaskData==null)
+            return;
         ServerSender serverSender = new ServerSender(context, key);
         serverSender.execute(sendingTaskData);
-        //todo: check if sendingtaskdata is set
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
     }
 
@@ -156,7 +157,6 @@ public class SendFragment extends Fragment {
         }
     }
     void onReceivePickfileRequest(Intent intent, ContentResolver contentResolver){
-        //todo not working
         Uri uri = intent.getData();
 
         sendingTaskData = new SendingTaskData(uri, contentResolver);
