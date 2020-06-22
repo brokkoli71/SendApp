@@ -29,6 +29,14 @@ public class ServerSenderStatus {
         this.taskID = taskID;
         this.password = password;
 
+        Uri.Builder builder = new Uri.Builder()
+                .appendQueryParameter("password", password)
+                .appendQueryParameter("task_id", taskID);
+        query = builder.build().getEncodedQuery();
+        Log.w("server_sender_status", "req built");
+    }
+    boolean isReceived(){
+        // Open connection for sending data
         try {
             conn = (HttpURLConnection) new URL(url_response).openConnection();
             conn.setReadTimeout(READ_TIMEOUT);
@@ -38,11 +46,6 @@ public class ServerSenderStatus {
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            Uri.Builder builder = new Uri.Builder()
-                    .appendQueryParameter("password", password)
-                    .appendQueryParameter("task_id", taskID);
-            query = builder.build().getEncodedQuery();
-
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
@@ -51,19 +54,10 @@ public class ServerSenderStatus {
             writer.close();
             os.close();
 
-            Log.w("server_sender_status", "req built");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    boolean isReceived(){
-        // Open connection for sending data
-        try {
             conn.connect();
 
             // Check if successful connection made
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                Log.w("server_sender_status", "connected");
 
                 InputStream input = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -86,9 +80,7 @@ public class ServerSenderStatus {
             Log.e("server_sender_status", e.toString());
         }finally {
             conn.disconnect();
-            conn.setRequestProperty("connection", "close");
         }
-        Log.w("server_sender_status", "not received yet");
         return false;
     }
 }

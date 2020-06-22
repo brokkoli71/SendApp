@@ -98,7 +98,6 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
 
             ServerSenderStatus serverSenderStatus = new ServerSenderStatus(url_response, taskID, password);
 
-            //todo issue #2
             while (!serverSenderStatus.isReceived()){
                 try{
                     Thread.sleep(CHECK_STATUS_TIMEOUT);
