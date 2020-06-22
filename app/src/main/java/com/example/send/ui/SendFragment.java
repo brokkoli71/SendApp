@@ -115,11 +115,12 @@ public class SendFragment extends Fragment {
     void onReceiveQR(IntentResult result){
         if(result.getContents() == null) {
             Log.e("Scan", "Cancelled scan");
-
         } else {
-            Log.w("Scan", "Scanned: "+ result.getContents());
-
-            Toast.makeText(context, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+            String content = result.getContents();
+            Log.w("Scan", "Scanned: "+ content);
+            Toast.makeText(context, "Scanned: " + content, Toast.LENGTH_LONG).show();
+            //temp todo
+            TCPSend(content);
         }
 
     }

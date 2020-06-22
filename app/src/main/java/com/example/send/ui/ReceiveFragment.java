@@ -100,7 +100,8 @@ public class ReceiveFragment extends Fragment {
 
         qrDialog = new Dialog(container.getContext());
 
-        final String qrContent = "testetsdflkdklfsmdvclkmsvclkmsdvlkmsdlkvmsldkmvlksdmvlksmdvklmsdvlkmsdlkvcm";
+        //temp todo
+        final String qrContent = ip;
         qrButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
