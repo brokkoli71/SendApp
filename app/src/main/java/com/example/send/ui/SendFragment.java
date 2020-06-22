@@ -72,7 +72,7 @@ public class SendFragment extends Fragment {
 
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
-                startActivityForResult(intent, Values.PICKFILE_REQUEST_CODE);
+                SendFragment.this.getActivity().startActivityForResult(intent, Values.PICKFILE_REQUEST_CODE);
 
                 Log.w("pick_file", "request send:"+ Values.PICKFILE_REQUEST_CODE);
             }
@@ -123,13 +123,7 @@ public class SendFragment extends Fragment {
         }
 
     }
-    void onReceivePickfileRequest(Intent intent, ContentResolver contentResolver){
-        //todo not working
-        Uri uri = intent.getData();
 
-        sendingTaskData = new SendingTaskData(uri, contentResolver);
-        setIconInImageView(sendingTaskData.getMime(), contentResolver);
-    }
 
     void TCPSend(String IP){
         TCPSender tcpSender = new TCPSender(IP);
@@ -157,28 +151,27 @@ public class SendFragment extends Fragment {
     void gotIntentActionSend(Intent intent, final ContentResolver contentResolver){
         imageViewText.setVisibility(View.GONE);
 
-        Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         final String type = intent.getType();
         if (uri!=null){
             sendingTaskData = new SendingTaskData(uri, contentResolver);
             Log.w("receive_from_app", "received \""+uri+"\"");
             setIconInImageView(type, contentResolver);
-            /*final View content = view.findViewById(android.R.id.content);
-            content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    content.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            });*/
         }else{
             Log.e("receive_from_app", "uri not readable");
         }
     }
+    void onReceivePickfileRequest(Intent intent, ContentResolver contentResolver){
+        //todo not working
+        Uri uri = intent.getData();
+
+        sendingTaskData = new SendingTaskData(uri, contentResolver);
+        setIconInImageView(sendingTaskData.getMime(), contentResolver);
+    }
 
 
 
-
-    public void setIconInImageView (String type, ContentResolver contentResolver){
+    void setIconInImageView (String type, ContentResolver contentResolver){
         try {
             Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/")){

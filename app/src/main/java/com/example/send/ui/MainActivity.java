@@ -110,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        Log.w("activity_result", "request handling:"+", "
+        Log.w("activity_result", "request handling:"
                 +(resultCode==RESULT_CANCELED?"canceled":(resultCode==RESULT_OK?"result ok":resultCode)));
         if (resultCode != RESULT_CANCELED) {
+            Log.w("activity_result", "request_code: "+requestCode);
             if (requestCode == Values.PICKFILE_REQUEST_CODE) {
                 if (resultCode == RESULT_OK && intent != null) {
                     viewPagerAdapter.sendFragment.onReceivePickfileRequest(intent, getContentResolver());
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
                 if(result != null) {
                     viewPagerAdapter.sendFragment.onReceiveQR(result);
-                }else { //necessary?
+                }else { //is it necessary?
                     // "This is important, otherwise the result will not be passed to the fragment"
                     super.onActivityResult(requestCode, resultCode, intent);
                 }
