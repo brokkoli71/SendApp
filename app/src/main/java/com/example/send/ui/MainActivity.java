@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
         //init Toaster to make all toasts on MainActivity
         Toaster.init(this);
 
+        //deactivating keepAlive so that multiple req can be send with no open connections in background
+        System.setProperty("http.keepAlive", "false");
+
+
         //new UI
         viewPager = findViewById(R.id.pager);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), viewPager);

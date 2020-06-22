@@ -36,7 +36,7 @@ public class SendingTaskData {
         return fileName;
     }
 
-    //todo: add more in future
+    //todo add feature #1000: add more in future
     public final static int TYPE_UNKNOWN = 0;
     public final static int TYPE_JPG = 1;
     public final static int TYPE_PNG = 2;

@@ -53,7 +53,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
         pDialog.setIndeterminate(false);
         pDialog.setMax(1);
         pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pDialog.setCancelable(false); //todo: add functionality on canceling -> cancel sending
+        pDialog.setCancelable(false); //todo add feature #1001: add functionality on canceling -> cancel sending
         pDialog.show();
     }
     @Override
@@ -98,6 +98,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
 
             ServerSenderStatus serverSenderStatus = new ServerSenderStatus(url_response, taskID, password);
 
+            //todo issue #2
             while (!serverSenderStatus.isReceived()){
                 try{
                     Thread.sleep(CHECK_STATUS_TIMEOUT);
@@ -119,7 +120,7 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
     }
     protected void onProgressUpdate(Integer... progress) {
         pDialog.setProgress(progress[0]);
-        //todo: no pdialog -> other feedback instead
+        //todo add feature #1003: no pdialog -> other feedback instead
         if (progress[0] == pDialog.getMax()){
             pDialog.dismiss();
             pDialog2 = new ProgressDialog(context);

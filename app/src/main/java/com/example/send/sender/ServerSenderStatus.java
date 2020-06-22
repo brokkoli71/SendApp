@@ -63,6 +63,7 @@ public class ServerSenderStatus {
 
             // Check if successful connection made
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                Log.w("server_sender_status", "connected");
 
                 InputStream input = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -72,6 +73,7 @@ public class ServerSenderStatus {
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
+
                 Log.w("server_sender_status", result.toString());
                 if (result.toString().equals("true")){
                     return true;
@@ -82,6 +84,9 @@ public class ServerSenderStatus {
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("server_sender_status", e.toString());
+        }finally {
+            conn.disconnect();
+            conn.setRequestProperty("connection", "close");
         }
         Log.w("server_sender_status", "not received yet");
         return false;
