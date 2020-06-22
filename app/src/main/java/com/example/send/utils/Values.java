@@ -8,7 +8,7 @@ public class Values {
     public static final int TEXT_IMAGE = R.drawable.ic_text;
     public static final int DEFAULT_IMAGE = R.drawable.ic_file;
 
-    public static final int PICKFILE_REQUEST_CODE = 12;
-    public static final int SCAN_QR_REQUEST_CODE = 1;
+    public static final int PICKFILE_REQUEST_CODE = 2;
+    public static final int SCAN_QR_REQUEST_CODE = 10;
 
 }

@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && intent != null) {
                     viewPagerAdapter.sendFragment.onReceivePickfileRequest(intent, getContentResolver());
                 }
-            }else  if (requestCode == Values.SCAN_QR_REQUEST_CODE) {
+            }else if (requestCode == Values.SCAN_QR_REQUEST_CODE||requestCode == 49374) {//todo issue #3: wrong requestCode -> now only temp workaround
                 IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
                 if(result != null) {
                     viewPagerAdapter.sendFragment.onReceiveQR(result);

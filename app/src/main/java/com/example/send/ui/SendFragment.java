@@ -91,7 +91,7 @@ public class SendFragment extends Fragment {
                 integrator.initiateScan();
                 integrator.setOrientationLocked(true);
                 integrator.setRequestCode(Values.SCAN_QR_REQUEST_CODE);
-                Log.w("scan", integrator.toString());
+                Log.w("scan", "send scan req" );
             }
         });
 
