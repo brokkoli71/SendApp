@@ -4,6 +4,15 @@ done:
     logo
 
 
+when qr code scanned:
+    check on both devices if wifi active
+    only if so -> try to communicate over TCP:
+    first send req to receiver {app_id_key, send_req_key, sender_ip}
+    receiver answer back to sender {app_id_key, receive_accepted_key}
+    send data to receiver {app_id_key, send_data_key, data}
+    send confirmation {app_id_key, receive_status_received}
+
+
 outward appearance:
     name: quicksend? other ideas: "blue", "BlueSend", "blau", "schwupps", "schwuppdiwupp", "zack", "ClearSend"
 
