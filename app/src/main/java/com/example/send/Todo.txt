@@ -47,9 +47,6 @@ play store availability
 multi language support
 
 
-
-
-
 notes:
     colors: https://www.materialpalette.com/colors
 

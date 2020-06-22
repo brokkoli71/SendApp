@@ -128,7 +128,6 @@ public class ReceiveFragment extends Fragment {
                         //todo: extract receiveID ("key") from QRCode result
                         receiveID = result;
                         Log.w("send_id", "key:" + receiveID);
-                        Toast.makeText(context, receiveID, Toast.LENGTH_LONG).show();
 
                         int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
                         int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);

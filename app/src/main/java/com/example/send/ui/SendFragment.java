@@ -105,8 +105,6 @@ public class SendFragment extends Fragment {
                     public void onResult(String result) {
                         sendID = result;
                         Log.w("send_id", "key:" + sendID);
-                        Toast.makeText(context, sendID, Toast.LENGTH_LONG).show();
-
                         ServerSend(sendID);
                     }
                 };
