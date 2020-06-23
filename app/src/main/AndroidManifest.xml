@@ -27,6 +27,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="\*/\*"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/app_id_key"/>
+                <!--todo add-feature 1004: add intent evaluator for qr code in main activity-->
+            </intent-filter>
         </activity>
         <provider
             android:name=".utils.GenericFileProvider"

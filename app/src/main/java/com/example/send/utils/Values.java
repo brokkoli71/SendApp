@@ -11,4 +11,6 @@ public class Values {
     public static final int PICKFILE_REQUEST_CODE = 2;
     public static final int SCAN_QR_REQUEST_CODE = 10;
 
+    public static final String APP_ID_KEY = "zjtanshb";
+
 }
