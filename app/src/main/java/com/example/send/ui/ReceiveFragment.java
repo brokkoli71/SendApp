@@ -25,6 +25,7 @@ import com.example.send.receiver.ServerReceiver;
 import com.example.send.receiver.TCPReceiver;
 import com.example.send.utils.ImageHelper;
 import com.example.send.utils.PermissionHandler;
+import com.example.send.utils.Values;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -103,7 +104,11 @@ public class ReceiveFragment extends Fragment {
         qrDialog = new Dialog(container.getContext());
 
         //temp
-        final String qrContent = ip;
+        final String serverCommunicationKey = Values.getRandomString(8);
+        final String qrContent = getResources().getString(R.string.app_id_key)
+                +"://" + ip
+                +"?" + serverCommunicationKey;
+
 
 
         qrButton.setOnClickListener(new View.OnClickListener() {
