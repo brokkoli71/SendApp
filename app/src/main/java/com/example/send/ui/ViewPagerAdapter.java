@@ -21,10 +21,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position==0){
-            receiveFragment = new ReceiveFragment(viewPager);
+            receiveFragment = new ReceiveFragment();
             return receiveFragment;
         }
-        sendFragment = new SendFragment(viewPager);
+        sendFragment = new SendFragment();
         return sendFragment;
     }
 

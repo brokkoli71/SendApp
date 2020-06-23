@@ -46,9 +46,7 @@ public class SendFragment extends Fragment {
     Button buttonQR;
     TextView imageViewText;
 
-    public SendFragment(ViewPager viewPager) {
-        this.viewPager = viewPager;
-    }
+    public SendFragment() {}
 
 
     @Override

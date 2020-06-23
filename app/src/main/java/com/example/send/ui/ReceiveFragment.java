@@ -40,9 +40,6 @@ public class ReceiveFragment extends Fragment {
 
     Thread TCPReceiverThread;
 
-    public ReceiveFragment(ViewPager viewPager) {
-        this.viewPager = viewPager;
-    }
 
 
     @Override
@@ -51,6 +48,7 @@ public class ReceiveFragment extends Fragment {
         context = container.getContext();
         View view = inflater.inflate(R.layout.fragment_receive, container, false);
 
+        viewPager = getActivity().findViewById(R.id.pager);
         //req for permission if needed
         PermissionHandler.getPermissions(context, this);
 

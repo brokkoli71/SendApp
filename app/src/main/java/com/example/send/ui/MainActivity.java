@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);  //todo issue #5: Fragment$InstantiationException: Unable to instantiate fragment com.example.send.ui.ReceiveFragment: could not find Fragment constructor
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //init Toaster to make all toasts on MainActivity
