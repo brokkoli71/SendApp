@@ -1,4 +1,4 @@
-//for future Encryption
+//Encryption is not in use yet
 
 package com.example.send.encryptor;
 
