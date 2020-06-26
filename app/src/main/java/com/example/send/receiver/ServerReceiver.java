@@ -3,6 +3,7 @@ package com.example.send.receiver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -31,13 +32,15 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     private final Context context;
     private final int availableSpace;
     private final ImageView targetView;
+    private final String id;
 
-    public ServerReceiver(Context context, ImageView targetView, int availableSpace){
+    public ServerReceiver(Context context, ImageView targetView, int availableSpace, String id){
         this.context = context;
         this.server_url = context.getString(R.string.server_url_out);
         this.server_pwd = context.getString(R.string.pwd);
         this.targetView = targetView;
         this.availableSpace = availableSpace;
+        this.id = id;
     }
 
 
@@ -59,7 +62,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
             Uri.Builder builder = new Uri.Builder()
                     .appendQueryParameter("password", server_pwd)
-                    .appendQueryParameter("receiver", strings[0]);
+                    .appendQueryParameter("receiver", id);
             String query = builder.build().getEncodedQuery();
 
             // Open connection for sending data
@@ -120,7 +123,17 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                 message.equals("connectivity error")){
             Log.e("server_receiver", "got "+message);
         }else if (message.equals("no result")){
-            Log.w("server_receiver", "no file sent");
+            Log.w("server_receiver", "no file sent (yet)");
+            if(!isCancelled()){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ServerReceiver(context, targetView, availableSpace, id).execute();
+                    }
+                }, CHECK_RESULT_TIMEOUT);
+
+
+            }
         }else{
             try {
                 String[] messageSplit = message.split("\\?");
@@ -134,7 +147,8 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-
         }
     }
+
 }
+

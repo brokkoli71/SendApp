@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,8 +109,9 @@ public class ReceiveFragment extends Fragment {
                 ImageView qrImageView = qrDialog.findViewById(R.id.qr_image_view);
                 qrImageView.setImageBitmap(qrHandler.getQRCode(ip));
 
-                serverReceiver = new ServerReceiver(context, imageView, availableSpace);
-                serverReceiver.execute(qrHandler.getServerCommunicationKey());
+
+                serverReceiver = new ServerReceiver(context, imageView, availableSpace, qrHandler.getServerCommunicationKey());
+                serverReceiver.execute();
 
                 if (qrHandler.isIncludedTCP()){
                     tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
@@ -121,6 +123,8 @@ public class ReceiveFragment extends Fragment {
                         @Override
                         public void onReceive() {
                             //todo cancel serverReceiver
+                            serverReceiver.cancel(false);
+                            qrDialog.dismiss();
                         }
                     };
 
@@ -139,8 +143,8 @@ public class ReceiveFragment extends Fragment {
                     public void onResult(String receiveID) {
                         Log.w("send_id", "key:" + receiveID);
 
-                        serverReceiver = new ServerReceiver(context, imageView, availableSpace);
-                        serverReceiver.execute(receiveID);
+                        serverReceiver = new ServerReceiver(context, imageView, availableSpace, receiveID);
+                        serverReceiver.execute();
                     }
                 };
             }
