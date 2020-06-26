@@ -9,7 +9,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,11 +32,14 @@ import com.example.send.sender.ServerSender;
 import com.example.send.sender.TCPSender;
 import com.example.send.utils.ImageHelper;
 import com.example.send.utils.PermissionHandler;
+import com.example.send.utils.QRHandler;
 import com.example.send.utils.Values;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.content.Context.WIFI_SERVICE;
 
 public class SendFragment extends Fragment {
     Context context;
@@ -45,6 +50,7 @@ public class SendFragment extends Fragment {
     ImageView imageView;
     Button buttonQR;
     TextView imageViewText;
+    String ip;
 
     public SendFragment() {}
 
@@ -60,6 +66,9 @@ public class SendFragment extends Fragment {
                              Bundle savedInstanceState) {
         this.context = container.getContext();
         view = inflater.inflate(R.layout.fragment_send, container, false);
+
+        WifiManager wm = (WifiManager) context.getSystemService(WIFI_SERVICE);
+        ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 
         imageView = view.findViewById(R.id.imageView2);
         imageViewText = view.findViewById(R.id.imageViewText);
@@ -118,8 +127,16 @@ public class SendFragment extends Fragment {
             String content = result.getContents();
             Log.w("Scan", "Scanned: "+ content);
             Toast.makeText(context, "Scanned: " + content, Toast.LENGTH_LONG).show();
-            //temp todo
-            TCPSend(content);
+
+            QRHandler qrHandler = new QRHandler(content);
+
+            if (!ip.equals("0.0.0.0")){
+                //todo issue #9: wait for response, else send over server
+                TCPSend(qrHandler.getSenderIP());
+                return;
+            }
+            ServerSend(qrHandler.getServerCommunicationKey());
+
         }
     }
 

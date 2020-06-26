@@ -11,10 +11,23 @@ public class QRHandler {
     private final String serverCommunicationKey;
     private Resources resources;
     private boolean includedTCP = false;
+    private String senderIP;
 
     public QRHandler(Resources resources){
         this.resources = resources;
         serverCommunicationKey = Values.getRandomString(8);
+    }
+
+    public QRHandler(String toDecode){
+        toDecode = toDecode.split(":\\/\\/")[0];
+        if (toDecode.contains("?")){
+            String[] toDecodeArray = toDecode.split("\\?");
+            senderIP = toDecodeArray[0];
+            serverCommunicationKey = toDecodeArray[1];
+            includedTCP = true;
+            return;
+        }
+        serverCommunicationKey = toDecode;
     }
 
 
@@ -35,5 +48,9 @@ public class QRHandler {
 
     public String getServerCommunicationKey() {
         return serverCommunicationKey;
+    }
+
+    public String getSenderIP() {
+        return senderIP;
     }
 }
