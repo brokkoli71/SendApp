@@ -25,6 +25,7 @@ import com.example.send.receiver.ServerReceiver;
 import com.example.send.receiver.TCPReceiver;
 import com.example.send.utils.ImageHelper;
 import com.example.send.utils.PermissionHandler;
+import com.example.send.utils.QRHandler;
 import com.example.send.utils.Values;
 
 import net.glxn.qrgen.android.QRCode;
@@ -41,7 +42,7 @@ public class ReceiveFragment extends Fragment {
 
     Thread TCPReceiverThread;
 
-
+    QRHandler qrHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -62,17 +63,7 @@ public class ReceiveFragment extends Fragment {
 
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_data_placeholder));
 
-        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
-        int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
-        tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
-            @Override
-            public void runOnUiThread(Runnable runnable) {
-                getActivity().runOnUiThread(runnable);
-            }
-        };
 
-        TCPReceiverThread = new Thread(tcpReceiver);
-        TCPReceiverThread.start();
 
         final ArrowIndicatorAnimator arrowIndicatorAnimator = new ArrowIndicatorAnimator(arrow1) {
             @Override
@@ -103,13 +94,7 @@ public class ReceiveFragment extends Fragment {
 
         qrDialog = new Dialog(container.getContext());
 
-        //temp
-        final String serverCommunicationKey = Values.getRandomString(8);
-        final String qrContent = getResources().getString(R.string.app_id_key)
-                +"://" + ip
-                +"?" + serverCommunicationKey;
-
-
+        qrHandler = new QRHandler(getResources());
 
         qrButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -119,7 +104,21 @@ public class ReceiveFragment extends Fragment {
                 qrDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 qrDialog.show();
                 ImageView qrImageView = qrDialog.findViewById(R.id.qr_image_view);
-                qrImageView.setImageBitmap(QRCode.from(qrContent).withSize(500, 500).bitmap());
+                qrImageView.setImageBitmap(qrHandler.getQRCode(ip));
+
+                if (qrHandler.isIncludedTCP()){
+                    int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+                    int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
+                    tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
+                        @Override
+                        public void runOnUiThread(Runnable runnable) {
+                            getActivity().runOnUiThread(runnable);
+                        }
+                    };
+
+                    TCPReceiverThread = new Thread(tcpReceiver);
+                    TCPReceiverThread.start();
+                }
             }
         });
 
