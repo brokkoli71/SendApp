@@ -131,7 +131,8 @@ public class ReceivedDataHandler {
                 final Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", saveToFile);
                 Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver());
 
-
+                //todo issue #7: images wrong resolution
+                //todo issue #8: images wrong orientation (rotation)
                 ImageHelper.setPictureInImageView(bitmap, targetView, availableSpace, context.getResources());
                 break;
 
