@@ -36,7 +36,6 @@ public class ReceiveFragment extends Fragment {
     ViewPager viewPager;
     Dialog qrDialog;
     Context context;
-    String receiveID;
     private TCPReceiver tcpReceiver;
     private ServerReceiver serverReceiver;
 
@@ -109,12 +108,19 @@ public class ReceiveFragment extends Fragment {
                 ImageView qrImageView = qrDialog.findViewById(R.id.qr_image_view);
                 qrImageView.setImageBitmap(qrHandler.getQRCode(ip));
 
+                serverReceiver = new ServerReceiver(context, imageView, availableSpace);
+                serverReceiver.execute(qrHandler.getServerCommunicationKey());
 
                 if (qrHandler.isIncludedTCP()){
                     tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
                         @Override
                         public void runOnUiThread(Runnable runnable) {
                             getActivity().runOnUiThread(runnable);
+                        }
+
+                        @Override
+                        public void onReceive() {
+                            //todo cancel serverReceiver
                         }
                     };
 
@@ -130,9 +136,7 @@ public class ReceiveFragment extends Fragment {
             public void onClick(View view) {
                 new InputDialog(context) {
                     @Override
-                    public void onResult(String result) {
-                        //todo: extract receiveID ("key") from QRCode result
-                        receiveID = result;
+                    public void onResult(String receiveID) {
                         Log.w("send_id", "key:" + receiveID);
 
                         serverReceiver = new ServerReceiver(context, imageView, availableSpace);

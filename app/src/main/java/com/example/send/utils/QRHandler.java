@@ -32,4 +32,8 @@ public class QRHandler {
     public boolean isIncludedTCP() {
         return includedTCP;
     }
+
+    public String getServerCommunicationKey() {
+        return serverCommunicationKey;
+    }
 }

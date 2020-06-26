@@ -33,6 +33,9 @@ public abstract class TCPReceiver implements  Runnable {
 
             Socket mySocket = serverSocket.accept();
             Log.w("receiver", "new socket");
+
+            onReceive();
+
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
 
             final int dataType = dis.readInt();
@@ -77,5 +80,6 @@ public abstract class TCPReceiver implements  Runnable {
     }
     public abstract void runOnUiThread(Runnable runnable);
 
+    public abstract void onReceive();
 
 }
