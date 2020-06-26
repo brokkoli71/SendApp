@@ -8,9 +8,9 @@ import com.example.send.R;
 import net.glxn.qrgen.android.QRCode;
 
 public class QRHandler {
-    final String serverCommunicationKey;
-    Resources resources;
-    boolean includedTCP = false;
+    private final String serverCommunicationKey;
+    private Resources resources;
+    private boolean includedTCP = false;
 
     public QRHandler(Resources resources){
         this.resources = resources;

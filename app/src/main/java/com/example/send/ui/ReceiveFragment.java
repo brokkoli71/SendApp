@@ -96,6 +96,9 @@ public class ReceiveFragment extends Fragment {
 
         qrHandler = new QRHandler(getResources());
 
+        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
+        final int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
+
         qrButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -106,9 +109,8 @@ public class ReceiveFragment extends Fragment {
                 ImageView qrImageView = qrDialog.findViewById(R.id.qr_image_view);
                 qrImageView.setImageBitmap(qrHandler.getQRCode(ip));
 
+
                 if (qrHandler.isIncludedTCP()){
-                    int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
-                    int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
                     tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
                         @Override
                         public void runOnUiThread(Runnable runnable) {
@@ -133,8 +135,6 @@ public class ReceiveFragment extends Fragment {
                         receiveID = result;
                         Log.w("send_id", "key:" + receiveID);
 
-                        int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
-                        int availableSpace = ImageHelper.getAvailableSpace(imageView, qrButton, minWhitespace);
                         serverReceiver = new ServerReceiver(context, imageView, availableSpace);
                         serverReceiver.execute(receiveID);
                     }
@@ -144,7 +144,4 @@ public class ReceiveFragment extends Fragment {
 
         return view;
     }
-
-
-
 }

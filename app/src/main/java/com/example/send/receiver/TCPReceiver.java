@@ -31,51 +31,51 @@ public abstract class TCPReceiver implements  Runnable {
             ServerSocket serverSocket = new ServerSocket(9700);
             Log.w("receiver", "waiting for client");
 
-            while (true) {
-                Socket mySocket = serverSocket.accept();
-                Log.w("receiver", "new socket");
-                DataInputStream dis = new DataInputStream(mySocket.getInputStream());
+            Socket mySocket = serverSocket.accept();
+            Log.w("receiver", "new socket");
+            DataInputStream dis = new DataInputStream(mySocket.getInputStream());
 
-                final int dataType = dis.readInt();
-                String fileName = dis.readUTF();
+            final int dataType = dis.readInt();
+            String fileName = dis.readUTF();
 
-                int len = dis.readInt();
-                byte[] byteData = new byte[len];
-                if (len > 0) {
-                    dis.readFully(byteData);
-                    Log.w("receiver", "received data: " + len + " Bytes");
-                    Toaster.makeToast("received data: " + len + " Bytes");
-                } else{
-                    Toaster.makeToast("data size is 0");
-                    Log.e("receiver", "data size is 0");
-                }
-
-                final File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
-
-                try {
-                    FileOutputStream fos=new FileOutputStream(saveToFile.getPath());
-
-                    fos.write(byteData);
-                    fos.close();
-
-                    Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ReceivedDataHandler.handleType(dataType, saveToFile, targetView, availableSpace, context);
-                        }
-                    });
-
-                }catch (IOException e) {
-                    Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
-                    Log.e("receiver", "could not save file", e);
-                }
-
+            int len = dis.readInt();
+            byte[] byteData = new byte[len];
+            if (len > 0) {
+                dis.readFully(byteData);
+                Log.w("receiver", "received data: " + len + " Bytes");
+                Toaster.makeToast("received data: " + len + " Bytes");
+            } else{
+                Toaster.makeToast("data size is 0");
+                Log.e("receiver", "data size is 0");
             }
+
+            final File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
+
+            try {
+                FileOutputStream fos=new FileOutputStream(saveToFile.getPath());
+
+                fos.write(byteData);
+                fos.close();
+
+                Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ReceivedDataHandler.handleType(dataType, saveToFile, targetView, availableSpace, context);
+                    }
+                });
+
+            }catch (IOException e) {
+                Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
+                Log.e("receiver", "could not save file", e);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public abstract void runOnUiThread(Runnable runnable);
+
+
 }
