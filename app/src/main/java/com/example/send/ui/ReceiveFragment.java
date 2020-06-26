@@ -109,9 +109,19 @@ public class ReceiveFragment extends Fragment {
                 ImageView qrImageView = qrDialog.findViewById(R.id.qr_image_view);
                 qrImageView.setImageBitmap(qrHandler.getQRCode(ip));
 
+                final Handler handler = new Handler();
+                final int delay = ServerReceiver.CHECK_RESULT_TIMEOUT;
+                handler.postDelayed(new Runnable(){
+                    public void run(){
+                        serverReceiver = new ServerReceiver(context, imageView, availableSpace, qrHandler.getServerCommunicationKey(), qrDialog);
+                        serverReceiver.execute();
 
-                serverReceiver = new ServerReceiver(context, imageView, availableSpace, qrHandler.getServerCommunicationKey());
-                serverReceiver.execute();
+                        //workaround for checking if got result
+                        if (qrDialog.isShowing()){
+                            handler.postDelayed(this, delay);
+                        }
+                    }
+                }, delay);
 
                 if (qrHandler.isIncludedTCP()){
                     tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
@@ -121,8 +131,7 @@ public class ReceiveFragment extends Fragment {
                         }
 
                         @Override
-                        public void onReceive() {
-                            //todo cancel serverReceiver
+                        public void onReceiving() {
                             serverReceiver.cancel(false);
                             qrDialog.dismiss();
                         }

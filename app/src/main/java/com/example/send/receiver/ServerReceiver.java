@@ -1,5 +1,7 @@
 package com.example.send.receiver;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,7 +27,7 @@ import java.net.URL;
 public class ServerReceiver extends AsyncTask<String, Void, String> {
     private static final int CONNECTION_TIMEOUT=10000;
     private static final int READ_TIMEOUT=15000;
-    final int CHECK_RESULT_TIMEOUT = 500;
+    public final static int CHECK_RESULT_TIMEOUT = 500;
 
     private final String server_url;
     private final String server_pwd;
@@ -33,6 +35,12 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     private final int availableSpace;
     private final ImageView targetView;
     private final String id;
+
+    Dialog closeOnReceive;
+
+    HttpURLConnection conn;
+
+    private ServerReceiver nextReceiver;
 
     public ServerReceiver(Context context, ImageView targetView, int availableSpace, String id){
         this.context = context;
@@ -43,11 +51,16 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
         this.id = id;
     }
 
+    public ServerReceiver(Context context, ImageView targetView, int availableSpace, String id, Dialog closeOnReceive){
+        this(context, targetView, availableSpace, id);
+        this.closeOnReceive = closeOnReceive;
+    }
+
 
 
     @Override
     protected String doInBackground(String... strings) {
-        HttpURLConnection conn;
+
         Log.w("server_receiver", "start");
         try {
             URL url = new URL(server_url);
@@ -116,6 +129,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String message) {
         super.onPostExecute(message);
+
         Log.w("server_receiver", "message: "+message);
 
         if (message.equals("exception")||
@@ -124,17 +138,17 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             Log.e("server_receiver", "got "+message);
         }else if (message.equals("no result")){
             Log.w("server_receiver", "no file sent (yet)");
-            if(!isCancelled()){
+            /*if(!isCancelled()){
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        new ServerReceiver(context, targetView, availableSpace, id).execute();
+                        nextReceiver = new ServerReceiver(context, targetView, availableSpace, id);
+                        nextReceiver.execute();
                     }
                 }, CHECK_RESULT_TIMEOUT);
-
-
-            }
+            }*/
         }else{
+            onReceiving();
             try {
                 String[] messageSplit = message.split("\\?");
                 String filename = messageSplit[0];
@@ -150,5 +164,19 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
         }
     }
 
+    public void onReceiving(){
+        if (closeOnReceive!=null){
+            closeOnReceive.dismiss();
+        }
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        nextReceiver.cancel(true);
+        try {
+            conn.disconnect();
+        }catch (Exception ignored){}
+    }
 }
 
