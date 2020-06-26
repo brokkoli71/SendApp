@@ -152,7 +152,7 @@ public class ReceiveFragment extends Fragment {
                     public void onResult(String receiveID) {
                         Log.w("send_id", "key:" + receiveID);
 
-                        serverReceiver = new ServerReceiver(context, imageView, availableSpace, receiveID);
+                        serverReceiver = new ServerReceiver(context, imageView, availableSpace, receiveID, true);
                         serverReceiver.execute();
                     }
                 };

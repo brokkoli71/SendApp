@@ -21,7 +21,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 
-public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {
+public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {//todo issue #6: check on server if file name is already taken
 
     final int CHECK_STATUS_TIMEOUT = 1000;
 

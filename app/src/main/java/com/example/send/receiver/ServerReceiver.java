@@ -39,6 +39,7 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     Dialog closeOnReceive;
 
     HttpURLConnection conn;
+    boolean toasterFeedback = false;
 
     private ServerReceiver nextReceiver;
 
@@ -54,6 +55,11 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     public ServerReceiver(Context context, ImageView targetView, int availableSpace, String id, Dialog closeOnReceive){
         this(context, targetView, availableSpace, id);
         this.closeOnReceive = closeOnReceive;
+    }
+
+    public ServerReceiver (Context context, ImageView targetView, int availableSpace, String id, boolean toasterFeedback){
+        this(context, targetView, availableSpace, id);
+        this.toasterFeedback = toasterFeedback;
     }
 
 
@@ -138,15 +144,9 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
             Log.e("server_receiver", "got "+message);
         }else if (message.equals("no result")){
             Log.w("server_receiver", "no file sent (yet)");
-            /*if(!isCancelled()){
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        nextReceiver = new ServerReceiver(context, targetView, availableSpace, id);
-                        nextReceiver.execute();
-                    }
-                }, CHECK_RESULT_TIMEOUT);
-            }*/
+            if (toasterFeedback){
+                Toaster.makeToast("(noch) keine daten unter dem tag vorhanden");
+            }
         }else{
             onReceiving();
             try {

@@ -30,7 +30,6 @@ public abstract class InputDialog {
                 dialog.cancel();
             }
         });
-
         builder.show();
     }
 }
