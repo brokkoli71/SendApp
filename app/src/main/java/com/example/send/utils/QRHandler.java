@@ -19,7 +19,7 @@ public class QRHandler {
     }
 
     public QRHandler(String toDecode){
-        toDecode = toDecode.split(":\\/\\/")[0];
+        toDecode = toDecode.split(":\\/\\/")[1];
         if (toDecode.contains("?")){
             String[] toDecodeArray = toDecode.split("\\?");
             senderIP = toDecodeArray[0];

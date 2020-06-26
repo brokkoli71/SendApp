@@ -130,7 +130,7 @@ public class SendFragment extends Fragment {
 
             QRHandler qrHandler = new QRHandler(content);
 
-            if (!ip.equals("0.0.0.0")){
+            if (false){//!ip.equals("0.0.0.0")){
                 //todo issue #9: wait for response, else send over server
                 TCPSend(qrHandler.getSenderIP());
                 return;
