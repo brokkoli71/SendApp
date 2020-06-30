@@ -29,6 +29,7 @@ import com.example.send.R;
 import com.example.send.receiver.ReceivedDataHandler;
 import com.example.send.sender.SendingTaskData;
 import com.example.send.sender.ServerSender;
+import com.example.send.sender.TCPInitiator;
 import com.example.send.sender.TCPSender;
 import com.example.send.utils.ImageHelper;
 import com.example.send.utils.PermissionHandler;
@@ -132,7 +133,15 @@ public class SendFragment extends Fragment {
 
             if (false){//!ip.equals("0.0.0.0")){
                 //todo issue #9: wait for response, else send over server
-                TCPSend(qrHandler.getSenderIP());
+                final String receiverIP = qrHandler.getReceiverIP();
+                new TCPInitiator(receiverIP){
+                    @Override
+                    protected void onPostExecute(String response) {
+                        super.onPostExecute(response);
+                        if (response.equals("ready"))
+                            TCPSend(receiverIP);
+                    }
+                };
                 return;
             }
             ServerSend(qrHandler.getServerCommunicationKey());
