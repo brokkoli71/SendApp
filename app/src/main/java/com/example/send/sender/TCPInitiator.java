@@ -77,7 +77,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
 
-        if (response.equals("ready")){
+        if (response.equals(Values.TCP_CONNECTION_AVAILABLE)){
             tcpSend(ip);
             return;
         }

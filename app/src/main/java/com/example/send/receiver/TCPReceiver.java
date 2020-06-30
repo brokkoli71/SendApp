@@ -6,8 +6,10 @@ import android.widget.ImageView;
 
 import com.example.send.ui.MainActivity;
 import com.example.send.utils.Toaster;
+import com.example.send.utils.Values;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,12 +33,35 @@ public abstract class TCPReceiver implements  Runnable {
             ServerSocket serverSocket = new ServerSocket(9700);
             Log.w("receiver", "waiting for client");
 
+            //handshake
             Socket mySocket = serverSocket.accept();
             Log.w("receiver", "new socket");
+            DataInputStream dis = new DataInputStream(mySocket.getInputStream());
+            String message = dis.readUTF();
+            dis.close();
 
+            String[] messageArray = message.split("\\?");
+            if (!messageArray[1].equals(""+Values.SEND_REQ_KEY)) {
+                Log.e("receiver", "unknown req key");
+                return;
+            }
+            String senderIP = messageArray[2];
+
+            try {
+                Socket s = new Socket(senderIP, 9700);
+                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                dos.writeUTF(Values.TCP_CONNECTION_AVAILABLE);
+                dos.close();
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("receiver", "exception:", e);
+            }
+
+            mySocket = serverSocket.accept();
             onReceiving();
 
-            DataInputStream dis = new DataInputStream(mySocket.getInputStream());
+            dis = new DataInputStream(mySocket.getInputStream());
 
             final int dataType = dis.readInt();
             String fileName = dis.readUTF();

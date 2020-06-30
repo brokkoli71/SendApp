@@ -133,7 +133,10 @@ public class SendFragment extends Fragment {
 
             if (false){//!ip.equals("0.0.0.0")){
                 //todo issue #9: wait for response, else send over server
-                new TCPInitiator(qrHandler, sendingTaskData, context).execute("");
+                String message = getString(Values.APP_ID_KEY) +
+                        "?" + Values.SEND_REQ_KEY +
+                        "?" + ip;
+                new TCPInitiator(qrHandler, sendingTaskData, context).execute(message);
                 return;
             }
             serverSend(qrHandler.getServerCommunicationKey());

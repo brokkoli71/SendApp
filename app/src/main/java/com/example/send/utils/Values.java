@@ -15,6 +15,13 @@ public class Values {
 
     public static final int APP_ID_KEY = R.string.app_id_key;
 
+
+    //for tcp communication
+    public static final int SEND_REQ_KEY = 0;
+    //add more later
+
+    public static final String TCP_CONNECTION_AVAILABLE = "rdy";
+
     public static String getRandomString(int len) {
         Random generator = new Random();
         StringBuilder randomStringBuilder = new StringBuilder();
