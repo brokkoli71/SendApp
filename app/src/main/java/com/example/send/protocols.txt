@@ -1,7 +1,7 @@
 communication over TCP and QR (protocol):
     generate QR with private IP if WiFi active {app_qr_id_key, receiver_ip, random_key_for_server_communication} else {app_qr_id_key, random_key_for_server_communication} -> communicate over server
     send req to receiver if WiFi active {app_id_key, send_req_key, sender_ip} else -> communicate over server
-    receiver answer back to sender {app_id_key, receive_accepted_key}
+    receiver answer back to sender {receive_accepted_key}
     send data to receiver {app_id_key, send_data_key, data}
     send confirmation {app_id_key, receive_status_received}
 
