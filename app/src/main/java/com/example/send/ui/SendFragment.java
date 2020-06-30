@@ -113,7 +113,7 @@ public class SendFragment extends Fragment {
                     public void onResult(String result) {
                         sendID = result;
                         Log.w("send_id", "key:" + sendID);
-                        ServerSend(sendID);
+                        serverSend(sendID);
                     }
                 };
             }
@@ -133,31 +133,17 @@ public class SendFragment extends Fragment {
 
             if (false){//!ip.equals("0.0.0.0")){
                 //todo issue #9: wait for response, else send over server
-                final String receiverIP = qrHandler.getReceiverIP();
-                new TCPInitiator(receiverIP){
-                    @Override
-                    protected void onPostExecute(String response) {
-                        super.onPostExecute(response);
-                        if (response.equals("ready"))
-                            TCPSend(receiverIP);
-                    }
-                };
+                new TCPInitiator(qrHandler, sendingTaskData, context).execute("");
                 return;
             }
-            ServerSend(qrHandler.getServerCommunicationKey());
+            serverSend(qrHandler.getServerCommunicationKey());
 
         }
     }
 
 
-    void TCPSend(String IP){
-        if (sendingTaskData==null)
-            return;
-        TCPSender tcpSender = new TCPSender(IP);
-        tcpSender.execute(sendingTaskData);
-        Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes over TCP", Toast.LENGTH_SHORT).show();
-    }
-    void ServerSend(String key){
+
+    void serverSend(String key){
         if (sendingTaskData==null)
             return;
         ServerSender serverSender = new ServerSender(context, key);
