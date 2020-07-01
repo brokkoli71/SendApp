@@ -18,9 +18,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.send.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -82,14 +79,10 @@ public class ImageHelper {
     public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, int availableSpace, Resources resources) {
         //bitmap gets resized to not take to much RAM
         int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
-        bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
 
-        if (availableSpace >= bitmap.getHeight()) {
-            targetView.getLayoutParams().height = bitmap.getHeight();
-        } else {
-            targetView.getLayoutParams().height = availableSpace;
-            bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
-        }
+        bitmap = ImageHelper.fitSizeBitmap(bitmap, availableSpace, newWidth);
+        targetView.getLayoutParams().height = bitmap.getHeight();
+
         //remove background otherwise there would be two frames for image
         targetView.setBackground(null);
 
@@ -114,26 +107,12 @@ public class ImageHelper {
         return availableSpace;
     }
 
-    public static void setPictureWithPicasso(Uri uri, final ImageView targetView, final int availableSpace, final Resources resources){
+    /*public static void setPictureWithPicasso(Uri uri, final ImageView targetView, final int availableSpace, final Resources resources){
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Log.w("picasso", "bitmap height"+bitmap.getHeight());
-                //bitmap gets resized to not take to much RAM
-                /*int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
-                bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
 
-                if (availableSpace >= bitmap.getHeight()) {
-                    targetView.getLayoutParams().height = bitmap.getHeight();
-                } else {
-                    targetView.getLayoutParams().height = availableSpace;
-                    bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
-                }
-                //remove background otherwise there would be two frames for image
-                targetView.setBackground(null);
-
-                //round corners to fit UI style
-                bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, resources.getDimensionPixelSize(R.dimen.round_corners));*/
                 targetView.setImageBitmap(bitmap);
             }
 
@@ -163,5 +142,5 @@ public class ImageHelper {
                     }
                 })
             .into(target);
-    }
+    }*/
 }

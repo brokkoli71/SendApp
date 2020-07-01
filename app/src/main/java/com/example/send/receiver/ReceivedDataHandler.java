@@ -129,15 +129,11 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
                 final Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", saveToFile);
-                //Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver());
+                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver());
 
                 //todo issue #7: images wrong resolution
                 //todo issue #8: images wrong orientation (rotation)
-                //ImageHelper.setPictureInImageView(bitmap, targetView, availableSpace, context.getResources());
-
-
-                //approach with picasso
-                ImageHelper.setPictureWithPicasso(uri, targetView, availableSpace, context.getResources());
+                ImageHelper.setPictureInImageView(bitmap, targetView, availableSpace, context.getResources());
 
                 break;
 
