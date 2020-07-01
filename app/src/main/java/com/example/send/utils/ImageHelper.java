@@ -153,6 +153,7 @@ public class ImageHelper {
                     @Override
                     public Bitmap transform(Bitmap source) {
                         int maxWidth = resources.getDimensionPixelSize(R.dimen.inner_content_width);
+                        Log.w("picasso",  "transform");
                         return fitSizeBitmap(source, availableSpace, maxWidth);
                     }
 
@@ -161,7 +162,6 @@ public class ImageHelper {
                         return "resized";
                     }
                 })
-                .centerInside()
             .into(target);
     }
 }
