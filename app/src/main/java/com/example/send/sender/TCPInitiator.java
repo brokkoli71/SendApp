@@ -47,6 +47,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
             dos.writeUTF(message[0]);
             dos.close();
             s.close();
+            Log.w("tcp_init", "req send");
         } catch (IOException e) {
             e.printStackTrace();
             return "exception";
@@ -61,6 +62,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
             String response = dis.readUTF();
             dis.close();
+            Log.w("tcp_init", "got response: "+ response);
             return response;
 
         }catch (SocketTimeoutException e){

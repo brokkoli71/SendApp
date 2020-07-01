@@ -173,7 +173,6 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
-        nextReceiver.cancel(true);
         try {
             conn.disconnect();
         }catch (Exception ignored){}

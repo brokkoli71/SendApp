@@ -31,11 +31,11 @@ public abstract class TCPReceiver implements  Runnable {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(Values.SOCKET_PORT_REQ);
-            Log.w("tcp_receiver", "waiting for client");
+            Log.w("tcp_receiver_init", "waiting for client");
 
             //handshake
             Socket mySocket = serverSocket.accept();
-            Log.w("tcp_receiver", "new socket");
+            Log.w("tcp_receiver_init", "got req");
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
             String message = dis.readUTF();
             dis.close();
@@ -53,6 +53,7 @@ public abstract class TCPReceiver implements  Runnable {
                 dos.writeUTF(Values.TCP_CONNECTION_AVAILABLE);
                 dos.close();
                 s.close();
+                Log.w("tcp_receiver", "response send");
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("tcp_receiver", "exception:", e);
@@ -60,6 +61,7 @@ public abstract class TCPReceiver implements  Runnable {
 
             serverSocket = new ServerSocket(Values.SOCKET_PORT_SEND);
             mySocket = serverSocket.accept();
+            Log.w("tcp_receiver", "receiving start");
             onReceiving();
 
             dis = new DataInputStream(mySocket.getInputStream());
