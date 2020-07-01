@@ -40,6 +40,8 @@ public class ReceiveFragment extends Fragment {
     private TCPReceiver tcpReceiver;
     private ServerReceiver serverReceiver;
 
+    boolean tcpIsRunning = false;
+
     Thread TCPReceiverThread;
 
     QRHandler qrHandler;
@@ -125,7 +127,8 @@ public class ReceiveFragment extends Fragment {
                     }
                 }, delay);
 
-                if (qrHandler.isIncludedTCP()){
+                if (!tcpIsRunning && qrHandler.isIncludedTCP()){
+                    tcpIsRunning = true;
                     tcpReceiver = new TCPReceiver(context, imageView, availableSpace) {
                         @Override
                         public void runOnUiThread(Runnable runnable) {
@@ -136,6 +139,7 @@ public class ReceiveFragment extends Fragment {
                         public void onReceiving() {
                             serverReceiver.cancel(false);
                             qrDialog.dismiss();
+                            tcpIsRunning = false;
                         }
                     };
 

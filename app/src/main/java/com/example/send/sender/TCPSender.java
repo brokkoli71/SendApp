@@ -1,6 +1,7 @@
 package com.example.send.sender;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.send.utils.Values;
 
@@ -35,6 +36,7 @@ public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
             dos.write(byteData);
             dos.close();
             s.close();
+            Log.w("tcp_sender", "successfully sent");
         } catch (IOException e) {
             e.printStackTrace();
         }
