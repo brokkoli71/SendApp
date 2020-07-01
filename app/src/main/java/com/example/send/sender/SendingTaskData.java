@@ -116,23 +116,7 @@ public class SendingTaskData {
     }
 
     //can be removed?
-    String getRealPathFromUri(Uri contentUri, ContentResolver contentResolver) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = contentResolver.query(contentUri, proj, null, null, null);
-            assert cursor != null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }catch (NullPointerException e){
 
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
-        return null;
-    }
 
     private String getFileName(Uri uri, ContentResolver contentResolver) {
         String displayName = "";

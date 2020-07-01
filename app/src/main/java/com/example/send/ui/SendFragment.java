@@ -182,12 +182,13 @@ public class SendFragment extends Fragment {
         try {
             Log.w("set_img", "img type is "+type);
             if (type.startsWith("image/")){
-                Bitmap bitmap = ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(),contentResolver);
+                int maxWidth =  context.getResources().getDimensionPixelSize(R.dimen.inner_content_width);
 
                 int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
                 int availableSpace = ImageHelper.getAvailableSpace(imageView, buttonQR, minWhitespace);
-                //ImageHelper.setPictureInImageView(bitmap, imageView, availableSpace, getResources());
-                ImageHelper.setPictureWithPicasso(sendingTaskData.getSelectedFileUri(), imageView, availableSpace, getResources());
+                Bitmap bitmap = ReceivedDataHandler.readPictureFromFileUri(sendingTaskData.getSelectedFileUri(), contentResolver, availableSpace, maxWidth);
+
+                ImageHelper.setPictureInImageView(bitmap, imageView, getResources());
             }
             else{
 

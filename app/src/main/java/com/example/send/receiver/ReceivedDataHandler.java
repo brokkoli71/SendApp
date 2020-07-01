@@ -21,11 +21,12 @@ import com.example.send.utils.Values;
 import com.example.send.ui.MainActivity;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class ReceivedDataHandler {
 
-    public static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver){
+    public static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver, int maxHeight, int maxWidth){
         InputStream inputStream = null;
         Bitmap bitmap = null;
         try {
@@ -43,6 +44,13 @@ public class ReceivedDataHandler {
             }
         }
 
+        bitmap = ImageHelper.fitSizeBitmap(bitmap, maxHeight, maxWidth);
+        try {
+            bitmap = ImageHelper.modifyOrientation(bitmap, ImageHelper.getRealPathFromUri(uri, contentResolver));
+            Log.w("set_img", "orientation changed");
+        }catch (IOException e){
+            Log.e("set_img", "orientation changing failed",e);
+        }
         return bitmap;
     }
 
@@ -129,11 +137,13 @@ public class ReceivedDataHandler {
             case SendingTaskData.TYPE_PNG:
                 Toaster.makeToast("Image saved: "+path);
                 final Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", saveToFile);
-                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver());
+
+                int maxWidth =  context.getResources().getDimensionPixelSize(R.dimen.inner_content_width);
+                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver(), availableSpace, maxWidth);
 
                 //todo issue #7: images wrong resolution
                 //todo issue #8: images wrong orientation (rotation)
-                ImageHelper.setPictureInImageView(bitmap, targetView, availableSpace, context.getResources());
+                ImageHelper.setPictureInImageView(bitmap, targetView, context.getResources());
 
                 break;
 

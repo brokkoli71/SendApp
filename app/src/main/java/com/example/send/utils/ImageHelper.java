@@ -1,9 +1,12 @@
 package com.example.send.utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -12,12 +15,16 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.send.R;
+
+import java.io.IOException;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -76,11 +83,9 @@ public class ImageHelper {
         return result;
     }
 
-    public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, int availableSpace, Resources resources) {
+    public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, Resources resources) {
         //bitmap gets resized to not take to much RAM
-        int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
 
-        bitmap = ImageHelper.fitSizeBitmap(bitmap, availableSpace, newWidth);
         targetView.getLayoutParams().height = bitmap.getHeight();
 
         //remove background otherwise there would be two frames for image
@@ -107,6 +112,24 @@ public class ImageHelper {
         return availableSpace;
     }
 
+
+    public static String getRealPathFromUri(Uri contentUri, ContentResolver contentResolver) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = contentResolver.query(contentUri, proj, null, null, null);
+            assert cursor != null;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }catch (NullPointerException e){
+
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return null;
+    }
     /*public static void setPictureWithPicasso(Uri uri, final ImageView targetView, final int availableSpace, final Resources resources){
         Target target = new Target() {
             @Override
@@ -143,4 +166,42 @@ public class ImageHelper {
                 })
             .into(target);
     }*/
+
+
+    public static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
+        ExifInterface ei = new ExifInterface(image_absolute_path);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotate(bitmap, 90);
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotate(bitmap, 180);
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotate(bitmap, 270);
+
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                return flip(bitmap, true, false);
+
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                return flip(bitmap, false, true);
+
+            default:
+                return bitmap;
+        }
+    }
+
+    public static Bitmap rotate(Bitmap bitmap, float degrees) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degrees);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
+        Matrix matrix = new Matrix();
+        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
 }
