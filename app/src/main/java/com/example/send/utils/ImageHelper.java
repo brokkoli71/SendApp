@@ -12,11 +12,13 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.send.R;
+import com.squareup.picasso.Picasso;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -88,5 +90,9 @@ public class ImageHelper {
 
         int availableSpace = (selectButtonLocation[1] - imageViewLocation[1]) - minWhitespace;
         return availableSpace;
+    }
+
+    public static void setPictureWithPicasso(Uri uri, ImageView targetView, int availableSpace){
+        Picasso.get().load(uri).into(targetView);
     }
 }
