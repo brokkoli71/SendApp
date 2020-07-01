@@ -111,6 +111,8 @@ public class ReceiveFragment extends Fragment {
 
                 final Handler handler = new Handler();
                 final int delay = ServerReceiver.CHECK_RESULT_TIMEOUT;
+
+                Log.w("server_receiver", "start");
                 handler.postDelayed(new Runnable(){
                     public void run(){
                         serverReceiver = new ServerReceiver(context, imageView, availableSpace, qrHandler.getServerCommunicationKey(), qrDialog);

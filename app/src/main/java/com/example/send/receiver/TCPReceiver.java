@@ -31,18 +31,18 @@ public abstract class TCPReceiver implements  Runnable {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(9700);
-            Log.w("receiver", "waiting for client");
+            Log.w("tcp_receiver", "waiting for client");
 
             //handshake
             Socket mySocket = serverSocket.accept();
-            Log.w("receiver", "new socket");
+            Log.w("tcp_receiver", "new socket");
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
             String message = dis.readUTF();
             dis.close();
 
             String[] messageArray = message.split("\\?");
             if (!messageArray[1].equals(""+Values.SEND_REQ_KEY)) {
-                Log.e("receiver", "unknown req key");
+                Log.e("tcp_receiver", "unknown req key");
                 return;
             }
             String senderIP = messageArray[2];
@@ -55,7 +55,7 @@ public abstract class TCPReceiver implements  Runnable {
                 s.close();
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e("receiver", "exception:", e);
+                Log.e("tcp_receiver", "exception:", e);
             }
 
             mySocket = serverSocket.accept();
@@ -70,11 +70,11 @@ public abstract class TCPReceiver implements  Runnable {
             byte[] byteData = new byte[len];
             if (len > 0) {
                 dis.readFully(byteData);
-                Log.w("receiver", "received data: " + len + " Bytes");
+                Log.w("tcp_receiver", "received data: " + len + " Bytes");
                 Toaster.makeToast("received data: " + len + " Bytes");
             } else{
                 Toaster.makeToast("data size is 0");
-                Log.e("receiver", "data size is 0");
+                Log.e("tcp_receiver", "data size is 0");
             }
 
             final File saveToFile = ReceivedDataHandler.getAvailableFile(fileName);
@@ -85,7 +85,7 @@ public abstract class TCPReceiver implements  Runnable {
                 fos.write(byteData);
                 fos.close();
 
-                Log.w("receiver", "saved file: "+ saveToFile.getAbsolutePath());
+                Log.w("tcp_receiver", "saved file: "+ saveToFile.getAbsolutePath());
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -96,7 +96,7 @@ public abstract class TCPReceiver implements  Runnable {
 
             }catch (IOException e) {
                 Toaster.makeToast("fehler beim speichern (Order konnte evtl nicht erstellt werden)", true);
-                Log.e("receiver", "could not save file", e);
+                Log.e("tcp_receiver", "could not save file", e);
             }
 
         } catch (IOException e) {

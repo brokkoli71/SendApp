@@ -67,7 +67,6 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
 
-        Log.w("server_receiver", "start");
         try {
             URL url = new URL(server_url);
 
@@ -104,7 +103,6 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
 
         try {
             int response_code = conn.getResponseCode();
-            Log.w("server_receiver", "got response:"+response_code);
             // Check if successful connection made
             if (response_code == HttpURLConnection.HTTP_OK) {
 
@@ -160,6 +158,8 @@ public class ServerReceiver extends AsyncTask<String, Void, String> {
                 downloader.execute(new ReceivedServerData(filename, dataType, url));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
+            }catch (ArrayIndexOutOfBoundsException e){
+                Log.e("server_receiver","ArrayIndexOutOfBoundsException: message format error: \""+message+"\"");
             }
         }
     }
