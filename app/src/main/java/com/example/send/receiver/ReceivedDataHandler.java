@@ -16,6 +16,7 @@ import com.example.send.R;
 import com.example.send.sender.SendingTaskData;
 import com.example.send.utils.ImageHelper;
 import com.example.send.utils.PermissionHandler;
+import com.example.send.utils.RealPathProvider;
 import com.example.send.utils.Toaster;
 import com.example.send.utils.Values;
 import com.example.send.ui.MainActivity;
@@ -26,7 +27,7 @@ import java.io.InputStream;
 
 public class ReceivedDataHandler {
 
-    public static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver, int maxHeight, int maxWidth){
+    public static Bitmap readPictureFromFileUri(Uri uri, ContentResolver contentResolver, int maxHeight, int maxWidth, Context context){
         InputStream inputStream = null;
         Bitmap bitmap = null;
         try {
@@ -46,7 +47,9 @@ public class ReceivedDataHandler {
 
         bitmap = ImageHelper.fitSizeBitmap(bitmap, maxHeight, maxWidth);
         try {
-            bitmap = ImageHelper.modifyOrientation(bitmap, ImageHelper.getRealPathFromUri(uri, contentResolver));
+            String realPath = RealPathProvider.getPath(context, uri);
+            Log.w("set_img", "real path: "+ realPath);
+            bitmap = ImageHelper.modifyOrientation(bitmap, realPath);
             Log.w("set_img", "orientation changed");
         }catch (IOException e){
             Log.e("set_img", "orientation changing failed",e);
@@ -139,7 +142,7 @@ public class ReceivedDataHandler {
                 final Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", saveToFile);
 
                 int maxWidth =  context.getResources().getDimensionPixelSize(R.dimen.inner_content_width);
-                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver(), availableSpace, maxWidth);
+                Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver(), availableSpace, maxWidth, context);
 
                 //todo issue #7: images wrong resolution
                 //todo issue #8: images wrong orientation (rotation)

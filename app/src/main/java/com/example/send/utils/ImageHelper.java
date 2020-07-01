@@ -17,6 +17,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -112,24 +114,6 @@ public class ImageHelper {
         return availableSpace;
     }
 
-
-    public static String getRealPathFromUri(Uri contentUri, ContentResolver contentResolver) {
-        Cursor cursor = null;
-        try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = contentResolver.query(contentUri, proj, null, null, null);
-            assert cursor != null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }catch (NullPointerException e){
-
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
-        return null;
-    }
     /*public static void setPictureWithPicasso(Uri uri, final ImageView targetView, final int availableSpace, final Resources resources){
         Target target = new Target() {
             @Override
