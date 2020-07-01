@@ -137,7 +137,7 @@ public class ReceivedDataHandler {
 
 
                 //approach with picasso
-                ImageHelper.setPictureWithPicasso(uri, targetView, availableSpace);
+                ImageHelper.setPictureWithPicasso(uri, targetView, availableSpace, context.getResources());
 
                 break;
 

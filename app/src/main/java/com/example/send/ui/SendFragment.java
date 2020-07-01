@@ -186,7 +186,8 @@ public class SendFragment extends Fragment {
 
                 int minWhitespace = getResources().getDimensionPixelSize(R.dimen.min_whitespace);
                 int availableSpace = ImageHelper.getAvailableSpace(imageView, buttonQR, minWhitespace);
-                ImageHelper.setPictureInImageView(bitmap, imageView, availableSpace, getResources());
+                //ImageHelper.setPictureInImageView(bitmap, imageView, availableSpace, getResources());
+                ImageHelper.setPictureWithPicasso(sendingTaskData.getSelectedFileUri(), imageView, availableSpace, getResources());
             }
             else{
 

@@ -19,6 +19,7 @@ import android.widget.ImageView;
 
 import com.example.send.R;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -92,7 +93,40 @@ public class ImageHelper {
         return availableSpace;
     }
 
-    public static void setPictureWithPicasso(Uri uri, ImageView targetView, int availableSpace){
-        Picasso.get().load(uri).into(targetView);
+    public static void setPictureWithPicasso(Uri uri, final ImageView targetView, final int availableSpace, final Resources resources){
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                Log.w("picasso", "bitmap height"+bitmap.getHeight());
+                //bitmap gets resized to not take to much RAM
+                int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
+                bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
+
+                /*if (availableSpace >= bitmap.getHeight()) {
+                    targetView.getLayoutParams().height = bitmap.getHeight();
+                } else {
+                    targetView.getLayoutParams().height = availableSpace;
+                    bitmap = ImageHelper.fitHeightBitmap(bitmap, availableSpace);
+                }
+                //remove background otherwise there would be two frames for image
+                targetView.setBackground(null);
+
+                //round corners to fit UI style
+                bitmap = ImageHelper.getRoundedCornerBitmap(bitmap, resources.getDimensionPixelSize(R.dimen.round_corners));*/
+                targetView.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                Log.e("picasso", "failed", e);
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                Log.w("picasso", "preparing");
+                targetView.setImageDrawable(placeHolderDrawable);
+            }
+        };
+        Picasso.get().load(uri).into(target);
     }
 }
