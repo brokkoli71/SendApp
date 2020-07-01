@@ -30,7 +30,7 @@ public abstract class TCPReceiver implements  Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(9700);
+            ServerSocket serverSocket = new ServerSocket(Values.SOCKET_PORT_REQ);
             Log.w("tcp_receiver", "waiting for client");
 
             //handshake
@@ -48,7 +48,7 @@ public abstract class TCPReceiver implements  Runnable {
             String senderIP = messageArray[2];
 
             try {
-                Socket s = new Socket(senderIP, 9700);
+                Socket s = new Socket(senderIP, Values.SOCKET_PORT_RESPONSE);
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
                 dos.writeUTF(Values.TCP_CONNECTION_AVAILABLE);
                 dos.close();
@@ -58,6 +58,7 @@ public abstract class TCPReceiver implements  Runnable {
                 Log.e("tcp_receiver", "exception:", e);
             }
 
+            serverSocket = new ServerSocket(Values.SOCKET_PORT_SEND);
             mySocket = serverSocket.accept();
             onReceiving();
 

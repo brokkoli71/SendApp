@@ -42,7 +42,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... message) {
         try {
-            s = new Socket(ip, 9700);
+            s = new Socket(ip, Values.SOCKET_PORT_REQ);
             dos = new DataOutputStream(s.getOutputStream());
             dos.writeUTF(message[0]);
             dos.close();
@@ -53,7 +53,8 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
         }
 
         try {
-            final ServerSocket serverSocket = new ServerSocket(9700);
+
+            final ServerSocket serverSocket = new ServerSocket(Values.SOCKET_PORT_RESPONSE);
             serverSocket.setSoTimeout(CONNECTION_TIMEOUT);
             final Socket mySocket = serverSocket.accept();
 
@@ -64,7 +65,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
 
         }catch (SocketTimeoutException e){
             Toaster.makeToast("konnte keine TCP Verbindung aufbauen");
-            Log.e("tcp_init", "connection timeout");
+            Log.e("tcp_init", "connection timeout", e);
             return "connection timeout";
 
         }catch (IOException e) {
@@ -81,6 +82,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
             tcpSend(ip);
             return;
         }
+        Log.e("tcp_init", "could not connect: \""+response+"\"");
         serverSend(serverCommunicationKey);
     }
 

@@ -2,6 +2,8 @@ package com.example.send.sender;
 
 import android.os.AsyncTask;
 
+import com.example.send.utils.Values;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -23,7 +25,7 @@ public class TCPSender extends AsyncTask<SendingTaskData, Void, String> {
         fileName = sendingTaskData[0].getFileName();
 
         try {
-            s = new Socket(ip, 9700);
+            s = new Socket(ip, Values.SOCKET_PORT_SEND);
             dos = new DataOutputStream(s.getOutputStream());
 
             dos.writeInt(dataType);

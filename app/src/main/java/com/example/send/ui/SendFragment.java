@@ -131,7 +131,7 @@ public class SendFragment extends Fragment {
 
             QRHandler qrHandler = new QRHandler(content);
 
-            if (false){//!ip.equals("0.0.0.0")){
+            if (!ip.equals("0.0.0.0")){
                 //todo issue #9: wait for response, else send over server --> testing
                 String message = getString(Values.APP_ID_KEY) +
                         "?" + Values.SEND_REQ_KEY +
@@ -139,6 +139,7 @@ public class SendFragment extends Fragment {
                 new TCPInitiator(qrHandler, sendingTaskData, context).execute(message);
                 return;
             }
+            Log.w("send", "no wifi available");
             serverSend(qrHandler.getServerCommunicationKey());
 
         }

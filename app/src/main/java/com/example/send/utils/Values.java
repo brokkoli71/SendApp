@@ -22,6 +22,11 @@ public class Values {
 
     public static final String TCP_CONNECTION_AVAILABLE = "rdy";
 
+    public static final int SOCKET_PORT_REQ = 9700;
+    public static final int SOCKET_PORT_RESPONSE = 9701;
+    public static final int SOCKET_PORT_SEND = 9702;
+
+
     public static String getRandomString(int len) {
         Random generator = new Random();
         StringBuilder randomStringBuilder = new StringBuilder();
