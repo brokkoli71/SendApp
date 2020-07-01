@@ -144,7 +144,6 @@ public class ReceivedDataHandler {
                 int maxWidth =  context.getResources().getDimensionPixelSize(R.dimen.inner_content_width);
                 Bitmap bitmap = readPictureFromFileUri(uri, context.getContentResolver(), availableSpace, maxWidth, context);
 
-                //todo issue #7: images wrong resolution
                 //todo issue #8: images wrong orientation (rotation)
                 ImageHelper.setPictureInImageView(bitmap, targetView, context.getResources());
 
