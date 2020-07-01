@@ -127,7 +127,6 @@ public class SendFragment extends Fragment {
         } else {
             String content = result.getContents();
             Log.w("Scan", "Scanned: "+ content);
-            Toast.makeText(context, "Scanned: " + content, Toast.LENGTH_LONG).show();
 
             QRHandler qrHandler = new QRHandler(content);
 

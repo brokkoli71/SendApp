@@ -39,6 +39,7 @@ public abstract class TCPReceiver implements  Runnable {
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
             String message = dis.readUTF();
             dis.close();
+            serverSocket.close();
 
             String[] messageArray = message.split("\\?");
             if (!messageArray[1].equals(""+Values.SEND_REQ_KEY)) {

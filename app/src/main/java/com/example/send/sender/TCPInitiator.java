@@ -22,7 +22,7 @@ import java.net.SocketTimeoutException;
 
 
 public class TCPInitiator extends AsyncTask<String, Void, String> {
-    private static final int CONNECTION_TIMEOUT = 2000;
+    private static final int CONNECTION_TIMEOUT = 10000;
 
     private Socket s;
     private DataOutputStream dos;
@@ -42,7 +42,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... message) {
         try {
-            s = new Socket(ip, Values.SOCKET_PORT_REQ);
+            s = new Socket(ip, Values.SOCKET_PORT_REQ); //todo issue #11 java.net.ConnectException: failed to connect to /192.168.1.11 (port 9700) from /:: (port 38986): connect failed: ECONNREFUSED (Connection refused)
             dos = new DataOutputStream(s.getOutputStream());
             dos.writeUTF(message[0]);
             dos.close();
@@ -53,24 +53,22 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
             return "exception";
         }
 
-        try {
-
-            final ServerSocket serverSocket = new ServerSocket(Values.SOCKET_PORT_RESPONSE);
+        try (ServerSocket serverSocket = new ServerSocket(Values.SOCKET_PORT_RESPONSE)) {
             serverSocket.setSoTimeout(CONNECTION_TIMEOUT);
             final Socket mySocket = serverSocket.accept();
 
             DataInputStream dis = new DataInputStream(mySocket.getInputStream());
             String response = dis.readUTF();
             dis.close();
-            Log.w("tcp_init", "got response: "+ response);
+            Log.w("tcp_init", "got response: " + response);
             return response;
 
-        }catch (SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             Toaster.makeToast("konnte keine TCP Verbindung aufbauen");
             Log.e("tcp_init", "connection timeout", e);
             return "connection timeout";
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "exception";
         }
@@ -93,7 +91,7 @@ public class TCPInitiator extends AsyncTask<String, Void, String> {
             return;
         TCPSender tcpSender = new TCPSender(IP);
         tcpSender.execute(sendingTaskData);
-        Toaster.makeToast("sending "+sendingTaskData.getBytes()+" Bytes to Server");
+        Toaster.makeToast("Sende "+sendingTaskData.getBytes()+" Bytes direkt");
     }
 
     void serverSend(String key){

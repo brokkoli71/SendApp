@@ -2,6 +2,7 @@ package com.example.send.utils;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.example.send.R;
 
@@ -25,6 +26,7 @@ public class QRHandler {
             receiverIP = toDecodeArray[0];
             serverCommunicationKey = toDecodeArray[1];
             includedTCP = true;
+            Log.w("qr_handler", "receiverIP: " + receiverIP);
             return;
         }
         serverCommunicationKey = toDecode;
