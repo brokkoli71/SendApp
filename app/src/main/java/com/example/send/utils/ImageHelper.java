@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import com.example.send.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 public class ImageHelper {
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
@@ -56,6 +57,26 @@ public class ImageHelper {
         int oldHeight = bitmap.getHeight();
         int newWidth = oldWidth*newHeight/oldHeight;
         return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+    }
+
+    public static Bitmap fitSizeBitmap(Bitmap bitmap, int maxHeight, int maxWidth){
+        int targetWidth, targetHeight;
+        double aspectRatio;
+
+        if (bitmap.getWidth() > bitmap.getHeight()) {
+            targetWidth = maxWidth;
+            aspectRatio = (double) bitmap.getHeight() / (double) bitmap.getWidth();
+            targetHeight = (int) (targetWidth * aspectRatio);
+        } else {
+            targetHeight = maxHeight;
+            aspectRatio = (double) bitmap.getWidth() / (double) bitmap.getHeight();
+            targetWidth = (int) (targetHeight * aspectRatio);
+        }
+        Bitmap result = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, false);
+        if (result != bitmap) {
+            bitmap.recycle();
+        }
+        return result;
     }
 
     public static void setPictureInImageView(Bitmap bitmap, ImageView targetView, int availableSpace, Resources resources) {
@@ -99,10 +120,10 @@ public class ImageHelper {
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Log.w("picasso", "bitmap height"+bitmap.getHeight());
                 //bitmap gets resized to not take to much RAM
-                int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
+                /*int newWidth =  resources.getDimensionPixelSize(R.dimen.inner_content_width);
                 bitmap = ImageHelper.fitWidthBitmap(bitmap, newWidth);
 
-                /*if (availableSpace >= bitmap.getHeight()) {
+                if (availableSpace >= bitmap.getHeight()) {
                     targetView.getLayoutParams().height = bitmap.getHeight();
                 } else {
                     targetView.getLayoutParams().height = availableSpace;
@@ -127,6 +148,20 @@ public class ImageHelper {
                 targetView.setImageDrawable(placeHolderDrawable);
             }
         };
-        Picasso.get().load(uri).into(target);
+        Picasso.get().load(uri)
+                .transform(new Transformation() {
+                    @Override
+                    public Bitmap transform(Bitmap source) {
+                        int maxWidth = resources.getDimensionPixelSize(R.dimen.inner_content_width);
+                        return fitSizeBitmap(source, availableSpace, maxWidth);
+                    }
+
+                    @Override
+                    public String key() {
+                        return "resized";
+                    }
+                })
+                .centerInside()
+            .into(target);
     }
 }
