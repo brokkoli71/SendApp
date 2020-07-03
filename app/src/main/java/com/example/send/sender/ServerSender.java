@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.send.R;
+import com.example.send.ui.ExceptionDialog;
 import com.example.send.utils.Toaster;
 import com.example.send.ui.MainActivity;
 
@@ -54,7 +55,11 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
         pDialog.setMax(1);
         pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pDialog.setCancelable(false); //todo add feature #1001: add functionality on canceling -> cancel sending
-        pDialog.show(); //todo issue #10 after qr scanner: E/WindowManager: android.view.WindowLeaked: Activity com.example.send.ui.MainActivity has leaked window DecorView@899bd2[] that was originally added here
+        try {
+            pDialog.show(); //todo issue #10 after qr scanner: E/WindowManager: android.view.WindowLeaked: Activity com.example.send.ui.MainActivity has leaked window DecorView@899bd2[] that was originally added here
+        }catch (Exception e){
+            new ExceptionDialog(context, e);
+        }
     }
     @Override
     protected String doInBackground(SendingTaskData... sendingTaskData) {
