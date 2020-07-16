@@ -155,6 +155,15 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
             }
         }
     }
+    protected void onStop() {
+        if(pDialog2!= null)
+            pDialog2.dismiss();
+        if(pDialog!= null)
+            pDialog.dismiss();
+    }
+    public void stop(){
+        onStop();
+    }
 }
 
 

@@ -52,6 +52,7 @@ public class SendFragment extends Fragment {
     Button buttonQR;
     TextView imageViewText;
     String ip;
+    ServerSender currentServerSender;
 
     public SendFragment() {}
 
@@ -149,11 +150,18 @@ public class SendFragment extends Fragment {
         if (sendingTaskData==null)
             return;
         ServerSender serverSender = new ServerSender(context, key);
+        currentServerSender = serverSender;
         serverSender.execute(sendingTaskData);
         Toast.makeText(context, "sending "+sendingTaskData.getBytes()+" Bytes to Server", Toast.LENGTH_SHORT).show();
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (currentServerSender!=null){
+            currentServerSender.stop();
+        }
+    }
 
     void gotIntentActionSend(Intent intent, final ContentResolver contentResolver){
         imageViewText.setVisibility(View.GONE);
