@@ -71,9 +71,11 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
 
         //depending on Android Version
         try {
-            client = HttpClientBuilder.create().build();
+            client = HttpClientBuilder.create().build(); //todo issue #12 java.lang.RuntimeException Caused by: java.lang.NoClassDefFoundError: org.apache.http.impl.conn.ManagedHttpClientConnectionFactory
         }catch (NoSuchFieldError e){
             client = new DefaultHttpClient();
+        }catch (Exception e){
+            new ExceptionDialog(context, e, true);
         }
         try {
             HttpPost post = new HttpPost(url_send);
