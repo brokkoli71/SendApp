@@ -2,6 +2,7 @@ package com.example.send.sender;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -132,6 +133,12 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
             pDialog2.setIndeterminate(false);
             pDialog2.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             pDialog2.setCancelable(false);
+            pDialog2.setButton(DialogInterface.BUTTON_NEUTRAL, "send in background", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
             pDialog2.show();
         }
     }
@@ -139,9 +146,13 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
     protected void onPostExecute(String message) {
         super.onPostExecute(message);
         try {
-            pDialog2.dismiss();
-        }catch (NullPointerException e){
             pDialog.dismiss();
+        }catch (NullPointerException e){
+            try {
+                pDialog2.dismiss();
+            }catch (NullPointerException e1){
+                Toaster.makeToast("datei wurde empfangen");
+            }
         }
     }
 }

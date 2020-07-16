@@ -164,13 +164,6 @@ public class ReceiveFragment extends Fragment {
                 };
             }
         });
-
-        try {
-            throw new NullPointerException();
-        }catch (Exception e){
-            new ExceptionDialog(context, e);
-            Log.e("test", "", e);
-        }
         return view;
     }
 }
