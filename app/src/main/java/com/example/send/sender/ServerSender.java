@@ -76,6 +76,8 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
             client = new DefaultHttpClient();
         }catch (Exception e){
             new ExceptionDialog(context, e, true);
+            stop();
+            return "exception";
         }
         try {
             HttpPost post = new HttpPost(url_send);
@@ -147,17 +149,10 @@ public class ServerSender extends AsyncTask<SendingTaskData, Integer, String> {/
     @Override
     protected void onPostExecute(String message) {
         super.onPostExecute(message);
-        try {
-            pDialog.dismiss();
-        }catch (NullPointerException e){
-            try {
-                pDialog2.dismiss();
-            }catch (NullPointerException e1){
-                Toaster.makeToast("datei wurde empfangen");
-            }
-        }
+        stop();
     }
-    protected void onStop() {
+
+    private void onStop() {
         if(pDialog2!= null)
             pDialog2.dismiss();
         if(pDialog!= null)

@@ -33,7 +33,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="@string/app_id_key"/>
-                <!--todo add-feature 1004: add intent evaluator for qr code in main activity-->
+                <!--todo add feature #1004: add intent evaluator for qr code in main activity-->
+                <!--todo add feature #1005: add possibility of sharing via url-link (might need extra html/php page for evaluating link)-->
             </intent-filter>
         </activity>
         <activity
